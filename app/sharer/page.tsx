@@ -6,10 +6,11 @@ import { getPath, getSharedItems, postDownload } from "@/apis/apiResources";
 import ModalDetail from "../Components/modalDetail";
 import { FolderIcon } from "@heroicons/react/24/outline";
 
-const Page = () => {
+function Page() {
     const searchParams = useSearchParams();
     const pathname = usePathname();
 
+    const [globalSlug, setGlobalSlug] = useState<any>(null);
     const [user, setUser] = useState<any>(null);
 
     const [items, setItems] = useState<any>([]);
@@ -35,6 +36,7 @@ const Page = () => {
                 const user = JSON.parse(localUser);
                 setUser(user);
             }
+            setGlobalSlug(searchParams.get('_id'));
         }
     }, [isMounted]);
 
@@ -43,16 +45,15 @@ const Page = () => {
             setItems([]);
             setIsLoading(true);
             setIsLoadingBreadcrumbs(true);
-            const slug = searchParams.get('_id');
-            if (slug) {
-                getPath(slug).then((res: any) => {
+            if (globalSlug) {
+                getPath(globalSlug).then((res: any) => {
                     if (res.status === 'success') {
                         setArrBreadcrumbs(res.data);
                         setCurrentPath(res.data.current);
                     }
                     setIsLoadingBreadcrumbs(false);
                 });
-                getSharedItems(slug).then((res: any) => {
+                getSharedItems(globalSlug).then((res: any) => {
                     if (res.status === 'success') {
                         setItems(res.data);
                     }
@@ -83,7 +84,7 @@ const Page = () => {
     }
 
     return (
-        <Suspense>
+        <div>
             {isLoadingBreadcrumbs ? (
                 <div className="flex flex-wrap space-x-4 bc items-center mb-5">
                     <div className="font-semibold flex gap-x-1 items-center animate-pulse">
@@ -161,7 +162,14 @@ const Page = () => {
                     setIsError(false);
                 }}
             />
+        </div>
+    );
+}
+
+export default function SharerPage() {
+    return (
+        <Suspense fallback={<div className="h-full w-full flex items-center justify-center">Loading...</div>}>
+            <Page />
         </Suspense>
     );
 }
-export default Page;

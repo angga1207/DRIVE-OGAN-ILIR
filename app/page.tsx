@@ -47,11 +47,13 @@ const SweetAlertToast = (icon: any, title: any, text: any) => {
   })
 }
 
-const Home = () => {
+function Page() {
 
   const searchParams = useSearchParams();
+  const [globalSlug, setGlobalSlug] = useState<any>(null);
   const pathname = usePathname();
   const router = useRouter();
+
   var CurrentToken = getCookie('token');
 
   const [user, setUser] = useState<any>(null);
@@ -98,6 +100,7 @@ const Home = () => {
         const user = JSON.parse(localUser);
         setUser(user);
       }
+      setGlobalSlug(searchParams.get('_p'));
     }
   }, [isMounted]);
 
@@ -107,16 +110,15 @@ const Home = () => {
       setItems([]);
       setIsLoading(true);
       setIsLoadingBreadcrumbs(true);
-      const slug = searchParams.get('_p');
-      if (slug) {
-        getPath(slug).then((res: any) => {
+      if (globalSlug) {
+        getPath(globalSlug).then((res: any) => {
           if (res.status === 'success') {
             setArrBreadcrumbs(res.data);
           }
           setIsLoadingBreadcrumbs(false);
         });
 
-        getItems(slug).then((res: any) => {
+        getItems(globalSlug).then((res: any) => {
           if (res.status === 'success') {
             setItems(res.data);
           }
@@ -156,8 +158,7 @@ const Home = () => {
         });
       }
       AxiosUploadFiles(files).then((res: any) => {
-        const currentSlug: any = searchParams.get('_p');
-        getItems(currentSlug).then((res: any) => {
+        getItems(globalSlug).then((res: any) => {
           if (res.status === 'success') {
             setItems(res.data);
           }
@@ -169,16 +170,15 @@ const Home = () => {
   }
 
   const AxiosUploadFiles = async (files: any) => {
-    const currentSlug: any = searchParams.get('_p');
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const fileName = file.name;
       const fileSize = file.size;
       const formData = new FormData();
       formData.append('files[]', file);
-      formData.append('folderId', currentSlug);
+      formData.append('folderId', globalSlug);
       try {
-        const res = await axios.post(`${ServerDomain}/upload/${currentSlug}`, formData, {
+        const res = await axios.post(`${ServerDomain}/upload/${globalSlug}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${CurrentToken}`,
@@ -240,13 +240,11 @@ const Home = () => {
   const handleRenamFolder = (slug: any, name: any, id: any) => {
     setIsLoadingFolder(true);
     if (isFolderCreate === true) {
-      const currentSlug = searchParams.get('_p');
-
-      postMakeFolder(currentSlug, name).then((res: any) => {
+      postMakeFolder(globalSlug, name).then((res: any) => {
         if (res.status === 'success') {
 
-          if (currentSlug) {
-            getItems(currentSlug).then((res: any) => {
+          if (globalSlug) {
+            getItems(globalSlug).then((res: any) => {
               if (res.status === 'success') {
                 setItems(res.data);
               }
@@ -403,7 +401,7 @@ const Home = () => {
 
   if (user?.access === false) {
     return (
-      <Suspense>
+      <div>
         <div className="flex flex-col items-center justify-center w-full h-[calc(100vh-150px)] border border-dashed border-slate-300 rounded-lg">
           <div className="">
             <ExclamationTriangleIcon className="h-20 w-20 text-red-500" />
@@ -425,12 +423,12 @@ const Home = () => {
             {``} kami.
           </div>
         </div>
-      </Suspense>
+      </div>
     )
   }
 
   return (
-    <Suspense>
+    <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-y-2">
         <div className="">
           {isLoadingBreadcrumbs && (
@@ -866,8 +864,14 @@ const Home = () => {
         }}
       />
 
-    </Suspense>
+    </div>
   )
 }
 
-export default Home;
+export default function HomePage() {
+  return (
+    <Suspense fallback={<div className="h-full w-full flex items-center justify-center">Loading...</div>}>
+      <Page />
+    </Suspense>
+  );
+}
