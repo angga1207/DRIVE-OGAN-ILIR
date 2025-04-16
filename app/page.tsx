@@ -1,6 +1,6 @@
 "use client";
 import { FolderPlusIcon, ArrowsUpDownIcon, DocumentPlusIcon, TrashIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import ItemCardList from "./Components/ItemCardList";
@@ -403,32 +403,34 @@ const Home = () => {
 
   if (user?.access === false) {
     return (
-      <div className="flex flex-col items-center justify-center w-full h-[calc(100vh-150px)] border border-dashed border-slate-300 rounded-lg">
-        <div className="">
-          <ExclamationTriangleIcon className="h-20 w-20 text-red-500" />
+      <Suspense>
+        <div className="flex flex-col items-center justify-center w-full h-[calc(100vh-150px)] border border-dashed border-slate-300 rounded-lg">
+          <div className="">
+            <ExclamationTriangleIcon className="h-20 w-20 text-red-500" />
+          </div>
+          <div className="text-red-500 text-xl font-bold">
+            Anda tidak memiliki akses di Aplikasi Drive Ogan Ilir
+          </div>
+          <div className="">
+            Silahkan hubungi admin untuk mendapatkan akses di {` `}
+            <a
+              className="text-blue-500 font-semibold cursor-pointer hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://wa.me/6281255332004">
+              <span className="text-green-600 font-semibold cursor-pointer hover:underline">
+                WhatsApp Center
+              </span>
+            </a>
+            {``} kami.
+          </div>
         </div>
-        <div className="text-red-500 text-xl font-bold">
-          Anda tidak memiliki akses di Aplikasi Drive Ogan Ilir
-        </div>
-        <div className="">
-          Silahkan hubungi admin untuk mendapatkan akses di {` `}
-          <a
-            className="text-blue-500 font-semibold cursor-pointer hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://wa.me/6281255332004">
-            <span className="text-green-600 font-semibold cursor-pointer hover:underline">
-              WhatsApp Center
-            </span>
-          </a>
-          {``} kami.
-        </div>
-      </div>
+      </Suspense>
     )
   }
 
   return (
-    <div>
+    <Suspense>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-y-2">
         <div className="">
           {isLoadingBreadcrumbs && (
@@ -863,8 +865,8 @@ const Home = () => {
           setShowQueueList(true);
         }}
       />
-      
-    </div>
+
+    </Suspense>
   )
 }
 
