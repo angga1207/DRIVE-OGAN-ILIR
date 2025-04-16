@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  missingSuspenseWithCSRBailout: false,
+  // missingSuspenseWithCSRBailout: false,
 };
 
 export default nextConfig;

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import ItemCardSharer from "../Components/ItemCardSharer";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getPath, getSharedItems, postDownload } from "@/apis/apiResources";
@@ -83,7 +83,7 @@ const Page = () => {
     }
 
     return (
-        <div>
+        <Suspense>
             {isLoadingBreadcrumbs ? (
                 <div className="flex flex-wrap space-x-4 bc items-center mb-5">
                     <div className="font-semibold flex gap-x-1 items-center animate-pulse">
@@ -161,7 +161,7 @@ const Page = () => {
                     setIsError(false);
                 }}
             />
-        </div>
+        </Suspense>
     );
 }
 export default Page;
