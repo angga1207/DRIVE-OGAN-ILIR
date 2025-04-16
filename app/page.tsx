@@ -168,15 +168,16 @@ function Page() {
   }
 
   const AxiosUploadFiles = async (files: any) => {
+    const globalSlug = searchParams.get('_p');
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const fileName = file.name;
       const fileSize = file.size;
       const formData = new FormData();
       formData.append('files[]', file);
-      formData.append('folderId', searchParams.get('_p'));
+      formData.append('folderId', globalSlug as string);
       try {
-        const res = await axios.post(`${ServerDomain}/upload/${searchParams.get('_p')}`, formData, {
+        const res = await axios.post(`${ServerDomain}/upload/${globalSlug}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${CurrentToken}`,
