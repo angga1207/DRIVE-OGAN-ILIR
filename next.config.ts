@@ -5,8 +5,8 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  missingSuspenseWithCSRBailout: false,
+  // missingSuspenseWithCSRBailout: false,
 };
 
-module.exports = nextConfig
+// module.exports = nextConfig
 export default nextConfig;

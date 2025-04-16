@@ -50,7 +50,6 @@ const SweetAlertToast = (icon: any, title: any, text: any) => {
 function Page() {
 
   const searchParams = useSearchParams();
-  const [globalSlug, setGlobalSlug] = useState<any>(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -100,7 +99,6 @@ function Page() {
         const user = JSON.parse(localUser);
         setUser(user);
       }
-      setGlobalSlug(searchParams.get('_p'));
     }
   }, [isMounted]);
 
@@ -110,15 +108,15 @@ function Page() {
       setItems([]);
       setIsLoading(true);
       setIsLoadingBreadcrumbs(true);
-      if (globalSlug) {
-        getPath(globalSlug).then((res: any) => {
+      if (searchParams.get('_p')) {
+        getPath(searchParams.get('_p')).then((res: any) => {
           if (res.status === 'success') {
             setArrBreadcrumbs(res.data);
           }
           setIsLoadingBreadcrumbs(false);
         });
 
-        getItems(globalSlug).then((res: any) => {
+        getItems(searchParams.get('_p')).then((res: any) => {
           if (res.status === 'success') {
             setItems(res.data);
           }
@@ -158,7 +156,7 @@ function Page() {
         });
       }
       AxiosUploadFiles(files).then((res: any) => {
-        getItems(globalSlug).then((res: any) => {
+        getItems(searchParams.get('_p')).then((res: any) => {
           if (res.status === 'success') {
             setItems(res.data);
           }
@@ -176,9 +174,9 @@ function Page() {
       const fileSize = file.size;
       const formData = new FormData();
       formData.append('files[]', file);
-      formData.append('folderId', globalSlug);
+      formData.append('folderId', searchParams.get('_p'));
       try {
-        const res = await axios.post(`${ServerDomain}/upload/${globalSlug}`, formData, {
+        const res = await axios.post(`${ServerDomain}/upload/${searchParams.get('_p')}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${CurrentToken}`,
@@ -240,11 +238,11 @@ function Page() {
   const handleRenamFolder = (slug: any, name: any, id: any) => {
     setIsLoadingFolder(true);
     if (isFolderCreate === true) {
-      postMakeFolder(globalSlug, name).then((res: any) => {
+      postMakeFolder(searchParams.get('_p'), name).then((res: any) => {
         if (res.status === 'success') {
 
-          if (globalSlug) {
-            getItems(globalSlug).then((res: any) => {
+          if (searchParams.get('_p')) {
+            getItems(searchParams.get('_p')).then((res: any) => {
               if (res.status === 'success') {
                 setItems(res.data);
               }
@@ -869,6 +867,7 @@ function Page() {
 }
 
 export default function HomePage() {
+
   return (
     <Suspense fallback={<div className="h-full w-full flex items-center justify-center">Loading...</div>}>
       <Page />
