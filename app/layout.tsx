@@ -3,6 +3,7 @@ import { Red_Hat_Display } from "next/font/google";
 import "./globals.css";
 import Header from "./Components/Header";
 import AuthProvider from "./providers/SessionProvider";
+import AppVersion from "./Components/AppVersion";
 const redHat = Red_Hat_Display({
   variable: "--font-red-hat",
   subsets: ["latin"],
@@ -74,6 +75,8 @@ export default function RootLayout({
               <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 {children}
               </div>
+
+              <AppVersion />
             </main>
           </AuthProvider>
 
