@@ -1,6 +1,6 @@
 "use client";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { FolderIcon, FolderOpenIcon, DocumentIcon, CalendarIcon, TrashIcon, PencilSquareIcon, ShareIcon, ArchiveBoxArrowDownIcon, EyeIcon, PhotoIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline'
+import { ShareIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from 'react';
 
 import Select from 'react-select';

@@ -1,7 +1,6 @@
 "use client";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { FolderIcon, FolderOpenIcon, DocumentIcon, CalendarIcon, TrashIcon, PencilSquareIcon, ShareIcon, ArchiveBoxArrowDownIcon, EyeIcon, PhotoIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline'
-import { useState } from 'react';
+import { DocumentIcon, PhotoIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline'
 
 const ModalDetail = (
     {

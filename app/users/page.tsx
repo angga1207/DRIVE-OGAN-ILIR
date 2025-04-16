@@ -21,18 +21,18 @@ const SweetAlertConfirm = (title: any, text: any, confirmButtonText: any, cancel
     })
 }
 
-const SweetAlertToast = (icon: any, title: any, text: any) => {
-    return Swal.fire({
-        position: 'top-end',
-        icon: icon,
-        title: title,
-        text: text,
-        showConfirmButton: false,
-        timer: 5000,
-        timerProgressBar: true,
-        toast: true,
-    })
-}
+// const SweetAlertToast = (icon: any, title: any, text: any) => {
+//     return Swal.fire({
+//         position: 'top-end',
+//         icon: icon,
+//         title: title,
+//         text: text,
+//         showConfirmButton: false,
+//         timer: 5000,
+//         timerProgressBar: true,
+//         toast: true,
+//     })
+// }
 
 const Page = () => {
 
@@ -53,8 +53,6 @@ const Page = () => {
     const [isCreate, setIsCreate] = useState(false);
     const [detailData, setDetailData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [isError, setIsError] = useState(false);
-    const [isSuccess, setIsSuccess] = useState(false);
 
 
     useEffect(() => {

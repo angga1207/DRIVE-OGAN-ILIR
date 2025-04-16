@@ -1,7 +1,6 @@
 import { clientDomain } from '@/apis/serverConfig';
-import { FolderIcon, FolderOpenIcon, DocumentIcon, CalendarIcon, TrashIcon, PencilSquareIcon, ShareIcon, ArchiveBoxArrowDownIcon, EyeIcon, PhotoIcon, ArchiveBoxIcon, LockClosedIcon, StopCircleIcon } from '@heroicons/react/24/outline'
+import { FolderIcon, DocumentIcon, CalendarIcon, TrashIcon, PencilSquareIcon, ShareIcon, ArchiveBoxArrowDownIcon, EyeIcon, PhotoIcon, ArchiveBoxIcon, LockClosedIcon, StopCircleIcon } from '@heroicons/react/24/outline'
 import Swal from 'sweetalert2';
-import Tippy from "@tippyjs/react";
 import 'tippy.js/dist/tippy.css';
 
 

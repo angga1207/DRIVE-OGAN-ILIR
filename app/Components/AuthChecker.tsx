@@ -1,7 +1,5 @@
 "use client";
-import { serverCheck } from "@/apis/serverConfig";
 import { useEffect, useState } from "react";
-import { setCookie, getCookie, hasCookie, deleteCookie } from 'cookies-next';
 import { signOut, useSession } from "next-auth/react";
 
 const AuthChecker = () => {

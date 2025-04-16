@@ -1,4 +1,4 @@
-import { ArchiveBoxArrowDownIcon, ArchiveBoxIcon, CalendarIcon, DocumentIcon, EyeIcon, FolderIcon, LockClosedIcon, PencilSquareIcon, PhotoIcon, ShareIcon, StopCircleIcon } from "@heroicons/react/24/outline"
+import { ArchiveBoxArrowDownIcon, ArchiveBoxIcon, CalendarIcon, DocumentIcon, EyeIcon, FolderIcon, PhotoIcon, StopCircleIcon } from "@heroicons/react/24/outline"
 
 const ItemCardSharer = (
     {

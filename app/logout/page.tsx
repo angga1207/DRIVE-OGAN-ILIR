@@ -1,7 +1,6 @@
 "use client";
-import { serverCheck } from "@/apis/serverConfig";
 import { useEffect, useState } from "react";
-import { setCookie, getCookie, hasCookie, deleteCookie } from 'cookies-next';
+import { deleteCookie } from 'cookies-next';
 import { signOut } from "next-auth/react";
 
 const Page = () => {

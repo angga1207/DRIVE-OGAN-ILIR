@@ -9,7 +9,6 @@ const Profile = () => {
     const [isMounted, setIsMounted] = useState(false);
     const [user, setUser] = useState<any>(null);
     const [showPassword, setShowPassword] = useState(false);
-    const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
 
     const [activities, setActivities] = useState<any>(null);
     const [isLoadingActivities, setIsLoadingActivities] = useState(false);

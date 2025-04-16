@@ -10,8 +10,6 @@ import { FolderIcon } from "@heroicons/react/24/outline";
 const Page = () => {
     const searchParams = useSearchParams();
     const pathname = usePathname();
-    const router = useRouter();
-    var CurrentToken = getCookie('token');
 
     const [user, setUser] = useState<any>(null);
 

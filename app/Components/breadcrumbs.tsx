@@ -1,4 +1,4 @@
-import { FolderIcon, FolderOpenIcon, FolderPlusIcon } from '@heroicons/react/24/outline'
+import { FolderIcon } from '@heroicons/react/24/outline'
 import Link from "next/link";
 
 const Breadcrumbs = (

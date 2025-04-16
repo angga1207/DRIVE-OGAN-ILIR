@@ -1,9 +1,8 @@
 "use client";
 import { serverCheck } from "@/apis/serverConfig";
 import { useEffect, useState } from "react";
-import { setCookie, getCookie, hasCookie, deleteCookie } from 'cookies-next';
-import { useRouter } from "next/navigation";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { setCookie, getCookie, deleteCookie } from 'cookies-next';
+import { signIn, useSession } from "next-auth/react";
 import { attempLogin, loggedWithGoogle } from "@/apis/apiAuth";
 import Swal from "sweetalert2";
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";

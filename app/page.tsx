@@ -1,6 +1,5 @@
 "use client";
-import Link from "next/link";
-import { FolderIcon, FolderOpenIcon, FolderPlusIcon, ArrowsUpDownIcon, XMarkIcon, DocumentPlusIcon, ChevronDoubleRightIcon, TrashIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+import { FolderPlusIcon, ArrowsUpDownIcon, DocumentPlusIcon, TrashIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
@@ -444,7 +443,7 @@ const Home = () => {
             <Breadcrumbs
               items={arrBreadcrumbs}
               onItemClick={(item) => {
-                
+
               }}
             />
           )}
