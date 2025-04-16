@@ -119,6 +119,8 @@ function Page() {
         getItems(searchParams.get('_p')).then((res: any) => {
           if (res.status === 'success') {
             setItems(res.data);
+          } else if (res.message.status == 401 && CurrentToken) {
+            window.location.href = '/logout';
           }
           setIsLoading(false);
         });
@@ -133,6 +135,8 @@ function Page() {
         getItems().then((res: any) => {
           if (res.status === 'success') {
             setItems(res.data);
+          } else if (res.message.status == 401 && CurrentToken) {
+            window.location.href = '/logout';
           }
           setIsLoading(false);
         });
