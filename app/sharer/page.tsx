@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import ItemCardSharer from "../Components/ItemCardSharer";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { getCookie } from "cookies-next";
 import { getPath, getSharedItems, postDownload } from "@/apis/apiResources";
 import ModalDetail from "../Components/modalDetail";
 import { FolderIcon } from "@heroicons/react/24/outline";
