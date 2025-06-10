@@ -42,6 +42,7 @@ function Page() {
 
     useEffect(() => {
         if (isMounted) {
+            console.log(globalSlug)
             setItems([]);
             setIsLoading(true);
             setIsLoadingBreadcrumbs(true);
@@ -62,7 +63,7 @@ function Page() {
             } else {
             }
         }
-    }, [isMounted, searchParams, pathname]);
+    }, [isMounted, searchParams, pathname, globalSlug]);
 
     const handleDownload = (data: any) => {
         setIsDownloading((prev: any) => {
