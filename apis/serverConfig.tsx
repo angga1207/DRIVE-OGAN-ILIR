@@ -7,8 +7,8 @@ const staticToken = '1816|zDB4IWBoirDGP40onWgjyfd0uek16vrKYGSVw5qtbbd5bdf6';
 // const serverDomain = 'https://drive-backend.oganilirkab.go.id/api/';
 
 export function serverDomain() {
-    // const uri = 'http://127.0.0.1:8000/api';
-    const uri = 'https://drive-backend.oganilirkab.go.id/api';
+    const uri = 'http://127.0.0.1:8000/api';
+    // const uri = 'https://drive-backend.oganilirkab.go.id/api';
     return uri;
 }
 

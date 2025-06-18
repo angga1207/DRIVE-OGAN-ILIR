@@ -203,7 +203,7 @@ const Page = () => {
                 </div>
             </div>
 
-            <div className="w-full">
+            <div className="w-full overflow-auto">
                 <table className="w-full table-auto">
                     <thead>
                         <tr>
@@ -231,9 +231,16 @@ const Page = () => {
                             <tr key={index} className="hover:bg-slate-100">
                                 <td className="px-4 py-2 border">
                                     <div className="flex items-center gap-x-2">
-                                        <div className="w-12 h-12 shrink-0 rounded-full bg-slate-300 flex justify-center items-center">
+                                        <div className="w-12 h-12 shrink-0 rounded-full bg-gray-200 flex justify-center items-center">
                                             {item.photo ? (
-                                                <img src={item.photo} alt={item.fullname} className="w-12 h-12 rounded-full object-contain p-1" />
+                                                <img
+                                                    src={item.photo}
+                                                    onError={(e) => {
+                                                        // e.currentTarget.src = '/favicon.png';
+                                                        e.currentTarget.src = '/logo-oi.webp';
+                                                    }}
+                                                    alt={item.fullname}
+                                                    className="w-12 h-12 rounded-full object-contain p-1" />
                                             ) : (
                                                 <div className="w-full h-full rounded-full bg-slate-500 flex justify-center items-center">
                                                     <span className="text-white text-sm font-bold">A</span>

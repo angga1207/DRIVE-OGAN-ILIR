@@ -88,7 +88,7 @@ const ItemCardList = (
                         <input
                             type="checkbox"
                             className="h-3.5 w-3.5 rounded-full border-0 border-gray-200 text-indigo-600 focus:ring-indigo-500"
-                            checked={selectedItems?.includes(item?.id)}
+                            checked={selectedItems?.find((i: any) => i.id == item.id) ? true : false}
                             onChange={() => onItemSelect(item)}
                         />
                     </div>

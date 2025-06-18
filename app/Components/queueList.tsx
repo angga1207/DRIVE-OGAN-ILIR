@@ -55,9 +55,9 @@ const QueueList = (
             {isShow && (
                 <div
                     ref={ref}
-                    className="fixed top-0 right-0 w-[20vw] h-screen bg-white shadow-sm group">
+                    className="fixed top-0 right-0 w-[300px] lg:w-[20vw] h-screen bg-white shadow-sm group">
                     <div
-                        className="absolute top-3 -left-10 w-10 h-10 rounded-l-lg bg-gray-800 text-white border border-r-0 border-white shadow-sm flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-all duration-300"
+                        className="absolute bottom-7 -left-10 w-10 h-10 rounded-l-lg bg-gray-800 text-white border border-r-0 border-white shadow-sm flex items-center justify-center cursor-pointer opacity-75 lg:opacity-0 group-hover:opacity-100 transition-all duration-300"
                         onClick={() => {
                             onClose();
                         }}
@@ -118,7 +118,7 @@ const QueueList = (
             )}
 
             {isShow == false && (
-                <div className="fixed top-0 right-0">
+                <div className="fixed bottom-20 right-0">
                     <div
                         className="absolute top-3 -left-10 w-10 h-10 rounded-l-lg bg-gray-800 text-white border border-r-0 border-white shadow-sm flex items-center justify-center cursor-pointer opacity-50 hover:opacity-100 transition-all duration-300"
                         onClick={() => {

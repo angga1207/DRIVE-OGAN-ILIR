@@ -69,11 +69,13 @@ function Page() {
         setIsDownloading((prev: any) => {
             return [...prev, { id: data.id }];
         });
-        postDownload(data.slug).then((res: any) => {
+        postDownload([data.slug]).then((res: any) => {
             if (res.status === 'success') {
                 const link = document.createElement('a');
-                link.href = res.data;
-                link.setAttribute('download', data.name);
+                link.href = res.data[0].url;
+                link.setAttribute('download', res.data[0].name);
+                // Uncomment the next line if you want to multiply the download feature
+                // link.setAttribute('target', '_blank');
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);

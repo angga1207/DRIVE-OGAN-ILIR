@@ -1,5 +1,5 @@
 "use client";
-import { FolderPlusIcon, ArrowsUpDownIcon, DocumentPlusIcon, TrashIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+import { FolderPlusIcon, ArrowsUpDownIcon, DocumentPlusIcon, TrashIcon, ExclamationTriangleIcon, ArchiveBoxArrowDownIcon } from '@heroicons/react/24/outline'
 import { Suspense, useEffect, useState } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
@@ -18,12 +18,12 @@ import ModalShare from "./Components/modalShare";
 
 const ServerDomain = serverDomain();
 
-const SweetAlertConfirm = (title: any, text: any, confirmButtonText: any, cancelButtonText: any) => {
+const SweetAlertConfirm = (title: any, text: any, confirmButtonText: any, cancelButtonText: any, showCancelButton: boolean = true) => {
   return Swal.fire({
     title: title,
     text: text,
     icon: 'warning',
-    showCancelButton: true,
+    showCancelButton: showCancelButton,
     // green confirm button
     confirmButtonColor: '#00a63e',
     cancelButtonColor: '#d33',
@@ -219,7 +219,7 @@ function Page() {
           }
         }).then((res: any) => {
           if (res.data.status == 'error') {
-            // showSweetAlert('info', 'Peringatan', res?.data?.message, 'Tutup');
+            SweetAlertToast('error', 'Gagal', res.data.message);
           }
         });
         // const response = await res.data;
@@ -387,11 +387,14 @@ function Page() {
     setIsDownloading((prev: any) => {
       return [...prev, { id: data.id }];
     });
-    postDownload(data.slug).then((res: any) => {
+    postDownload([data.slug]).then((res: any) => {
       if (res.status === 'success') {
         const link = document.createElement('a');
-        link.href = res.data;
-        link.setAttribute('download', data.name);
+        link.href = res.data[0].url;
+        link.setAttribute('download', res.data[0].name || 'download.zip');
+        // target="_blank"
+        link.setAttribute('rel', 'noopener noreferrer');
+        link.setAttribute('target', '_blank');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -570,7 +573,7 @@ function Page() {
                   disabled={items.length === 0 ? true : false}
                   onChange={(e) => {
                     if (e.target.checked) {
-                      setSelectedItems(items.map((item: any) => item.id));
+                      setSelectedItems(items.map((item: any) => item));
                     } else {
                       setSelectedItems([]);
                     }
@@ -596,14 +599,10 @@ function Page() {
                       SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin menghapus ' + selectedItems?.length + ' berkas ini?', 'Ya, Hapus!', 'Batalkan')
                         .then((result) => {
                           if (result.isConfirmed) {
-                            const selectedSlugs = selectedItems.map((item: any) => {
-                              const selectedItem = items.find((i: any) => i.id === item);
-                              return selectedItem ? selectedItem.slug : null;
-                            });
-                            postDelete(selectedSlugs).then((res: any) => {
+                            postDelete(selectedItems.map((item: any) => item.slug)).then((res: any) => {
                               if (res.status === 'success') {
                                 setItems((prev: any) => {
-                                  return prev.filter((item: any) => !selectedItems.includes(item.id));
+                                  return prev.filter((item: any) => !selectedItems.map((item: any) => item.slug).includes(item.slug));
                                 });
                                 setSelectedItems([]);
                                 setIsSelectedMode(false);
@@ -618,6 +617,52 @@ function Page() {
                   >
                     <TrashIcon className="h-4 w-4 inline" />
                     Hapus Semua
+                  </button>
+
+                  <button
+                    className="text-xs bg-indigo-100 text-slate-500 hover:text-indigo-900 cursor-pointer rounded border px-1 py-1 border-indigo-300 hover:border-indigo-400 hover:bg-indigo-200 shadow-sm flex items-center gap-x-1"
+
+                    onClick={() => {
+                      if (selectedItems.length === 0) {
+                        SweetAlertToast('info', 'Peringatan', 'Tidak ada berkas yang dipilih');
+                        return;
+                      }
+                      if (selectedItems.filter((item: any) => item.type === 'folder').length > 0) {
+                        SweetAlertConfirm('Peringatan', 'Tidak dapat mengunduh folder. Silahkan pilih berkas yang ingin diunduh.', 'Tutup', null, false)
+                        return;
+                      }
+
+                      SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin mengunduh ' + selectedItems?.length + ' berkas ini?', 'Ya, Unduh!', 'Batalkan')
+                        .then((result) => {
+                          if (result.isConfirmed) {
+                            postDownload(selectedItems.map((item: any) => item.slug)).then((res: any) => {
+                              if (res.status === 'success') {
+                                res.data.forEach((item: any) => {
+                                  const link = document.createElement('a');
+                                  link.href = item.url;
+                                  link.setAttribute('download', item.name || 'download.zip');
+                                  link.setAttribute('rel', 'noopener noreferrer');
+                                  link.setAttribute('target', '_blank');
+                                  document.body.appendChild(link);
+                                  link.click();
+                                  document.body.removeChild(link);
+                                });
+
+                                setSelectedItems([]);
+                                setIsSelectedMode(false);
+                                setIsLoading(false);
+                                setIsError(false);
+                                SweetAlertToast('success', 'Berhasil', 'Berkas berhasil diunduh');
+                              } else {
+                                SweetAlertToast('error', 'Gagal', res.message);
+                              }
+                            });
+                          }
+                        });
+                    }}
+                  >
+                    <ArchiveBoxArrowDownIcon className="h-4 w-4 inline" />
+                    Unduh {selectedItems.length} Item
                   </button>
                 </>
               )}
@@ -733,7 +778,7 @@ function Page() {
 
             {items.map((item: any, index: number) => (
               <ItemCardList
-                draggable={selectedItems.includes(item.id)}
+                draggable={false}
                 key={`item-${index}`}
                 item={item}
                 onItemClick={() => { }}
@@ -773,17 +818,18 @@ function Page() {
                 }}
                 onItemSelect={(e: any) => {
                   setSelectedItems((prev: any) => {
-                    if (prev.includes(e.id)) {
-                      return prev.filter((item: any) => item !== e.id);
+                    if (prev.find((i: any) => i.id === e.id)) {
+                      return prev.filter((item: any) => item.id !== e.id);
                     } else {
-                      return [...prev, e.id];
+                      return [...prev, e];
                     }
+
                   });
                 }}
                 selectedItems={selectedItems}
                 isLoading={false}
                 isError={false}
-                isSelected={selectedItems.includes(item.id)}
+                isSelected={selectedItems.find((i: any) => i.id === item.id) ? true : false}
                 isSelectedMode={selectedItems.length > 0}
               />
             ))}
@@ -867,7 +913,7 @@ function Page() {
         }}
       />
 
-    </div>
+    </div >
   )
 }
 

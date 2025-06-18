@@ -178,10 +178,10 @@ export async function getSearch(search: any) {
     }
 }
 
-export async function postDownload(id: number) {
+export async function postDownload(ids: any) {
     try {
         const res = await axios.post(`${ServerDomain}/download`, {
-            id: id
+            ids: ids
         }, {
             headers: {
                 'Content-Type': 'application/json',
