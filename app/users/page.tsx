@@ -1,6 +1,6 @@
 "use client";
-import { createUser, getUsers, updateUser, updateUserAccess } from "@/apis/apiUsers";
-import { CogIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { createUser, deleteUser, getUsers, updateUser, updateUserAccess } from "@/apis/apiUsers";
+import { CogIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import ModalUser from "../Components/modalUser";
 import Swal from "sweetalert2";
@@ -167,6 +167,38 @@ const Page = () => {
         });
     }
 
+    const confirmDelete = (id: any) => {
+        setLoading(true);
+        SweetAlertConfirm(
+            "Konfirmasi",
+            "Apakah anda yakin ingin menghapus pengguna ini?",
+            "Ya, Hapus",
+            "Tidak"
+        ).then((result) => {
+            if (result.isConfirmed) {
+                deleteUser(id).then((res: any) => {
+                    if (res.status === "success") {
+                        getUsers().then((res: any) => {
+                            if (res.status === "success") {
+                                setDataRaw(res.data);
+                                setTotalData(res.total);
+                            } else {
+                                setData([]);
+                                setTotalData(0);
+                            }
+                        });
+                    }
+                    SweetAlertConfirm(
+                        "Berhasil",
+                        "Pengguna berhasil dihapus",
+                        "Tutup",
+                    );
+                });
+            }
+            setLoading(true);
+        });
+    }
+
     return (
         <div className="w-full space-y-4">
             <div className="flex items-center justify-between gap-x-2">
@@ -312,10 +344,14 @@ const Page = () => {
                                             <PencilSquareIcon className="w-4 h-4 inline-block" />
                                             Edit
                                         </button>
-                                        {/* <button
-                                            className="px-3 py-1 bg-red-500 text-white rounded-md cursor-pointer select-none">
+                                        <button
+                                            onClick={() => {
+                                                confirmDelete(item.id);
+                                            }}
+                                            className="px-3 py-1 bg-red-500 text-white rounded-md cursor-pointer select-none text-sm flex items-center justify-center gap-x-1">
+                                            <TrashIcon className="w-4 h-4 inline-block" />
                                             Hapus
-                                        </button> */}
+                                        </button>
                                     </div>
                                 </td>
                             </tr>

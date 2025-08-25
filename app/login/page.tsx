@@ -3,9 +3,11 @@ import { serverCheck } from "@/apis/serverConfig";
 import { useEffect, useState } from "react";
 import { setCookie, getCookie, deleteCookie } from 'cookies-next';
 import { signIn, useSession } from "next-auth/react";
-import { attempLogin, loggedWithGoogle } from "@/apis/apiAuth";
+import { atempLoginSemesta, attempLogin, loggedWithGoogle } from "@/apis/apiAuth";
 import Swal from "sweetalert2";
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";
+import LoginSemesta from "../Components/LoginSemesta";
+import { useSearchParams } from "next/navigation";
 
 const SweetAlertToast = (icon: any, title: any, text: any) => {
     return Swal.fire({
@@ -29,6 +31,8 @@ const Page = () => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
+    // const [loginType, setLoginType] = useState('local');
+    const [isOpen, setIsOpen] = useState(false);
     const [formLogin, setFormLogin] = useState({
         username: '',
         password: '',
@@ -100,6 +104,7 @@ const Page = () => {
                             localStorage.setItem('user', JSON.stringify(res.data.user));
                             setCookie('token', res.data.token);
                             setCookie('user', JSON.stringify(res.data.user));
+                            localStorage.removeItem('logginByGoogle');
                             signIn('google', {
                                 callbackUrl: '/',
                             });
@@ -146,6 +151,69 @@ const Page = () => {
         })
     }
 
+    const handleLoginSemesta = (data: any) => {
+        atempLoginSemesta(data).then((res) => {
+            if (res.status === 'success') {
+                setCookie('token', res.data.token);
+                setCookie('user', JSON.stringify(res.data.user));
+                localStorage.setItem('user', JSON.stringify(res.data.user));
+                signIn('credentials', {
+                    username: data.nip,
+                    password: data.password,
+                    redirect: false,
+                });
+                // window.location.href = '/';
+            } else {
+            }
+            setIsLoading(false);
+        });
+    }
+
+    const Params = useSearchParams();
+    const typeAutoLogin = Params.get("ao-semesta");
+    const autoLoginNip = Params.get("nip");
+    const autoLoginKey = Params.get("key");
+
+    useEffect(() => {
+        if (isMounted && typeAutoLogin === 'true' && autoLoginNip && autoLoginKey == '049976129942') {
+            autoLogin();
+        }
+    }, [isMounted && Params])
+
+    const autoLogin = () => {
+        attempLogin({
+            username: autoLoginNip,
+            password: formLogin.password,
+            autoLogin: '1',
+        }).then((res) => {
+            if (res.status === 'success') {
+                console.log(res)
+                setCookie('token', res.data.token);
+                setCookie('user', JSON.stringify(res.data.user));
+                localStorage.setItem('user', JSON.stringify(res.data.user));
+                signIn('credentials', {
+                    username: autoLoginNip,
+                    // password: formLogin.password,
+                    autoLogin: '1',
+                    redirect: false,
+                });
+                // reloadPage();
+            } else {
+            }
+            setIsLoading(false);
+        })
+    }
+
+    const reloadPage = () => {
+        setTimeout(() => {
+            // window.location.reload();
+            window.location.href = '/login';
+        }, 1000);
+    }
+
+    // console.log({ MySession });
+
+
     return (
         <div className="">
             <div className="fixed top-0 left-0 w-full h-screen bg-[url('/login-bg.jpg')] bg-opacity-50 bg-cover bg-center bg-no-repeat -z-2"></div>
@@ -179,7 +247,7 @@ const Page = () => {
                                 className="h-25 w-full object-contain"
                             />
                         </div>
-                        <div className="mt-4 flex flex-col lg:flex-row items-center justify-center">
+                        <div className="mt-4 flex flex-col lg:flex-row items-center justify-center flex-wrap gap-4">
                             <div className="w-full lg:w-2/3 mb-2 lg:mb-0">
                                 <button
                                     type="button"
@@ -195,6 +263,19 @@ const Page = () => {
                                         <path fill="#28b446" d="m416.253 455.624.014.014C372.396 490.901 316.666 512 256 512c-97.491 0-182.252-54.491-225.491-134.681l82.961-67.91c21.619 57.698 77.278 98.771 142.53 98.771 28.047 0 54.323-7.582 76.87-20.818l83.383 68.262z"></path>
                                         <path fill="#f14336" d="m419.404 58.936-82.933 67.896C313.136 112.246 285.552 103.82 256 103.82c-66.729 0-123.429 42.957-143.965 102.724l-83.397-68.276h-.014C71.23 56.123 157.06 0 256 0c62.115 0 119.068 22.126 163.404 58.936z"></path>
                                     </svg> Masuk menggunakan Google </button>
+                            </div>
+                            <div className="w-full lg:w-2/3 mb-2 lg:mb-0">
+                                <button
+                                    type="button"
+                                    className="w-full flex justify-center items-center gap-2 bg-blue-900 text-sm text-white p-2 rounded-md hover:bg-blue-700 border border-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                    disabled={isLoading}
+                                    onClick={(e) => {
+                                        setIsOpen(true);
+                                    }}
+                                >
+                                    <img src="https://semesta.oganilirkab.go.id/assets_login/images/bw_icon_only@4x.png" alt="Semesta" className="w-5 h-5" />
+                                    Masuk menggunakan Semesta
+                                </button>
                             </div>
                         </div>
                         <div className="my-4 text-sm text-white text-center">
@@ -290,6 +371,16 @@ const Page = () => {
 
                 </div>
             </div>
+
+            {/* modal */}
+            <LoginSemesta
+                isOpen={isOpen}
+                isLoading={isLoading}
+                onClose={() => setIsOpen(false)}
+                onSubmit={(data) => {
+                    handleLoginSemesta(data);
+                }}
+            />
         </div>
     );
 }

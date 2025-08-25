@@ -91,3 +91,27 @@ export async function updateUserAccess(id: any, access: any) {
         }
     }
 }
+
+export async function deleteUser(id: any) {
+    try {
+        if (!id) {
+            return {
+                status: 'error',
+                message: 'User ID is required'
+            }
+        }
+        const res = await axios.delete(`${ServerDomain}/deleteUser/${id}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${CurrentToken}`,
+            }
+        });
+        const response = await res.data;
+        return response;
+    } catch (error) {
+        return {
+            status: 'error',
+            message: error
+        }
+    }
+}

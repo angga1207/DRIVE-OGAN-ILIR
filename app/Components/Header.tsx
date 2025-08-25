@@ -174,7 +174,7 @@ const Header = () => {
                                                 <span className="sr-only">
                                                     Buka Menu
                                                 </span>
-                                                <img alt="" src={user.imageUrl} className="size-8 rounded-full" />
+                                                <img alt="" src={user.imageUrl} className="size-8 rounded-full object-cover" />
                                                 <div className="text-start ml-2">
                                                     <div className="font-bold text-white whitespace-nowrap select-none">
                                                         {user.name}
@@ -234,7 +234,7 @@ const Header = () => {
                         <div className="border-t border-gray-700 pt-4 pb-3">
                             <div className="flex items-center px-5">
                                 <div className="shrink-0">
-                                    <img alt="" src={user.imageUrl} className="size-10 rounded-full" />
+                                    <img alt="" src={user.imageUrl} className="size-10 rounded-full object-cover" />
                                 </div>
                                 <div className="ml-3">
                                     <div className="text-base/5 font-medium text-white">{user.name}</div>

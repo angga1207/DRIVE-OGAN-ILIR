@@ -113,6 +113,9 @@ function Page() {
           if (res.status === 'success') {
             setArrBreadcrumbs(res.data);
           }
+          else if (res.message.status == 401) {
+            window.location.href = '/logout';
+          }
           setIsLoadingBreadcrumbs(false);
         });
 
@@ -128,6 +131,9 @@ function Page() {
         getPath().then((res: any) => {
           if (res.status === 'success') {
             setArrBreadcrumbs(res.data);
+          }
+          else if (res.message.status) {
+            window.location.href = '/logout';
           }
           setIsLoadingBreadcrumbs(false);
         });
