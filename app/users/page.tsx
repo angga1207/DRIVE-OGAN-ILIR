@@ -4,6 +4,7 @@ import { CogIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outlin
 import { useEffect, useState } from "react";
 import ModalUser from "../Components/modalUser";
 import Swal from "sweetalert2";
+import Tippy from "@tippyjs/react";
 
 const SweetAlertConfirm = (title: any, text: any, confirmButtonText: any, cancelButtonText: any = null) => {
     return Swal.fire({
@@ -286,8 +287,17 @@ const Page = () => {
                                         </div>
 
                                         {item.googleIntegated && (
-                                            <img src="/assets/images/google.png" className="w-3 h-3 inline-block" />
+                                            <Tippy content="Integrated with Google">
+                                                <img src="/assets/images/google.png" className="w-3 h-3 inline-block cursor-pointer" />
+                                            </Tippy>
                                         )}
+
+                                        {item.semestaIntegrated && (
+                                            <Tippy content="Integrated with Semesta">
+                                                <img src="https://aptika.oganilirkab.go.id/storage/images/thumbnail/original/semesta-ogan-ilir.png" className="w-3 h-3 inline-block cursor-pointer" />
+                                            </Tippy>
+                                        )}
+
                                     </div>
                                 </td>
                                 <td className="px-4 py-2 border text-sm text-slate-500">
