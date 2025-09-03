@@ -545,7 +545,7 @@ const Profile = () => {
 
                         <div className="text-center">
                             <div className="text-xs text-slate-500">
-                                © 2023 - {new Date().getFullYear()} Drive Ogan Ilir. All rights reserved.
+                                © 2023 - {new Date().getFullYear()} Diskominfo Ogan Ilir. All rights reserved.
                             </div>
                         </div>
                     </div>

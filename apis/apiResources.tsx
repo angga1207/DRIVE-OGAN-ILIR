@@ -50,7 +50,6 @@ export async function getItems(slug: any = null, sort: any = 'created_at', order
     }
 }
 
-
 export async function postMakeFolder(slug: any, name: any) {
     try {
         const res = await axios.post(`${ServerDomain}/folder`, {
@@ -93,7 +92,6 @@ export async function postRename(slug: any = null, name: any = null) {
     }
 }
 
-
 export async function postDelete(ids: any) {
     try {
         const res = await axios.post(`${ServerDomain}/delete`, {
@@ -113,7 +111,6 @@ export async function postDelete(ids: any) {
         }
     }
 }
-
 
 export async function postPublicity(slug: any = null, formData: any = null) {
     try {
@@ -182,6 +179,49 @@ export async function postDownload(ids: any) {
     try {
         const res = await axios.post(`${ServerDomain}/download`, {
             ids: ids
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${CurrentToken}`,
+            }
+        });
+        const data = await res.data;
+        return data;
+    } catch (error) {
+        return {
+            status: 'error',
+            message: error
+        }
+    }
+}
+
+export async function getFolders(slug: any = '', excludeIds: any[] = []) {
+    try {
+        const res = await axios.get(`${ServerDomain}/getFolders`, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${CurrentToken}`,
+            },
+            params: {
+                slug: slug,
+                excludeIds: excludeIds
+            }
+        });
+        const data = await res.data;
+        return data;
+    } catch (error) {
+        return {
+            status: 'error',
+            message: error
+        }
+    }
+}
+
+export async function moveItems(sourceIds: any[], targetId: any) {
+    try {
+        const res = await axios.post(`${ServerDomain}/moveItem`, {
+            sourceIds: sourceIds,
+            targetId: targetId
         }, {
             headers: {
                 'Content-Type': 'application/json',

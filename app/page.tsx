@@ -1,11 +1,11 @@
 "use client";
-import { FolderPlusIcon, ArrowsUpDownIcon, DocumentPlusIcon, TrashIcon, ExclamationTriangleIcon, ArchiveBoxArrowDownIcon } from '@heroicons/react/24/outline'
+import { FolderPlusIcon, ArrowsUpDownIcon, DocumentPlusIcon, TrashIcon, ExclamationTriangleIcon, ArchiveBoxArrowDownIcon, ArrowsPointingOutIcon, FolderIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline'
 import { Suspense, useEffect, useState } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import ItemCardList from "./Components/ItemCardList";
 import Breadcrumbs from "./Components/breadcrumbs";
-import { getItems, getPath, postDelete, postDownload, postMakeFolder, postPublicity, postRename } from "@/apis/apiResources";
+import { getItems, getPath, moveItems, postDelete, postDownload, postMakeFolder, postPublicity, postRename } from "@/apis/apiResources";
 import { getCookie } from "cookies-next";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import ModalDetail from "./Components/modalDetail";
@@ -15,6 +15,7 @@ import Swal from 'sweetalert2'
 import { serverDomain } from "@/apis/serverConfig";
 import QueueList from "./Components/queueList";
 import ModalShare from "./Components/modalShare";
+import ModalMove from './Components/modalMove';
 
 const ServerDomain = serverDomain();
 
@@ -75,12 +76,14 @@ function Page() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingUploadFiles, setIsLoadingUploadFiles] = useState(false);
   const [isDownloading, setIsDownloading] = useState<any>([]);
+  const [isMoveDragging, setIsMoveDragging] = useState(false);
   const [showQueueList, setShowQueueList] = useState(false);
   const [isLoadingBreadcrumbs, setIsLoadingBreadcrumbs] = useState(false);
   const [isLoadingFolder, setIsLoadingFolder] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSelectedMode, setIsSelectedMode] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [openModalMove, setOpenModalMove] = useState(false);
   const [openModalFolder, setOpenModalFolder] = useState(false);
   const [openModalShare, setOpenModalShare] = useState(false);
   const [isFolderCreate, setIsFolderCreate] = useState(false);
@@ -148,6 +151,7 @@ function Page() {
         });
       }
       setSort(sorts[0]);
+      setSelectedItems([]);
     }
   }, [isMounted, searchParams, pathname]);
 
@@ -304,7 +308,7 @@ function Page() {
     }
   }
 
-  const handleDeleteFile = (data: any) => {
+  const handleDeleteFile = (data: any, callback: any = null) => {
     // setIsLoading(true);
     postDelete([data.slug]).then((res: any) => {
       if (res.status === 'success') {
@@ -316,6 +320,17 @@ function Page() {
         setIsLoading(false);
         setIsError(false);
         SweetAlertToast('success', 'Berhasil', 'Berkas berhasil dihapus');
+
+        if (callback) {
+          // redirect to callback uri
+          // window.location.href = '/?p=' + callback;
+
+          if (callback !== 'root') {
+            router.push('/?_p=' + (callback ?? ''));
+          } else {
+            router.push('/');
+          }
+        }
       }
     });
   }
@@ -411,6 +426,33 @@ function Page() {
     });
   }
 
+
+  const handleMoveToFolder = (sourceIds: any, targetIds: any) => {
+    moveItems(sourceIds, targetIds).then(res => {
+      if (res.status === 'success') {
+        if (searchParams.get('_p')) {
+          getItems(searchParams.get('_p')).then((res: any) => {
+            if (res.status === 'success') {
+              setItems(res.data);
+            }
+          });
+        } else {
+          getItems().then((res: any) => {
+            if (res.status === 'success') {
+              setItems(res.data);
+            }
+          });
+        }
+      }
+      if (res.status === 'error') {
+        SweetAlertToast('error', 'Gagal Memindahkan', res.message);
+      }
+      if (res.status === 'error validation') {
+        SweetAlertToast('error', 'Error', 'Gagal Memindahkan');
+      }
+    });
+  }
+
   if (user?.access === false) {
     return (
       <div>
@@ -457,6 +499,47 @@ function Page() {
               onItemClick={(item) => {
 
               }}
+
+              onItemEdit={(e: any) => {
+                if (e.type === 'folder') {
+                  setOpenModalFolder(true);
+                  setInDetailItem(e);
+                  setIsFolderCreate(false);
+                } else if (e.type === 'file') {
+                  setOpenModalFolder(true);
+                  setInDetailItem(e);
+                  setIsFolderCreate(false);
+                }
+              }}
+
+              onItemDelete={(e: any, callback: any) => {
+                SweetAlertConfirm('Peringatan', 'Langkah ini akan menghapus folder dan seluruh isinya?', 'Ya, Hapus!', 'Batalkan').then((result) => {
+                  if (result.isConfirmed) {
+                    handleDeleteFile(e, callback);
+                  }
+                });
+              }}
+
+              onItemShare={(e: any) => {
+                setOpenModalShare(true);
+                setInDetailItem(e);
+              }}
+
+              onMakeNewFolder={() => {
+                setOpenModalFolder(true);
+                setIsFolderCreate(true);
+                setInDetailItem({
+                  name: '',
+                  slug: '',
+                  id: '',
+                  type: 'folder',
+                });
+                setSelectedItems([]);
+                setIsSelectedMode(false);
+                setIsLoading(false);
+                setIsError(false);
+              }}
+
             />
           )}
         </div>
@@ -670,6 +753,23 @@ function Page() {
                     <ArchiveBoxArrowDownIcon className="h-4 w-4 inline" />
                     Unduh {selectedItems.length} Item
                   </button>
+
+                  {/* button move */}
+                  <button
+                    className="text-xs bg-amber-100 text-slate-500 hover:text-amber-900 cursor-pointer rounded border px-1 py-1 border-amber-300 hover:border-amber-400 hover:bg-amber-200 shadow-sm flex items-center gap-x-1"
+                    onClick={() => {
+                      if (selectedItems.length === 0) {
+                        SweetAlertToast('info', 'Peringatan', 'Tidak ada berkas yang dipilih');
+                        return;
+                      }
+
+                      setOpenModalMove(true);
+
+                    }}
+                  >
+                    <ArrowsPointingOutIcon className="h-4 w-4 inline" />
+                    Pindahkan
+                  </button>
                 </>
               )}
             </div>
@@ -782,12 +882,35 @@ function Page() {
               </div>
             )}
 
+            {/* BOX */}
+            {/* {isMoveDragging && (
+              <div className="card bg-blue-100">
+                <div className="flex items-center gap-x-2">
+                  <ArrowUturnLeftIcon className="h-6 w-6 inline text-blue-800" />
+                  <FolderIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-blue-800" />
+                  <div className='font-semibold'>
+                    {arrBreadcrumbs?.current?.parent_name}
+                  </div>
+                </div>
+              </div>
+            )} */}
+
             {items.map((item: any, index: number) => (
               <ItemCardList
-                draggable={false}
+                // draggable={false}
+                draggable={true}
+                // draggable={selectedItems.length == 0}
+                onDragging={(data: any) => {
+                  setIsMoveDragging(data)
+                }}
+
                 key={`item-${index}`}
                 item={item}
-                onItemClick={() => { }}
+
+                onItemClick={() => {
+
+                }}
+
                 onItemShare={(e: any) => {
                   setOpenModalShare(true);
                   setInDetailItem(e);
@@ -832,6 +955,9 @@ function Page() {
 
                   });
                 }}
+                onMoveItems={(sourceItems: any, targetFolder: any) => {
+                  handleMoveToFolder(sourceItems, targetFolder);
+                }}
                 selectedItems={selectedItems}
                 isLoading={false}
                 isError={false}
@@ -842,18 +968,47 @@ function Page() {
           </div>
 
         </div>
-      )}
+      )
+      }
 
-      {isLoading && (
-        <div className="space-y-3 mt-5">
-          {/* skeletons */}
-          {([0, 1, 2, 3, 4, 5].map((item: any, index: number) => (
-            <div key={`loading-${index}`} className="animate-pulse flex items-center gap-x-2">
-              <div className="h-18 w-full card bg-slate-100"></div>
-            </div>
-          )))}
-        </div>
-      )}
+      {
+        isLoading && (
+          <div className="space-y-3 mt-5">
+            {/* skeletons */}
+            {([0, 1, 2, 3, 4, 5].map((item: any, index: number) => (
+              <div key={`loading-${index}`} className="animate-pulse flex items-center gap-x-2">
+                <div className="h-18 w-full card bg-slate-100"></div>
+              </div>
+            )))}
+          </div>
+        )
+      }
+
+      <ModalMove
+        data={selectedItems}
+        isOpen={openModalMove}
+        onClose={() => {
+          setOpenModalMove(false);
+          setSelectedItems([]);
+        }}
+        onSubmit={() => {
+          if (searchParams.get('_p')) {
+            getItems(searchParams.get('_p')).then((res: any) => {
+              if (res.status === 'success') {
+                setItems(res.data);
+              }
+            });
+          } else {
+            getItems().then((res: any) => {
+              if (res.status === 'success') {
+                setItems(res.data);
+              }
+            });
+          }
+          setOpenModalMove(false);
+          setSelectedItems([]);
+        }}
+      />
 
       <ModalDetail
         data={inDetailItem}

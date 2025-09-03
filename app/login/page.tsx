@@ -357,6 +357,13 @@ const Login = () => {
                                 )}
                             </div>
                         </form>
+
+                        <div className="mt-10">
+                            <div className="text-center text-white text-sm font-semibold">
+                                Copyright © {new Date().getFullYear() == 2023 ? 2023 : '2023 - ' + new Date().getFullYear()} <br />
+                                Diskominfo Kabupaten Ogan Ilir
+                            </div>
+                        </div>
                     </div>
 
                 </div>

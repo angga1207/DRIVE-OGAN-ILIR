@@ -77,6 +77,13 @@ export default function RootLayout({
               </div>
 
               <AppVersion />
+
+
+              <div className="fixed bottom-2 right-2">
+                <div className="hidden sm:block text-center text-[10px] text-gray-500">
+                  © 2023 - {new Date().getFullYear()} Diskominfo Ogan Ilir. All rights reserved.
+                </div>
+              </div>
             </main>
           </AuthProvider>
 
