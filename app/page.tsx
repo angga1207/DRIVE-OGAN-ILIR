@@ -1024,7 +1024,7 @@ function Page() {
 
                       onItemClick={() => {
                         if (isSelectedMode) {
-                          onItemClick(item)
+                          
                         }
                       }}
 
