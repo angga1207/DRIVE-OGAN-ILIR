@@ -1,5 +1,5 @@
 "use client";
-import { FolderPlusIcon, ArrowsUpDownIcon, DocumentPlusIcon, TrashIcon, ExclamationTriangleIcon, ArchiveBoxArrowDownIcon, ArrowsPointingOutIcon, FolderIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline'
+import { FolderPlusIcon, ArrowsUpDownIcon, DocumentPlusIcon, TrashIcon, ExclamationTriangleIcon, ArchiveBoxArrowDownIcon, ArrowsPointingOutIcon, FolderIcon, ArrowUturnLeftIcon, TableCellsIcon, ListBulletIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Suspense, useEffect, useState } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
@@ -16,6 +16,8 @@ import { serverDomain } from "@/apis/serverConfig";
 import QueueList from "./Components/queueList";
 import ModalShare from "./Components/modalShare";
 import ModalMove from './Components/modalMove';
+import Tippy from '@tippyjs/react';
+import ItemCardGrid from './Components/ItemCardGrid';
 
 const ServerDomain = serverDomain();
 
@@ -68,6 +70,7 @@ function Page() {
   ]);
 
   const [sort, setSort] = useState(sorts[0]);
+  const [viewMode, setViewMode] = useState('list'); // grid or list
   const [items, setItems] = useState<any>([]);
   const [arrBreadcrumbs, setArrBreadcrumbs] = useState<any>([]);
   const [selectedItems, setSelectedItems] = useState<any>([]);
@@ -483,7 +486,7 @@ function Page() {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-y-2">
+      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-y-2">
         <div className="">
           {isLoadingBreadcrumbs && (
             <>
@@ -544,7 +547,7 @@ function Page() {
           )}
         </div>
 
-        <div className="flex items-center justify-between sm:justify-end gap-x-2">
+        <div className="shrink w-auto flex items-center xl:justify-end gap-x-2">
           {/* make folder start */}
           {(isLoading === false && isLoadingFolder === false && isLoadingBreadcrumbs === false) ? (
             <div className="">
@@ -612,7 +615,7 @@ function Page() {
           {(isLoading === false && isLoadingFolder === false && isLoadingBreadcrumbs === false) ? (
             <Menu as="div" className="relative inline-block text-left">
               <div>
-                <MenuButton className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 cursor-pointer select-none whitespace-nowrap">
+                <MenuButton className="flex items-center w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 cursor-pointer select-none whitespace-nowrap">
                   <ArrowsUpDownIcon className="-ml-1 size-4 text-gray-400" />
                   {sort.name}
                   <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
@@ -644,46 +647,73 @@ function Page() {
             <div className="h-10 w-24 inline-flex items-center justify-center gap-x-1.5 rounded-md bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset hover:bg-slate-200 cursor-pointer select-none whitespace-nowrap animate-pulse"></div>
           )}
           {/* sort end */}
+
+          {/* view mode start */}
+          {(isLoading === false && isLoadingFolder === false && isLoadingBreadcrumbs === false) ? (
+            <Tippy content={viewMode === 'list' ? 'List View' : 'Grid View'} arrow={true}>
+              <div
+                className="flex items-center w-12 justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 cursor-pointer select-none whitespace-nowrap"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setViewMode(viewMode === 'list' ? 'grid' : 'list');
+                }}
+              >
+                {viewMode === 'list' ? (
+                  <ListBulletIcon className="size-5 inline outline-none" />
+                ) : (
+                  <TableCellsIcon className="size-5 inline outline-none" />
+                )}
+              </div>
+            </Tippy>
+          ) : (
+            <div className="h-10 w-12 inline-flex items-center justify-center gap-x-1.5 rounded-md bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset hover:bg-slate-200 cursor-pointer select-none whitespace-nowrap animate-pulse"></div>
+          )}
+          {/* view mode end */}
+
         </div>
       </div>
 
       {isLoading == false && (
         <div className="mt-5">
 
-          <div className="mb-2 flex items-center justify-between flex-wrap">
-            <div className="flex items-center gap-x-2">
+          <div className="mb-2 flex items-center justify-between flex-wrap gap-y-4">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-2">
               {/* select all */}
-              <div className="flex items-center gap-x-1 cursor-pointer">
-                <input
-                  type="checkbox"
-                  id="select-all-checkbox"
-                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  checked={(selectedItems.length === items.length) && items.length > 0 ? true : false}
-                  disabled={items.length === 0 ? true : false}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setSelectedItems(items.map((item: any) => item));
-                    } else {
-                      setSelectedItems([]);
-                    }
-                  }}
-                />
-                <label
-                  htmlFor="select-all-checkbox"
-                  className="text-xs text-slate-500 cursor-pointer">
-                  Pilih Semua
-                </label>
+              <div className="flex items-center gap-x-1">
+                <div className="flex items-center gap-x-1 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    id="select-all-checkbox"
+                    className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    checked={(selectedItems.length === items.length) && items.length > 0 ? true : false}
+                    disabled={items.length === 0 ? true : false}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedItems(items.map((item: any) => item));
+                      } else {
+                        setSelectedItems([]);
+                      }
+                    }}
+                  />
+                  <label
+                    htmlFor="select-all-checkbox"
+                    className="text-xs text-slate-500 cursor-pointer">
+                    Pilih Semua
+                  </label>
+                </div>
+                {/* {selectedItems.length > 0 && (
+                  <div className="text-xs text-slate-500">
+                    {selectedItems.length} Item Terpilih
+                  </div>
+                )} */}
               </div>
               {/* select all end */}
 
               {selectedItems.length > 0 && (
-                <>
-                  <div className="text-xs text-slate-500">
-                    {selectedItems.length} Item Terpilih
-                  </div>
+                <div className='flex items-center gap-x-2'>
 
                   <button
-                    className="text-xs bg-red-100 text-slate-500 hover:text-red-900 cursor-pointer rounded border px-1 py-1 border-red-300 hover:border-red-400 hover:bg-red-200 shadow-sm flex items-center gap-x-1"
+                    className="text-xs bg-red-100 text-slate-500 hover:text-red-900 cursor-pointer rounded border px-1 py-1 border-red-300 hover:border-red-400 hover:bg-red-200 shadow-sm flex items-center gap-x-1 whitespace-nowrap"
                     onClick={() => {
                       SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin menghapus ' + selectedItems?.length + ' berkas ini?', 'Ya, Hapus!', 'Batalkan')
                         .then((result) => {
@@ -709,7 +739,7 @@ function Page() {
                   </button>
 
                   <button
-                    className="text-xs bg-indigo-100 text-slate-500 hover:text-indigo-900 cursor-pointer rounded border px-1 py-1 border-indigo-300 hover:border-indigo-400 hover:bg-indigo-200 shadow-sm flex items-center gap-x-1"
+                    className="text-xs bg-indigo-100 text-slate-500 hover:text-indigo-900 cursor-pointer rounded border px-1 py-1 border-indigo-300 hover:border-indigo-400 hover:bg-indigo-200 shadow-sm flex items-center gap-x-1 whitespace-nowrap"
 
                     onClick={() => {
                       if (selectedItems.length === 0) {
@@ -754,9 +784,8 @@ function Page() {
                     Unduh {selectedItems.length} Item
                   </button>
 
-                  {/* button move */}
                   <button
-                    className="text-xs bg-amber-100 text-slate-500 hover:text-amber-900 cursor-pointer rounded border px-1 py-1 border-amber-300 hover:border-amber-400 hover:bg-amber-200 shadow-sm flex items-center gap-x-1"
+                    className="text-xs bg-amber-100 text-slate-500 hover:text-amber-900 cursor-pointer rounded border px-1 py-1 border-amber-300 hover:border-amber-400 hover:bg-amber-200 shadow-sm flex items-center gap-x-1 whitespace-nowrap"
                     onClick={() => {
                       if (selectedItems.length === 0) {
                         SweetAlertToast('info', 'Peringatan', 'Tidak ada berkas yang dipilih');
@@ -770,10 +799,22 @@ function Page() {
                     <ArrowsPointingOutIcon className="h-4 w-4 inline" />
                     Pindahkan
                   </button>
-                </>
+
+                  {/* reset button */}
+                  <button
+                    className="text-xs bg-slate-100 text-slate-500 hover:text-slate-900 cursor-pointer rounded border px-1 py-1 border-slate-300 hover:border-slate-400 hover:bg-slate-200 shadow-sm flex items-center gap-x-1 whitespace-nowrap"
+                    onClick={() => {
+                      setSelectedItems([]);
+                      setIsSelectedMode(false);
+                    }}
+                  >
+                    <XMarkIcon className="h-4 w-4 inline" />
+                    Batalkan
+                  </button>
+                </div>
               )}
             </div>
-            <div className="w-[150px] sm:w-[350px] select-none">
+            <div className="w-full sm:w-[350px] select-none">
               <div className="">
                 <div className="w-full flex align-middle justify-between text-[10px] text-slate-500 font-semibold px-1.5">
                   <div className="">
@@ -895,76 +936,227 @@ function Page() {
               </div>
             )} */}
 
-            {items.map((item: any, index: number) => (
-              <ItemCardList
-                // draggable={false}
-                draggable={true}
-                // draggable={selectedItems.length == 0}
-                onDragging={(data: any) => {
-                  setIsMoveDragging(data)
-                }}
+            {viewMode === 'list' && (
+              items.map((item: any, index: number) => (
+                <ItemCardList
+                  draggable={true}
+                  // draggable={selectedItems.length == 0}
+                  onDragging={(data: any) => {
+                    setIsMoveDragging(data)
+                  }}
 
-                key={`item-${index}`}
-                item={item}
+                  key={`item-${index}`}
+                  item={item}
 
-                onItemClick={() => {
+                  onItemClick={() => {
 
-                }}
+                  }}
 
-                onItemShare={(e: any) => {
-                  setOpenModalShare(true);
-                  setInDetailItem(e);
-                }}
-                onItemEdit={(e: any) => {
-                  if (e.type === 'folder') {
-                    setOpenModalFolder(true);
+                  onItemShare={(e: any) => {
+                    setOpenModalShare(true);
                     setInDetailItem(e);
-                    setIsFolderCreate(false);
-                  } else if (e.type === 'file') {
-                    setOpenModalFolder(true);
-                    setInDetailItem(e);
-                    setIsFolderCreate(false);
-                  }
-                }}
-                onItemDownload={(e: any) => {
-                  handleDownload(e);
-                }}
-                isDownloading={isDownloading?.find((i: any) => i.id === item.id) ? true : false}
-                onItemOpen={(e: any) => {
-                  if (e.type === 'folder') {
-                    handleGoFolder(e.slug);
-                  } else if (e.type === 'file') {
-                    setOpenModal(true);
-                    setInDetailItem(e);
-                  }
-                }}
-                onItemDelete={(e: any) => {
-                  SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin menghapus berkas ini?', 'Ya, Hapus!', 'Batalkan').then((result) => {
-                    if (result.isConfirmed) {
-                      handleDeleteFile(e);
+                  }}
+                  onItemEdit={(e: any) => {
+                    if (e.type === 'folder') {
+                      setOpenModalFolder(true);
+                      setInDetailItem(e);
+                      setIsFolderCreate(false);
+                    } else if (e.type === 'file') {
+                      setOpenModalFolder(true);
+                      setInDetailItem(e);
+                      setIsFolderCreate(false);
                     }
-                  });
-                }}
-                onItemSelect={(e: any) => {
-                  setSelectedItems((prev: any) => {
-                    if (prev.find((i: any) => i.id === e.id)) {
-                      return prev.filter((item: any) => item.id !== e.id);
-                    } else {
-                      return [...prev, e];
+                  }}
+                  onItemDownload={(e: any) => {
+                    handleDownload(e);
+                  }}
+                  isDownloading={isDownloading?.find((i: any) => i.id === item.id) ? true : false}
+                  onItemOpen={(e: any) => {
+                    if (e.type === 'folder') {
+                      handleGoFolder(e.slug);
+                    } else if (e.type === 'file') {
+                      setOpenModal(true);
+                      setInDetailItem(e);
                     }
+                  }}
+                  onItemDelete={(e: any) => {
+                    SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin menghapus berkas ini?', 'Ya, Hapus!', 'Batalkan').then((result) => {
+                      if (result.isConfirmed) {
+                        handleDeleteFile(e);
+                      }
+                    });
+                  }}
+                  onItemSelect={(e: any) => {
+                    setSelectedItems((prev: any) => {
+                      if (prev.find((i: any) => i.id === e.id)) {
+                        return prev.filter((item: any) => item.id !== e.id);
+                      } else {
+                        return [...prev, e];
+                      }
 
-                  });
-                }}
-                onMoveItems={(sourceItems: any, targetFolder: any) => {
-                  handleMoveToFolder(sourceItems, targetFolder);
-                }}
-                selectedItems={selectedItems}
-                isLoading={false}
-                isError={false}
-                isSelected={selectedItems.find((i: any) => i.id === item.id) ? true : false}
-                isSelectedMode={selectedItems.length > 0}
-              />
-            ))}
+                    });
+                  }}
+                  onMoveItems={(sourceItems: any, targetFolder: any) => {
+                    handleMoveToFolder(sourceItems, targetFolder);
+                  }}
+                  selectedItems={selectedItems}
+                  isLoading={false}
+                  isError={false}
+                  isSelected={selectedItems.find((i: any) => i.id === item.id) ? true : false}
+                  isSelectedMode={selectedItems.length > 0}
+                />
+              ))
+            )}
+
+            {viewMode === 'grid' && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 mb-5">
+                  {items.filter((i: any) => i.type === 'folder').map((item: any, index: number) => (
+                    <ItemCardGrid
+                      draggable={true}
+                      // draggable={selectedItems.length == 0}
+                      onDragging={(data: any) => {
+                        setIsMoveDragging(data)
+                      }}
+
+                      key={`item-${index}`}
+                      item={item}
+
+                      onItemClick={() => {
+                        if (isSelectedMode) {
+                          onItemClick(item)
+                        }
+                      }}
+
+                      onItemShare={(e: any) => {
+                        setOpenModalShare(true);
+                        setInDetailItem(e);
+                      }}
+                      onItemEdit={(e: any) => {
+                        if (e.type === 'folder') {
+                          setOpenModalFolder(true);
+                          setInDetailItem(e);
+                          setIsFolderCreate(false);
+                        } else if (e.type === 'file') {
+                          setOpenModalFolder(true);
+                          setInDetailItem(e);
+                          setIsFolderCreate(false);
+                        }
+                      }}
+                      onItemDownload={(e: any) => {
+                        handleDownload(e);
+                      }}
+                      isDownloading={isDownloading?.find((i: any) => i.id === item.id) ? true : false}
+                      onItemOpen={(e: any) => {
+                        if (e.type === 'folder') {
+                          handleGoFolder(e.slug);
+                        } else if (e.type === 'file') {
+                          setOpenModal(true);
+                          setInDetailItem(e);
+                        }
+                      }}
+                      onItemDelete={(e: any) => {
+                        SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin menghapus berkas ini?', 'Ya, Hapus!', 'Batalkan').then((result) => {
+                          if (result.isConfirmed) {
+                            handleDeleteFile(e);
+                          }
+                        });
+                      }}
+                      onItemSelect={(e: any) => {
+                        setSelectedItems((prev: any) => {
+                          if (prev.find((i: any) => i.id === e.id)) {
+                            return prev.filter((item: any) => item.id !== e.id);
+                          } else {
+                            return [...prev, e];
+                          }
+
+                        });
+                      }}
+                      onMoveItems={(sourceItems: any, targetFolder: any) => {
+                        handleMoveToFolder(sourceItems, targetFolder);
+                      }}
+                      selectedItems={selectedItems}
+                      isLoading={false}
+                      isError={false}
+                      isSelected={selectedItems.find((i: any) => i.id === item.id) ? true : false}
+                      isSelectedMode={selectedItems.length > 0}
+                    />
+                  ))}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+                  {items.filter((i: any) => i.type === 'file').map((item: any, index: number) => (
+                    <ItemCardGrid
+                      draggable={true}
+                      // draggable={selectedItems.length == 0}
+                      onDragging={(data: any) => {
+                        setIsMoveDragging(data)
+                      }}
+
+                      key={`item-${index}`}
+                      item={item}
+
+                      onItemClick={() => {
+
+                      }}
+
+                      onItemShare={(e: any) => {
+                        setOpenModalShare(true);
+                        setInDetailItem(e);
+                      }}
+                      onItemEdit={(e: any) => {
+                        if (e.type === 'folder') {
+                          setOpenModalFolder(true);
+                          setInDetailItem(e);
+                          setIsFolderCreate(false);
+                        } else if (e.type === 'file') {
+                          setOpenModalFolder(true);
+                          setInDetailItem(e);
+                          setIsFolderCreate(false);
+                        }
+                      }}
+                      onItemDownload={(e: any) => {
+                        handleDownload(e);
+                      }}
+                      isDownloading={isDownloading?.find((i: any) => i.id === item.id) ? true : false}
+                      onItemOpen={(e: any) => {
+                        if (e.type === 'folder') {
+                          handleGoFolder(e.slug);
+                        } else if (e.type === 'file') {
+                          setOpenModal(true);
+                          setInDetailItem(e);
+                        }
+                      }}
+                      onItemDelete={(e: any) => {
+                        SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin menghapus berkas ini?', 'Ya, Hapus!', 'Batalkan').then((result) => {
+                          if (result.isConfirmed) {
+                            handleDeleteFile(e);
+                          }
+                        });
+                      }}
+                      onItemSelect={(e: any) => {
+                        setSelectedItems((prev: any) => {
+                          if (prev.find((i: any) => i.id === e.id)) {
+                            return prev.filter((item: any) => item.id !== e.id);
+                          } else {
+                            return [...prev, e];
+                          }
+
+                        });
+                      }}
+                      onMoveItems={(sourceItems: any, targetFolder: any) => {
+                        handleMoveToFolder(sourceItems, targetFolder);
+                      }}
+                      selectedItems={selectedItems}
+                      isLoading={false}
+                      isError={false}
+                      isSelected={selectedItems.find((i: any) => i.id === item.id) ? true : false}
+                      isSelectedMode={selectedItems.length > 0}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+
           </div>
 
         </div>

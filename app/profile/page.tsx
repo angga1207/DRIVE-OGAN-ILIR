@@ -2,7 +2,7 @@
 import { syncWithGoogle, syncWithSemesta } from "@/apis/apiAuth";
 import { getActivities, updateProfile } from "@/apis/apiProfile";
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/20/solid";
-import { ArrowDownTrayIcon, ArrowsPointingOutIcon, ArrowUpTrayIcon, CalendarDaysIcon, CheckBadgeIcon, ExclamationCircleIcon, EyeIcon, EyeSlashIcon, FolderPlusIcon, PencilSquareIcon, PresentationChartLineIcon, ShareIcon, TrashIcon, UserIcon } from "@heroicons/react/24/outline";
+import { ArrowDownTrayIcon, ArrowLeftEndOnRectangleIcon, ArrowPathRoundedSquareIcon, ArrowsPointingOutIcon, ArrowUpTrayIcon, CalendarDaysIcon, CheckBadgeIcon, ExclamationCircleIcon, EyeIcon, EyeSlashIcon, FolderPlusIcon, PencilSquareIcon, PresentationChartLineIcon, ShareIcon, TrashIcon, UserIcon } from "@heroicons/react/24/outline";
 import { setCookie } from "cookies-next";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -554,8 +554,8 @@ const Profile = () => {
                 <div className="col-span-12 lg:col-span-7">
                     <div className="card">
 
-                        <div className="relative w-full text-xs">
-                            <table className="w-full !h-[587px] overflow-auto">
+                        <div className="relative w-full text-xs !h-[587px] overflow-auto">
+                            <table className="w-full">
                                 <thead className="sticky top-0 left-0 w-full">
                                     <tr>
                                         <th className="p-4 bg-slate-500 text-white rounded-tl w-[250px]">
@@ -612,8 +612,16 @@ const Profile = () => {
                                                             <UserIcon className="w-4 h-4 text-purple-500" />
                                                         )}
 
-                                                        {['login', 'google-login', 'login-google'].includes(activity.event) && (
-                                                            <ArrowLeftOnRectangleIcon className="w-4 h-4 text-purple-500" />
+                                                        {['login', 'google-login', 'login-google', 'login-semesta', 'original-login'].includes(activity.event) && (
+                                                            <ArrowLeftEndOnRectangleIcon className="w-4 h-4 text-purple-500" />
+                                                        )}
+
+                                                        {['sync-google'].includes(activity.event) && (
+                                                            <img src="/assets/images/google.png" alt="Google" className="w-4 h-4" />
+                                                        )}
+
+                                                        {['sync-semesta'].includes(activity.event) && (
+                                                            <img src="https://aptika.oganilirkab.go.id/storage/images/thumbnail/original/semesta-ogan-ilir.png" alt="Semesta" className="w-4 h-4" />
                                                         )}
 
                                                         {['share-file/folder', 'share-file/file', 'publicity-file', 'publicity-folder'].includes(activity.event) && (
@@ -657,35 +665,35 @@ const Profile = () => {
 
                                 </tbody>
                             </table>
-                            <div className="flex items-center justify-between mt-4">
-                                <div className="text-xs text-slate-500">
-                                    Menampilkan {activities?.length} dari {actTotalData} aktivitas
+                        </div>
+                        <div className="flex items-center justify-between mt-4 text-xs">
+                            <div className="text-xs text-slate-500">
+                                Menampilkan {activities?.length} dari {actTotalData} aktivitas
+                            </div>
+                            <div className="flex items-center gap-x-2">
+                                <button
+                                    disabled={actCurrentPage === 1}
+                                    onClick={() => {
+                                        if (isLoadingActivities) return;
+                                        setActivities(null);
+                                        setActCurrentPage(actCurrentPage - 1);
+                                    }}
+                                    className={`px-2 py-1 rounded ${actCurrentPage === 1 ? 'bg-slate-300' : 'bg-slate-500 text-white'}`}>
+                                    Sebelumnya
+                                </button>
+                                <div className="">
+                                    {actCurrentPage} / {actTotalPage}
                                 </div>
-                                <div className="flex items-center gap-x-2">
-                                    <button
-                                        disabled={actCurrentPage === 1}
-                                        onClick={() => {
-                                            if (isLoadingActivities) return;
-                                            setActivities(null);
-                                            setActCurrentPage(actCurrentPage - 1);
-                                        }}
-                                        className={`px-2 py-1 rounded ${actCurrentPage === 1 ? 'bg-slate-300' : 'bg-slate-500 text-white'}`}>
-                                        Sebelumnya
-                                    </button>
-                                    <div className="">
-                                        {actCurrentPage} / {actTotalPage}
-                                    </div>
-                                    <button
-                                        disabled={actCurrentPage === actTotalPage}
-                                        onClick={() => {
-                                            if (isLoadingActivities) return;
-                                            setActivities(null);
-                                            setActCurrentPage(actCurrentPage + 1);
-                                        }}
-                                        className={`px-2 py-1 rounded ${actCurrentPage === actTotalPage ? 'bg-slate-300' : 'bg-slate-500 text-white'}`}>
-                                        Selanjutnya
-                                    </button>
-                                </div>
+                                <button
+                                    disabled={actCurrentPage === actTotalPage}
+                                    onClick={() => {
+                                        if (isLoadingActivities) return;
+                                        setActivities(null);
+                                        setActCurrentPage(actCurrentPage + 1);
+                                    }}
+                                    className={`px-2 py-1 rounded ${actCurrentPage === actTotalPage ? 'bg-slate-300' : 'bg-slate-500 text-white'}`}>
+                                    Selanjutnya
+                                </button>
                             </div>
                         </div>
                     </div>

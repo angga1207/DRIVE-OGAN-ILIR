@@ -45,7 +45,10 @@ const Breadcrumbs = (
                             {items?.paths?.slice(0, 0).map((item: any, index: number) => (
                                 <Link key={`bc-${index}`} href={`/?_p=${item?.slug}`} className="font-semibold hover:text-blue-500 flex gap-x-1 items-center transition-all duration-300">
                                     <FolderIcon className="h-5 w-5 inline" />
-                                    {item?.name}
+                                    <div className='truncate max-w-[180px]'>
+                                        {item?.name}
+                                    </div>
+                                    {/* {item?.name} */}
                                 </Link>
                             ))}
 
@@ -57,7 +60,9 @@ const Breadcrumbs = (
                             {items?.paths?.slice(-1).map((item: any, index: number) => (
                                 <Link key={`bc-${index}`} href={`/?_p=${item?.slug}`} className="font-semibold hover:text-blue-500 flex gap-x-1 items-center transition-all duration-300">
                                     <FolderIcon className="h-5 w-5 inline" />
-                                    {item?.name}
+                                    <div className='truncate max-w-[180px]'>
+                                        {item?.name}
+                                    </div>
                                 </Link>
                             ))}
 
@@ -70,9 +75,9 @@ const Breadcrumbs = (
                     <Menu>
                         <MenuButton className="font-semibold text-slate-500 flex gap-x-1 items-center transition-all duration-300 cursor-pointer select-none">
                             <FolderIcon className="h-5 w-5 inline" />
-                            <span>
+                            <div className='truncate max-w-[180px]'>
                                 {currentPath?.name}
-                            </span>
+                            </div>
                             <ChevronDownIcon className="h-4 w-4 inline ms-1" />
                         </MenuButton>
 
@@ -92,7 +97,7 @@ const Breadcrumbs = (
                                 <div className="flex items-center gap-x-4 hover:bg-gray-100 px-4 py-2 cursor-pointer select-none"
                                     onClick={() => onItemEdit(currentPath)}>
                                     <PencilSquareIcon className="h-5 w-5 text-gray-700" />
-                                    <span className="text-sm text-gray-700">Rename</span>
+                                    <span className="text-sm text-gray-700">Ganti Nama</span>
                                 </div>
                             </MenuItem>
                             <MenuItem>
