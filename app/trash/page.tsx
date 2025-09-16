@@ -485,4 +485,12 @@ const Page = () => {
     )
 }
 
-export default Page;
+
+export default function TrashPage() {
+
+    return (
+        <Suspense fallback={<div className="h-full w-full flex items-center justify-center">Loading...</div>}>
+            <Page />
+        </Suspense>
+    );
+}
