@@ -1,7 +1,8 @@
 import { clientDomain } from '@/apis/serverConfig';
-import { FolderIcon, DocumentIcon, CalendarIcon, TrashIcon, PencilSquareIcon, ShareIcon, ArchiveBoxArrowDownIcon, EyeIcon, PhotoIcon, ArchiveBoxIcon, LockClosedIcon, StopCircleIcon } from '@heroicons/react/24/outline'
+import { FolderIcon, DocumentIcon, CalendarIcon, TrashIcon, PencilSquareIcon, ShareIcon, ArchiveBoxArrowDownIcon, EyeIcon, PhotoIcon, ArchiveBoxIcon, LockClosedIcon, StopCircleIcon, InboxIcon, FilmIcon, DocumentTextIcon, DocumentChartBarIcon, StarIcon } from '@heroicons/react/24/outline'
+import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid'
 import Tippy from '@tippyjs/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import 'tippy.js/dist/tippy.css';
 
@@ -31,6 +32,7 @@ const ItemCardList = (
         onItemSelect,
         onMoveItems,
         onDragging,
+        onSetFavorite,
         draggable,
         selectedItems,
         isLoading,
@@ -49,6 +51,7 @@ const ItemCardList = (
         onItemSelect: (item: any) => void
         onMoveItems: (items: any, targetFolder: any) => void
         onDragging: (isDragging: boolean) => void
+        onSetFavorite: (item: any, isFavorite: boolean) => void
         draggable: boolean,
         selectedItems: Array<any>
         isLoading: boolean
@@ -94,7 +97,7 @@ const ItemCardList = (
             localStorage.setItem('draggedItem', DragId);
         }
         setIsDragging(true);
-        onDragging(true)
+        onDragging(true);
     }
 
     const onDrop = (e: React.DragEvent<HTMLDivElement>, targetId: any) => {
@@ -123,7 +126,8 @@ const ItemCardList = (
     return (
         <>
             <div
-                className={`relative card ${item?.type == 'folder' ? ' bg-blue-100/50 hover:bg-blue-100' : 'bg-white hover:bg-slate-100'} group cursor-pointer ${(isDragging && isSelected) ? 'opacity-50' : ''}${(isDragging) ? 'opacity-50' : ''}`}
+                id={`item-${item?.slug}`}
+                className={`relative card ${item?.type == 'folder' ? ' bg-blue-100/50 hover:bg-blue-100' : 'bg-white hover:bg-slate-100'} group cursor-pointer ${isSelected === true ? '!bg-green-100' : ''} ${(isDragging && isSelected) ? 'opacity-50' : ''}${(isDragging) ? 'opacity-50' : ''}`}
 
                 draggable={draggable}
 
@@ -154,6 +158,7 @@ const ItemCardList = (
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-x-5">
                         {/* mobile responsive */}
                         <div className='grow flex items-center gap-x-2'>
+
                             <div className="">
                                 <input
                                     type="checkbox"
@@ -180,10 +185,22 @@ const ItemCardList = (
                                         {(['image'].includes(item?.mime)) && (
                                             <PhotoIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
                                         )}
+                                        {(['video'].includes(item?.mime)) && (
+                                            <FilmIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                        )}
                                         {(['archive'].includes(item?.mime)) && (
                                             <ArchiveBoxIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
                                         )}
-                                        {(['image', 'archive'].includes(item?.mime) === false) && (
+                                        {(['application'].includes(item?.mime)) && (
+                                            <InboxIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                        )}
+                                        {(['text'].includes(item?.mime)) && (
+                                            <DocumentTextIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                        )}
+                                        {(['document'].includes(item?.mime)) && (
+                                            <DocumentChartBarIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                        )}
+                                        {(['image', 'video', 'archive', 'application', 'text', 'document'].includes(item?.mime) === false) && (
                                             <DocumentIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
                                         )}
                                     </>
@@ -281,6 +298,24 @@ const ItemCardList = (
                                     </div>
                                 </Tippy>
                             )}
+
+                            <Tippy
+                                // content={item?.favorite ? 'Hapus dari Favorit' : 'Tambahkan ke Favorit'}
+                                content={`${item?.favorite ? 'Hapus dari' : 'Tambahkan ke'} Favorit`}
+                            >
+                                <div
+                                    className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-yellow-200 transition-all duration-300"
+                                    onClick={() => {
+                                        onSetFavorite(item, !item?.favorite)
+                                    }}
+                                >
+                                    {item?.favorite ?
+                                        <StarIconSolid className={`h-4 w-4 text-yellow-600 inline transition-all duration-300`} />
+                                        :
+                                        <StarIcon className={`h-4 w-4 text-yellow-600 inline transition-all duration-300`} />
+                                    }
+                                </div>
+                            </Tippy>
 
                             <Tippy
                                 content="Bagikan"

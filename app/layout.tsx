@@ -64,15 +64,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${redHat.variable} antialiased`}
-      >
-        <div className="min-h-full">
+        className={`${redHat.variable} antialiased`}>
+        <div
+          className="min-h-full">
 
           <AuthProvider>
             <Header />
 
             <main>
-              <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+              <div className="mx-auto">
                 {children}
               </div>
 

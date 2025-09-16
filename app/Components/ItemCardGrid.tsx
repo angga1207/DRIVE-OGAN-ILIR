@@ -1,5 +1,5 @@
 import { clientDomain } from '@/apis/serverConfig';
-import { FolderIcon, DocumentIcon, CalendarIcon, TrashIcon, PencilSquareIcon, ShareIcon, ArchiveBoxArrowDownIcon, EyeIcon, PhotoIcon, ArchiveBoxIcon, LockClosedIcon, StopCircleIcon, ChevronDownIcon, FolderPlusIcon, EllipsisVerticalIcon, CheckIcon } from '@heroicons/react/24/outline'
+import { FolderIcon, DocumentIcon, CalendarIcon, TrashIcon, PencilSquareIcon, ShareIcon, ArchiveBoxArrowDownIcon, EyeIcon, PhotoIcon, ArchiveBoxIcon, LockClosedIcon, StopCircleIcon, ChevronDownIcon, FolderPlusIcon, EllipsisVerticalIcon, CheckIcon, FilmIcon, InboxIcon, DocumentTextIcon, DocumentChartBarIcon } from '@heroicons/react/24/outline'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
@@ -124,7 +124,8 @@ const ItemCardGrid = (
     return (
         <>
             <div
-                className={`relative card ${item?.type == 'folder' ? ' bg-blue-100/50 hover:bg-blue-100' : 'bg-white hover:bg-slate-100'} group cursor-pointer ${(isDragging && isSelected) ? 'opacity-50' : ''}${(isDragging) ? 'opacity-50' : ''}`}
+                id={`item-${item?.slug}`}
+                className={`relative card ${item?.type == 'folder' ? ' bg-blue-100/50 hover:bg-blue-100' : 'bg-white hover:bg-slate-100'} group cursor-pointer ${isSelected === true ? '!bg-green-100' : ''} ${(isDragging && isSelected) ? 'opacity-50' : ''}${(isDragging) ? 'opacity-50' : ''}`}
 
                 draggable={draggable}
 
@@ -141,6 +142,15 @@ const ItemCardGrid = (
 
                 onDrop={(e) => onDrop(e, item.slug)}
                 aria-selected={isSelected}
+
+                // on right click
+                onContextMenu={(e) => {
+                    e.preventDefault();
+                    const menu = document.getElementById(`context-menu-${item.slug}`);
+                    if (menu) {
+                        menu.click();
+                    }
+                }}
             >
                 {isDownloading ? (
                     <div className="absolute top-0 left-0 h-full w-full bg-slate-200/50 z-1 select-none">
@@ -190,10 +200,22 @@ const ItemCardGrid = (
                                             {(['image'].includes(item?.mime)) && (
                                                 <PhotoIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
                                             )}
+                                            {(['video'].includes(item?.mime)) && (
+                                                <FilmIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                            )}
                                             {(['archive'].includes(item?.mime)) && (
                                                 <ArchiveBoxIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
                                             )}
-                                            {(['image', 'archive'].includes(item?.mime) === false) && (
+                                            {(['application'].includes(item?.mime)) && (
+                                                <InboxIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                            )}
+                                            {(['text'].includes(item?.mime)) && (
+                                                <DocumentTextIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                            )}
+                                            {(['document'].includes(item?.mime)) && (
+                                                <DocumentChartBarIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                            )}
+                                            {(['image', 'video', 'archive', 'application', 'text', 'document'].includes(item?.mime) === false) && (
                                                 <DocumentIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
                                             )}
                                         </>
@@ -217,13 +239,18 @@ const ItemCardGrid = (
                             </div>
                             <div className="flex-none !w-[20px] relative">
                                 <Menu>
-                                    <MenuButton className="rounded-full p-1 cursor-pointer group hover:bg-slate-700 text-slate-900 hover:text-white transition-all duration-300">
+                                    <MenuButton
+                                        id={`context-menu-${item.slug}`}
+                                        className="rounded-full p-1 cursor-pointer group hover:bg-slate-700 text-slate-900 hover:text-white transition-all duration-300 ring-0 outline-none focus:ring-0">
                                         <EllipsisVerticalIcon className="size-5" />
                                     </MenuButton>
 
                                     <MenuItems
                                         transition
-                                        anchor="bottom start"
+                                        anchor="bottom end"
+                                        // anchor on mouse position
+                                        // position="mouse"
+
                                         className="w-52 origin-top-right rounded-lg border border-slate-200 bg-white p-1 text-sm/6 transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0 z-10"
                                     >
                                         <MenuItem>

@@ -3,7 +3,7 @@ import { syncWithGoogle, syncWithSemesta } from "@/apis/apiAuth";
 import { getActivities, updateProfile } from "@/apis/apiProfile";
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/20/solid";
 import { ArrowDownTrayIcon, ArrowLeftEndOnRectangleIcon, ArrowPathRoundedSquareIcon, ArrowsPointingOutIcon, ArrowUpTrayIcon, CalendarDaysIcon, CheckBadgeIcon, ExclamationCircleIcon, EyeIcon, EyeSlashIcon, FolderPlusIcon, PencilSquareIcon, PresentationChartLineIcon, ShareIcon, TrashIcon, UserIcon } from "@heroicons/react/24/outline";
-import { setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -40,12 +40,11 @@ const Profile = () => {
 
     useEffect(() => {
         if (isMounted) {
-            const userLocal = localStorage.getItem('user');
-            if (userLocal) {
-                const parsedUser = JSON.parse(userLocal);
-                setUser(parsedUser);
+            const cookieUser = getCookie('user');
+            if (cookieUser) {
+                const user = JSON.parse(cookieUser as string);
                 setUser({
-                    ...parsedUser,
+                    ...user,
                     password: '',
                     password_confirmation: '',
                     new_photo: '',

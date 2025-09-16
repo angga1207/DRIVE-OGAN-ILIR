@@ -5,6 +5,8 @@ import Link from "next/link";
 import AuthChecker from './AuthChecker';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import SearchEngine from './SearchEngine';
+import { getCookie } from 'cookies-next';
 
 const Header = () => {
     const [navigation, setNavigation] = useState([
@@ -33,17 +35,18 @@ const Header = () => {
 
     useEffect(() => {
         if (isMounted) {
-            const LocalUser = localStorage.getItem('user');
-            if (LocalUser) {
-                const parsedUser = JSON.parse(LocalUser);
+
+            const cookieUser = getCookie('user');
+            if (cookieUser) {
+                const user = JSON.parse(cookieUser as string);
                 setUser({
-                    id: parsedUser?.id,
-                    name: parsedUser?.name?.fullname,
-                    email: parsedUser?.email,
-                    imageUrl: parsedUser?.photo,
+                    id: user?.id,
+                    name: user?.name?.fullname,
+                    email: user?.email,
+                    imageUrl: user?.photo,
                 });
 
-                if ([1, 4].includes(parsedUser?.id)) {
+                if ([1, 4].includes(user?.id)) {
                     setNavigation([
                         { name: 'Beranda', href: '/', current: false },
                         { name: 'Profil', href: '/profile', current: false },
@@ -70,7 +73,7 @@ const Header = () => {
     } else if (Pathname === '/sharer') {
         return (
             <Disclosure as="nav" className="bg-gray-800 select-none">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 items-center justify-between">
                         <div className="flex items-center">
                             <div className="shrink-0">
@@ -136,9 +139,9 @@ const Header = () => {
                     <AuthChecker />
                 )}
                 <Disclosure as="nav" className="bg-gray-800 select-none">
-                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex h-16 items-center justify-between">
-                            <div className="flex items-center">
+                            <div className="grow flex items-center gap-x-2">
                                 <div className="shrink-0">
                                     <Link href="/">
                                         <img
@@ -162,6 +165,14 @@ const Header = () => {
                                         ))}
                                     </div>
                                 </div>
+
+
+                                <div
+                                    className='grow'
+                                >
+                                    <SearchEngine />
+                                </div>
+
                             </div>
                             <div className="hidden md:block">
                                 <div className="ml-4 flex items-center md:ml-6">

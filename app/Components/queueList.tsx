@@ -1,4 +1,4 @@
-import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon, ChevronDoubleDownIcon, ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 import { useEffect, useRef } from "react";
 
 const QueueList = (
@@ -7,11 +7,13 @@ const QueueList = (
         isShow,
         onClose,
         onOpen,
+        onReset,
     }: {
         datas: any;
         isShow: boolean;
         onClose: () => void;
         onOpen: () => void;
+        onReset: () => void;
     }
 ) => {
     const __isoFileSize = (bytes: number) => {
@@ -49,27 +51,38 @@ const QueueList = (
         }
     }, [isShow]);
 
-
     return (
         <>
             {isShow && (
                 <div
                     ref={ref}
-                    className="fixed top-0 right-0 w-[300px] lg:w-[20vw] h-screen bg-white shadow-sm group">
+                    className="fixed bottom-2 right-0 w-[300px] lg:w-[30vw] h-[200px] bg-white shadow-xl group z-10">
                     <div
-                        className="absolute bottom-7 -left-10 w-10 h-10 rounded-l-lg bg-gray-800 text-white border border-r-0 border-white shadow-sm flex items-center justify-center cursor-pointer opacity-75 lg:opacity-0 group-hover:opacity-100 transition-all duration-300"
+                        className="absolute top-0 left-0 w-10 h-10 text-white flex items-center justify-center cursor-pointer opacity-75 lg:opacity-0 group-hover:opacity-100 transition-all duration-300"
                         onClick={() => {
                             onClose();
                         }}
                     >
-                        <ChevronDoubleRightIcon className="h-5 w-5 inline" />
+                        <ChevronDoubleDownIcon className="h-5 w-5 inline" />
                     </div>
-                    <div className="font-bold text-sm bg-gray-800 h-16 text-white flex items-center justify-center mb-2 border-b border-slate-200 pb-2 px-4 py-2">
+                    
+                    {datas.length > 0 && (
+                        <div
+                            className="absolute top-0 left-10 w-10 h-10 text-white flex items-center justify-center cursor-pointer opacity-75 lg:opacity-0 group-hover:opacity-100 transition-all duration-300"
+                            onClick={() => {
+                                onReset();
+                            }}
+                        >
+                            <ArrowPathIcon className="h-5 w-5 inline" />
+                        </div>
+                    )}
+
+                    <div className="font-bold text-sm bg-gray-800 text-white flex items-center justify-center mb-2 border-b border-slate-200 pb-2 px-4 py-2">
                         <div className="text-center">
                             Daftar Antrian Unggah
                         </div>
                     </div>
-                    <div className="space-y-2 divide-y divide-slate-200 w-full h-[calc(100vh-80px)] overflow-y-auto px-4 py-2">
+                    <div className="space-y-2 divide-y divide-slate-200 w-full hs-[calc(100vh-80px)] h-[150px] overflow-y-auto px-4 py-2">
 
                         {datas?.leaves?.length == 0 && (
                             <div className="py-3">
@@ -125,7 +138,7 @@ const QueueList = (
                             onOpen();
                         }}
                     >
-                        <ChevronDoubleRightIcon className="h-5 w-5 inline rotate-180" />
+                        <ChevronDoubleDownIcon className="h-5 w-5 inline rotate-180" />
                     </div>
                 </div>
             )}

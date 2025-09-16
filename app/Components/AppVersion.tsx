@@ -2,7 +2,7 @@ const AppVersion = () => {
     return (
         <div className="fixed bottom-2 left-2">
             <div className="hidden sm:block text-center text-[10px] text-gray-500">
-                {process.env.APP_VERSION}
+                v.{process.env.APP_VERSION}
             </div>
         </div>
     );

@@ -37,8 +37,52 @@ export async function getItems(slug: any = null, sort: any = 'created_at', order
             params: {
                 slug: slug,
                 sort: sort,
-                order: order
+                order: order,
             }
+        });
+        const data = await res.data;
+        return data;
+    } catch (error) {
+        return {
+            status: 'error',
+            message: error
+        }
+    }
+}
+
+export async function getFavoriteItems(slug: any = null) {
+    try {
+        const res = await axios.get(`${ServerDomain}/getFavoriteItems`, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${CurrentToken}`,
+            },
+            params: {
+                slug: slug,
+            }
+        });
+        const data = await res.data;
+        return data;
+    } catch (error) {
+        return {
+            status: 'error',
+            message: error
+        }
+    }
+}
+
+export async function getTrashItems() {
+    try {
+        const res = await axios.get(`${ServerDomain}/getItemsTrashed`, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${CurrentToken}`,
+            },
+            // params: {
+            //     slug: slug,
+            //     sort: sort,
+            //     order: order
+            // }
         });
         const data = await res.data;
         return data;
@@ -95,6 +139,46 @@ export async function postRename(slug: any = null, name: any = null) {
 export async function postDelete(ids: any) {
     try {
         const res = await axios.post(`${ServerDomain}/delete`, {
+            ids: ids
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${CurrentToken}`,
+            }
+        });
+        const data = await res.data;
+        return data;
+    } catch (error) {
+        return {
+            status: 'error',
+            message: error
+        }
+    }
+}
+
+export async function postForceDelete(ids: any) {
+    try {
+        const res = await axios.post(`${ServerDomain}/forceDelete`, {
+            ids: ids
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${CurrentToken}`,
+            }
+        });
+        const data = await res.data;
+        return data;
+    } catch (error) {
+        return {
+            status: 'error',
+            message: error
+        }
+    }
+}
+
+export async function postRestore(ids: any) {
+    try {
+        const res = await axios.post(`${ServerDomain}/restore`, {
             ids: ids
         }, {
             headers: {
@@ -222,6 +306,27 @@ export async function moveItems(sourceIds: any[], targetId: any) {
         const res = await axios.post(`${ServerDomain}/moveItem`, {
             sourceIds: sourceIds,
             targetId: targetId
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${CurrentToken}`,
+            }
+        });
+        const data = await res.data;
+        return data;
+    } catch (error) {
+        return {
+            status: 'error',
+            message: error
+        }
+    }
+}
+
+export async function setFavorite(ids: any[], status: boolean = true) {
+    try {
+        const res = await axios.post(`${ServerDomain}/setFavorite`, {
+            ids: ids,
+            status: status
         }, {
             headers: {
                 'Content-Type': 'application/json',

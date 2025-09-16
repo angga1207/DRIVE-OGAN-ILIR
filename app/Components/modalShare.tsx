@@ -181,20 +181,22 @@ const ModalShare = (
 
                         <div className="bg-gray-50 px-4 py-3 flex items-center justify-between">
                             <div className="">
-                                <button
-                                    type='button'
-                                    className='mt-3 flex items-center gap-x-2 w-full justify-center rounded-md bg-green-100 px-3 py-2 text-sm font-semibold text-green-900 shadow-xs ring-0 border border-green-300 hover:bg-green-200 sm:mt-0 sm:w-auto cursor-pointer select-none whitespace-nowrap transition-all duration-300'
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(clientDomain() + '/sharer?_id=' + data?.slug);
+                                {data?.publicity?.status === 'public' && (
+                                    <button
+                                        type='button'
+                                        className='mt-3 flex items-center gap-x-2 w-full justify-center rounded-md bg-green-100 px-3 py-2 text-sm font-semibold text-green-900 shadow-xs ring-0 border border-green-300 hover:bg-green-200 sm:mt-0 sm:w-auto cursor-pointer select-none whitespace-nowrap transition-all duration-300'
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(clientDomain() + '/sharer?_id=' + data?.slug);
 
-                                        SweetAlertToast('success', 'Tautan berhasil disalin', clientDomain() + '/sharer?_id=' + data?.slug)
-                                    }}
-                                >
-                                    <ShareIcon className="h-3 w-3 inline" />
-                                    <div className=''>
-                                        Salin Tautan
-                                    </div>
-                                </button>
+                                            SweetAlertToast('success', 'Tautan berhasil disalin', clientDomain() + '/sharer?_id=' + data?.slug)
+                                        }}
+                                    >
+                                        <ShareIcon className="h-3 w-3 inline" />
+                                        <div className=''>
+                                            Salin Tautan
+                                        </div>
+                                    </button>
+                                )}
                             </div>
 
                             <div className="flex items-center gap-2">

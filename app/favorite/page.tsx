@@ -1,11 +1,11 @@
 "use client";
-import { FolderPlusIcon, ArrowsUpDownIcon, DocumentPlusIcon, TrashIcon, ExclamationTriangleIcon, ArchiveBoxArrowDownIcon, ArrowsPointingOutIcon, FolderIcon, ArrowUturnLeftIcon, TableCellsIcon, ListBulletIcon, XMarkIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
+import { FolderPlusIcon, ArrowsUpDownIcon, DocumentPlusIcon, TrashIcon, ExclamationTriangleIcon, ArchiveBoxArrowDownIcon, ArrowsPointingOutIcon, FolderIcon, ArrowUturnLeftIcon, TableCellsIcon, ListBulletIcon, XMarkIcon, ArrowPathIcon, StarIcon } from '@heroicons/react/24/outline'
 import { Suspense, useEffect, useState } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import ItemCardList from "../Components/ItemCardList";
 import Breadcrumbs from "../Components/breadcrumbs";
-import { getItems, getPath, getTrashItems, moveItems, postDelete, postDownload, postForceDelete, postMakeFolder, postPublicity, postRename, postRestore } from "@/apis/apiResources";
+import { getFavoriteItems, getItems, getPath, getTrashItems, moveItems, postDelete, postDownload, postForceDelete, postMakeFolder, postPublicity, postRename, postRestore, setFavorite } from "@/apis/apiResources";
 import { getCookie } from "cookies-next";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import ModalDetail from "../Components/modalDetail";
@@ -73,14 +73,25 @@ const Page = () => {
     ]);
 
     const [sort, setSort] = useState(sorts[0]);
+    const [viewMode, setViewMode] = useState('list'); // grid or list
     const [items, setItems] = useState<any>([]);
+    const [arrBreadcrumbs, setArrBreadcrumbs] = useState<any>([]);
     const [selectedItems, setSelectedItems] = useState<any>([]);
     const [inDetailItem, setInDetailItem] = useState<any>(null);
     const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingUploadFiles, setIsLoadingUploadFiles] = useState(false);
+    const [isDownloading, setIsDownloading] = useState<any>([]);
+    const [isMoveDragging, setIsMoveDragging] = useState(false);
+    const [showQueueList, setShowQueueList] = useState(false);
+    const [isLoadingBreadcrumbs, setIsLoadingBreadcrumbs] = useState(false);
+    const [isLoadingFolder, setIsLoadingFolder] = useState(false);
     const [isError, setIsError] = useState(false);
     const [isSelectedMode, setIsSelectedMode] = useState(false);
     const [openModal, setOpenModal] = useState(false);
+    const [openModalMove, setOpenModalMove] = useState(false);
+    const [openModalFolder, setOpenModalFolder] = useState(false);
+    const [openModalShare, setOpenModalShare] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
@@ -100,7 +111,7 @@ const Page = () => {
         if (isMounted) {
             setItems([]);
             setIsLoading(true);
-            getTrashItems().then((res: any) => {
+            getFavoriteItems().then((res: any) => {
                 if (res.status === 'success') {
                     setItems(res.data);
                 } else if (res.message.status == 401 && CurrentToken) {
@@ -113,6 +124,67 @@ const Page = () => {
         }
     }, [isMounted, searchParams, pathname]);
 
+
+    const handleGoFolder = (slug: any) => {
+        const params = new URLSearchParams(window.location.search);
+        params.set('_p', slug);
+        window.history.pushState({}, '', `/?${params}`);
+        router.push(`/?_p=${slug}`);
+    }
+
+    const handleRenamFolder = (slug: any, name: any, id: any) => {
+        setIsLoadingFolder(true);
+        postRename(slug, name).then((res: any) => {
+            if (res.status === 'success') {
+                setItems((prev: any) => {
+                    return prev.map((item: any) => {
+                        if (item.id === id) {
+                            return { ...item, name: name };
+                        }
+                        return item;
+                    });
+                });
+
+                setOpenModalFolder(false);
+                setInDetailItem(null);
+                setSelectedItems([]);
+                setIsSelectedMode(false);
+                setIsLoading(false);
+                setIsError(false);
+            }
+            else {
+                SweetAlertToast('error', 'Gagal', res.message);
+            }
+            setIsLoadingFolder(false);
+        });
+    }
+
+    const handleDeleteFile = (data: any, callback: any = null) => {
+        // setIsLoading(true);
+        postDelete([data.slug]).then((res: any) => {
+            if (res.status === 'success') {
+                setItems((prev: any) => {
+                    return prev.filter((item: any) => item.id !== data.id);
+                });
+                setSelectedItems([]);
+                setIsSelectedMode(false);
+                setIsLoading(false);
+                setIsError(false);
+                SweetAlertToast('success', 'Berhasil', 'Berkas berhasil dihapus');
+
+                if (callback) {
+                    // redirect to callback uri
+                    // window.location.href = '/?p=' + callback;
+
+                    if (callback !== 'root') {
+                        router.push('/?_p=' + (callback ?? ''));
+                    } else {
+                        router.push('/');
+                    }
+                }
+            }
+        });
+    }
 
     const handleSort = (data: any) => {
         const sortedItems = [...items].sort((a: any, b: any) => {
@@ -166,32 +238,68 @@ const Page = () => {
         setSort(data);
     }
 
-    const handleRestoreFile = (item: any) => {
-        postRestore([item.slug]).then((res: any) => {
+    const handlePostPublicity = (data: any) => {
+        postPublicity(data.slug, data).then((res: any) => {
             if (res.status === 'success') {
                 setItems((prev: any) => {
-                    return prev.filter((i: any) => i.slug !== item.slug);
+                    return prev.map((item: any) => {
+                        if (item.id === data.id) {
+                            return { ...item, publicity: data.publicity };
+                        }
+                        return item;
+                    });
                 });
-                setSelectedItems([]);
-                setIsSelectedMode(false);
-                setIsLoading(false);
-                setIsError(false);
-                SweetAlertToast('success', 'Berhasil', 'Berkas berhasil dipulihkan');
+                setInDetailItem(null);
+                setOpenModalShare(false);
             }
         });
     }
 
-    const handleDeleteFile = (item: any) => {
-        postForceDelete([item.slug]).then((res: any) => {
+    const handleDownload = (data: any) => {
+        setIsDownloading((prev: any) => {
+            return [...prev, { id: data.id }];
+        });
+        postDownload([data.slug]).then((res: any) => {
             if (res.status === 'success') {
-                setItems((prev: any) => {
-                    return prev.filter((i: any) => i.slug !== item.slug);
-                });
+                const link = document.createElement('a');
+                link.href = res.data[0].url;
+                link.setAttribute('download', res.data[0].name || 'download.zip');
+                // target="_blank"
+                link.setAttribute('rel', 'noopener noreferrer');
+                link.setAttribute('target', '_blank');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+            setIsDownloading((prev: any) => {
+                return prev.filter((item: any) => item.id !== data.id);
+            });
+        });
+    }
+
+    const handleSetFavorite = (data: any, status: boolean) => {
+        setFavorite([data.slug], status).then((res: any) => {
+            if (res.status === 'success') {
+                if (searchParams.get('_p')) {
+                    getItems(searchParams.get('_p')).then((res: any) => {
+                        if (res.status === 'success') {
+                            setItems(res.data);
+                        }
+                    });
+                } else {
+                    getItems().then((res: any) => {
+                        if (res.status === 'success') {
+                            setItems(res.data);
+                        }
+                    });
+                }
                 setSelectedItems([]);
-                setIsSelectedMode(false);
-                setIsLoading(false);
-                setIsError(false);
-                SweetAlertToast('success', 'Berhasil', 'Berkas berhasil dihapus selamanya');
+            }
+            if (res.status === 'error') {
+                SweetAlertToast('error', 'Error', res.message);
+            }
+            if (res.status === 'error validation') {
+                SweetAlertToast('error', 'Error', res.message);
             }
         });
     }
@@ -273,9 +381,9 @@ const Page = () => {
                 <div className="col-span-12 lg:col-span-10 px-4 py-6 sm:px-6 lg:px-8">
 
                     <div className="flex flex-wrap space-x-4 bc items-center">
-                        <Link href={`/trash`} className="font-semibold text-red-500 hover:text-red-400 flex gap-x-1 items-center transition-all duration-300">
-                            <TrashIcon className="h-5 w-5 inline" />
-                            Kotak Sampah
+                        <Link href={`/favorite`} className="font-semibold flex gap-x-1 items-center transition-all duration-300">
+                            <StarIcon className="h-5 w-5 inline" />
+                            Data Favorit
                         </Link>
                     </div>
 
@@ -314,57 +422,50 @@ const Page = () => {
                                         {selectedItems.length > 0 && (
                                             <div className='flex items-center gap-x-2'>
 
-
                                                 <button
-                                                    className="text-xs bg-blue-100 text-slate-500 hover:text-blue-900 cursor-pointer rounded border px-1 py-1 border-blue-300 hover:border-blue-400 hover:bg-blue-200 shadow-sm flex items-center gap-x-1 whitespace-nowrap"
+                                                    className="text-xs bg-indigo-100 text-slate-500 hover:text-indigo-900 cursor-pointer rounded border px-1 py-1 border-indigo-300 hover:border-indigo-400 hover:bg-indigo-200 shadow-sm flex items-center gap-x-1 whitespace-nowrap"
+
                                                     onClick={() => {
-                                                        SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin memulihkan ' + selectedItems?.length + ' berkas ini?', 'Ya, Hapus!', 'Batalkan')
+                                                        if (selectedItems.length === 0) {
+                                                            SweetAlertToast('info', 'Peringatan', 'Tidak ada berkas yang dipilih');
+                                                            return;
+                                                        }
+                                                        if (selectedItems.filter((item: any) => item.type === 'folder').length > 0) {
+                                                            SweetAlertConfirm('Peringatan', 'Tidak dapat mengunduh folder. Silahkan pilih berkas yang ingin diunduh.', 'Tutup', null, false)
+                                                            return;
+                                                        }
+
+                                                        SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin mengunduh ' + selectedItems?.length + ' berkas ini?', 'Ya, Unduh!', 'Batalkan')
                                                             .then((result) => {
                                                                 if (result.isConfirmed) {
-                                                                    postRestore(selectedItems.map((item: any) => item.slug)).then((res: any) => {
+                                                                    postDownload(selectedItems.map((item: any) => item.slug)).then((res: any) => {
                                                                         if (res.status === 'success') {
-                                                                            setItems((prev: any) => {
-                                                                                return prev.filter((item: any) => !selectedItems.map((item: any) => item.slug).includes(item.slug));
+                                                                            res.data.forEach((item: any) => {
+                                                                                const link = document.createElement('a');
+                                                                                link.href = item.url;
+                                                                                link.setAttribute('download', item.name || 'download.zip');
+                                                                                link.setAttribute('rel', 'noopener noreferrer');
+                                                                                link.setAttribute('target', '_blank');
+                                                                                document.body.appendChild(link);
+                                                                                link.click();
+                                                                                document.body.removeChild(link);
                                                                             });
+
                                                                             setSelectedItems([]);
                                                                             setIsSelectedMode(false);
                                                                             setIsLoading(false);
                                                                             setIsError(false);
-                                                                            SweetAlertToast('success', 'Berhasil', 'Berkas berhasil dipulihkan');
+                                                                            SweetAlertToast('success', 'Berhasil', 'Berkas berhasil diunduh');
+                                                                        } else {
+                                                                            SweetAlertToast('error', 'Gagal', res.message);
                                                                         }
                                                                     });
                                                                 }
                                                             });
                                                     }}
                                                 >
-                                                    <ArrowPathIcon className="h-4 w-4 inline" />
-                                                    Pulihkan Semua
-                                                </button>
-
-                                                <button
-                                                    className="text-xs bg-red-100 text-slate-500 hover:text-red-900 cursor-pointer rounded border px-1 py-1 border-red-300 hover:border-red-400 hover:bg-red-200 shadow-sm flex items-center gap-x-1 whitespace-nowrap"
-                                                    onClick={() => {
-                                                        SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin menghapus ' + selectedItems?.length + ' berkas ini selamanya?', 'Hapus Selamanya!', 'Batalkan')
-                                                            .then((result) => {
-                                                                if (result.isConfirmed) {
-                                                                    postForceDelete(selectedItems.map((item: any) => item.slug)).then((res: any) => {
-                                                                        if (res.status === 'success') {
-                                                                            setItems((prev: any) => {
-                                                                                return prev.filter((item: any) => !selectedItems.map((item: any) => item.slug).includes(item.slug));
-                                                                            });
-                                                                            setSelectedItems([]);
-                                                                            setIsSelectedMode(false);
-                                                                            setIsLoading(false);
-                                                                            setIsError(false);
-                                                                            SweetAlertToast('success', 'Berhasil', 'Berkas berhasil dihapus');
-                                                                        }
-                                                                    });
-                                                                }
-                                                            });
-                                                    }}
-                                                >
-                                                    <TrashIcon className="h-4 w-4 inline" />
-                                                    Hapus Permanen Semua
+                                                    <ArchiveBoxArrowDownIcon className="h-4 w-4 inline" />
+                                                    Unduh {selectedItems.length} Item
                                                 </button>
 
                                                 {/* reset button */}
@@ -401,7 +502,13 @@ const Page = () => {
                                 )}
 
                                 {items.map((item: any, index: number) => (
-                                    <TrashedItemCardList
+                                    <ItemCardList
+                                        // draggable={true}
+                                        draggable={false}
+                                        // draggable={selectedItems.length == 0}
+                                        onDragging={(data: any) => {
+                                            setIsMoveDragging(data)
+                                        }}
 
                                         key={`item-${index}`}
                                         item={item}
@@ -409,30 +516,39 @@ const Page = () => {
                                         onItemClick={() => {
 
                                         }}
+
+                                        onItemShare={(e: any) => {
+                                            setOpenModalShare(true);
+                                            setInDetailItem(e);
+                                        }}
+                                        onItemEdit={(e: any) => {
+                                            if (e.type === 'folder') {
+                                                setOpenModalFolder(true);
+                                                setInDetailItem(e);
+                                            } else if (e.type === 'file') {
+                                                setOpenModalFolder(true);
+                                                setInDetailItem(e);
+                                            }
+                                        }}
+                                        onItemDownload={(e: any) => {
+                                            handleDownload(e);
+                                        }}
+                                        isDownloading={isDownloading?.find((i: any) => i.id === item.id) ? true : false}
                                         onItemOpen={(e: any) => {
                                             if (e.type === 'folder') {
-                                                SweetAlertToast('info', 'Info', 'Untuk membuka folder, silahkan pulihkan folder tersebut terlebih dahulu');
-                                                return;
+                                                handleGoFolder(e.slug);
                                             } else if (e.type === 'file') {
                                                 setOpenModal(true);
                                                 setInDetailItem(e);
                                             }
                                         }}
                                         onItemDelete={(e: any) => {
-                                            SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin menghapus berkas ini selamanya?', 'Hapus Permanen!', 'Batalkan').then((result) => {
+                                            SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin menghapus berkas ini?', 'Ya, Hapus!', 'Batalkan').then((result) => {
                                                 if (result.isConfirmed) {
                                                     handleDeleteFile(e);
                                                 }
                                             });
                                         }}
-                                        onItemRestore={(e: any) => {
-                                            SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin memulihkan berkas ini?', 'Ya, Pulihkan!', 'Batalkan').then((result) => {
-                                                if (result.isConfirmed) {
-                                                    handleRestoreFile(e);
-                                                }
-                                            });
-                                        }}
-
                                         onItemSelect={(e: any) => {
                                             setSelectedItems((prev: any) => {
                                                 if (prev.find((i: any) => i.id === e.id)) {
@@ -442,6 +558,12 @@ const Page = () => {
                                                 }
 
                                             });
+                                        }}
+                                        onMoveItems={(sourceItems: any, targetFolder: any) => {
+                                            // handleMoveToFolder(sourceItems, targetFolder);
+                                        }}
+                                        onSetFavorite={(e: any, is_favorite: boolean) => {
+                                            handleSetFavorite(e, is_favorite);
                                         }}
                                         selectedItems={selectedItems}
                                         isLoading={false}
@@ -479,6 +601,37 @@ const Page = () => {
                     setIsSelectedMode(false);
                     setIsLoading(false);
                     setIsError(false);
+                }}
+            />
+
+            <ModalFolder
+                isCreate={false}
+                isLoading={isLoadingFolder}
+                data={inDetailItem}
+                isOpen={openModalFolder}
+                onClose={() => {
+                    setOpenModalFolder(false);
+                    setInDetailItem(null);
+                    setSelectedItems([]);
+                    setIsSelectedMode(false);
+                    setIsLoading(false);
+                    setIsError(false);
+                }}
+                onSubmit={(e: any) => {
+                    handleRenamFolder(e.slug, e.name, e.id);
+                }}
+            />
+
+            <ModalShare
+                data={inDetailItem}
+                isOpen={openModalShare}
+                isLoading={false}
+                onClose={() => {
+                    setInDetailItem(null);
+                    setOpenModalShare(false);
+                }}
+                onSubmit={(e: any) => {
+                    handlePostPublicity(e);
                 }}
             />
         </div>

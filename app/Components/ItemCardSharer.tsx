@@ -1,4 +1,6 @@
 import { ArchiveBoxArrowDownIcon, ArchiveBoxIcon, CalendarIcon, DocumentIcon, EyeIcon, FolderIcon, PhotoIcon, StopCircleIcon } from "@heroicons/react/24/outline"
+import Tippy from "@tippyjs/react"
+import 'tippy.js/dist/tippy.css';
 
 const ItemCardSharer = (
     {
@@ -154,30 +156,53 @@ const ItemCardSharer = (
                         </div>
                     </div>
                     <div className="self-end flex items-center gap-x-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        {item.type === 'file' && (
-                            <div
-                                className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-lime-200 transition-all duration-300"
-                                onClick={() => {
-                                    onItemOpen(item)
-                                }}
+                        <div className="">
+                            <Tippy
+                                content={item?.author?.fullname}
                             >
-                                <EyeIcon className="h-4 w-4 text-lime-600 inline transition-all duration-300" />
-                            </div>
+                                <div
+                                    className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-all duration-300"
+                                    title={item?.author?.fullname}
+                                >
+                                    <div className="h-4 w-4 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-semibold text-xs select-none">
+                                        <img src={item?.author?.photo ? item?.author?.photo : '/avatar.png'} alt={item?.author?.fullname} className="h-4 w-4 rounded-full" />
+                                    </div>
+                                </div>
+                            </Tippy>
+                        </div>
+
+                        {item.type === 'file' && (
+                            <Tippy
+                                content={`Buka ${item?.type === 'folder' ? 'Folder' : 'Berkas'}`}
+                            >
+                                <div
+                                    className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-lime-200 transition-all duration-300"
+                                    onClick={() => {
+                                        onItemOpen(item)
+                                    }}
+                                >
+                                    <EyeIcon className="h-4 w-4 text-lime-600 inline transition-all duration-300" />
+                                </div>
+                            </Tippy>
                         )}
 
                         {item.type !== 'folder' && (
-                            <div
-                                className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-cyan-200 transition-all duration-300"
-                                onClick={() => {
-                                    isDownloading ? null : onItemDownload(item)
-                                }}
+                            <Tippy
+                                content={isDownloading ? 'Membatalkan Unduhan' : 'Unduh Berkas'}
                             >
-                                {isDownloading ? (
-                                    <StopCircleIcon className="animate-spin h-4 w-4 text-cyan-600 inline transition-all duration-300" />
-                                ) : (
-                                    <ArchiveBoxArrowDownIcon className="h-4 w-4 text-cyan-600 inline transition-all duration-300" />
-                                )}
-                            </div>
+                                <div
+                                    className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-cyan-200 transition-all duration-300"
+                                    onClick={() => {
+                                        isDownloading ? null : onItemDownload(item)
+                                    }}
+                                >
+                                    {isDownloading ? (
+                                        <StopCircleIcon className="animate-spin h-4 w-4 text-cyan-600 inline transition-all duration-300" />
+                                    ) : (
+                                        <ArchiveBoxArrowDownIcon className="h-4 w-4 text-cyan-600 inline transition-all duration-300" />
+                                    )}
+                                </div>
+                            </Tippy>
                         )}
                     </div>
                 </div>
