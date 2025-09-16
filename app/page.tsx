@@ -19,6 +19,7 @@ import ModalMove from './Components/modalMove';
 import Tippy from '@tippyjs/react';
 import ItemCardGrid from './Components/ItemCardGrid';
 import SideBar from './Components/SideBar';
+import AddMenu from './Components/addMenu';
 
 const ServerDomain = serverDomain();
 
@@ -696,70 +697,32 @@ function Page() {
         <div className="col-span-12 lg:col-span-2">
           <div className="h-auto lg:h-[calc(100vh-64px)] flex flex-col bg-gray-100 pt-5 pb-20 px-2">
 
-            <div className="flex flex-col gap-2 mb-5">
-              {/* make folder start */}
-              {(isLoading === false && isLoadingFolder === false && isLoadingBreadcrumbs === false) ? (
-                <div className="">
-                  <button
-                    className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-blue-300 ring-inset hover:bg-blue-700 cursor-pointer select-none whitespace-nowrap transition-all duration-500"
-                    onClick={() => {
-                      setOpenModalFolder(true);
-                      setIsFolderCreate(true);
-                      setInDetailItem({
-                        name: '',
-                        slug: '',
-                        id: '',
-                        type: 'folder',
-                      });
-                      setSelectedItems([]);
-                      setIsSelectedMode(false);
-                      setIsLoading(false);
-                      setIsError(false);
-                    }}
-                  >
-                    <FolderPlusIcon className="h-4 w-4 inline" />
-                    Buat Folder
-                  </button>
-                </div>
-              ) : (
-                <div className="h-10 w-full inline-flex items-center justify-center gap-x-1.5 rounded-md bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset hover:bg-slate-200 cursor-pointer select-none whitespace-nowrap animate-pulse"></div>
-              )}
-              {/* make folder end */}
+            <AddMenu
+              isDisabled={false}
+              isLoading={isLoading}
+              isLoadingFolder={isLoadingFolder}
+              isLoadingBreadcrumbs={isLoadingBreadcrumbs}
 
-              {/* upload files start */}
-              {(isLoading === false && isLoadingFolder === false && isLoadingBreadcrumbs === false) ? (
-                <div className="">
-                  <input type="file"
-                    className="hidden"
-                    id="upload-files"
-                    multiple
-                    onChange={(e: any) => {
-                      const files = e.target.files;
-                      if (files.length > 0) {
-                        setUploadFiles(files);
-                        handleUploadFiles(e);
-                      }
-                    }}
-                    onClick={(e: any) => {
-                      e.target.value = null;
-                    }}
-                  />
-                  <div
-                    className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-green-300 ring-inset hover:bg-green-700 cursor-pointer select-none whitespace-nowrap transition-all duration-500"
-                    onClick={(e: any) => {
-                      const uploadFiles = document.getElementById('upload-files') as HTMLInputElement;
-                      uploadFiles.click();
-                    }}
-                  >
-                    <DocumentPlusIcon className="h-4 w-4 inline" />
-                    Unggah Berkas
-                  </div>
-                </div>
-              ) : (
-                <div className="h-10 w-full inline-flex items-center justify-center gap-x-1.5 rounded-md bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset hover:bg-slate-200 cursor-pointer select-none whitespace-nowrap animate-pulse"></div>
-              )}
-              {/* upload files end */}
-            </div>
+              onUploadFiles={(e: any) => {
+                setDragIsUpload(true);
+                handleUploadFiles(e);
+              }}
+
+              onCreateFolder={() => {
+                setOpenModalFolder(true);
+                setIsFolderCreate(true);
+                setInDetailItem({
+                  name: '',
+                  slug: '',
+                  id: '',
+                  type: 'folder',
+                });
+                setSelectedItems([]);
+                setIsSelectedMode(false);
+                setIsLoading(false);
+                setIsError(false);
+              }}
+            />
 
             <SideBar
               userData={user}

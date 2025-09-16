@@ -5,7 +5,7 @@ import { setCookie, getCookie, deleteCookie } from 'cookies-next';
 import { signIn, useSession } from "next-auth/react";
 import { atempLoginSemesta, attempLogin, loggedWithGoogle } from "@/apis/apiAuth";
 import Swal from "sweetalert2";
-import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftEndOnRectangleIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
 import LoginSemesta from "../Components/LoginSemesta";
 import { useSearchParams } from "next/navigation";
 
@@ -30,6 +30,7 @@ const Login = () => {
     }, []);
 
     const [isLoading, setIsLoading] = useState(true);
+    const [isAuthLoading, setIsAuthLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     // const [loginType, setLoginType] = useState('local');
     const [isOpen, setIsOpen] = useState(false);
@@ -94,6 +95,7 @@ const Login = () => {
 
             if (localStorage.getItem('logginByGoogle') === 'true') {
                 if (!getCookie('token')) {
+                    setIsAuthLoading(true);
                     loggedWithGoogle({
                         email: MySession.data?.user?.email,
                         name: MySession.data?.user?.name,
@@ -112,6 +114,8 @@ const Login = () => {
                         } else {
                             SweetAlertToast('error', 'Error', res.message);
                         }
+                    }).finally(() => {
+                        setIsAuthLoading(false);
                     });
                 }
             }
@@ -126,10 +130,10 @@ const Login = () => {
         if (MySession.status === 'authenticated') {
             return;
         }
-        setIsLoading(true);
+        setIsAuthLoading(true);
         // if (formLogin.username === '' || formLogin.password === '') {
         //     SweetAlertToast('warning', 'Peringatan', 'Username dan Password tidak boleh kosong');
-        //     setIsLoading(false);
+        //     setIsAuthLoading(false);
         //     return;
         // }
 
@@ -145,13 +149,17 @@ const Login = () => {
                     redirect: false,
                 });
                 // window.location.href = '/';
-            } else {
+            } else if (res.status === 'error') {
+                SweetAlertToast('error', 'Error', res.message);
+            } else if (res.status === 'error validation') {
+                SweetAlertToast('error', 'Error', 'Username atau Password salah');
             }
-            setIsLoading(false);
+            setIsAuthLoading(false);
         })
     }
 
     const handleLoginSemesta = (data: any) => {
+        setIsAuthLoading(true);
         atempLoginSemesta(data).then((res) => {
             if (res.status === 'success') {
                 setCookie('token', res.data.token);
@@ -163,9 +171,12 @@ const Login = () => {
                     redirect: false,
                 });
                 // window.location.href = '/';
+            } else if (res.status === 'error') {
+                SweetAlertToast('error', 'Error', res.message);
             } else {
             }
-            setIsLoading(false);
+        }).finally(() => {
+            setIsAuthLoading(false);
         });
     }
 
@@ -181,6 +192,7 @@ const Login = () => {
     }, [isMounted && Params])
 
     const autoLogin = () => {
+        setIsAuthLoading(true);
         attempLogin({
             username: autoLoginNip,
             password: formLogin.password,
@@ -200,7 +212,7 @@ const Login = () => {
                 // reloadPage();
             } else {
             }
-            setIsLoading(false);
+            setIsAuthLoading(false);
         })
     }
 
@@ -208,7 +220,7 @@ const Login = () => {
         <div className="">
             <div className="fixed top-0 left-0 w-full h-screen bg-[url('/login-bg.jpg')] bg-opacity-50 bg-cover bg-center bg-no-repeat -z-2"></div>
             <div className="fixed top-0 left-0 w-full h-screen bg-radial-[at_25%_55%] to-slate-300/50 from-slate-900/70 bg-cover bg-center bg-no-repeat -z-1"></div>
-            <div className="flex w-full h-screen items-center justify-center -my-6">
+            <div className="flex w-full h-screen items-center justify-center -my-0">
                 <div className="hidden lg:flex items-center justify-center flex-1 text-black">
                     <div className="max-w-md text-center">
                         <div className="mb-6">
@@ -242,7 +254,7 @@ const Login = () => {
                                 <button
                                     type="button"
                                     className="w-full flex justify-center items-center gap-2 bg-blue-900 text-sm text-white p-2 rounded-md hover:bg-blue-700 border border-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                                    disabled={isLoading}
+                                    disabled={isLoading || isAuthLoading}
                                     onClick={(e) => {
                                         handleLoginWithGoogle(e);
                                     }}
@@ -258,7 +270,7 @@ const Login = () => {
                                 <button
                                     type="button"
                                     className="w-full flex justify-center items-center gap-2 bg-blue-900 text-sm text-white p-2 rounded-md hover:bg-blue-700 border border-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                                    disabled={isLoading}
+                                    disabled={isLoading || isAuthLoading}
                                     onClick={(e) => {
                                         setIsOpen(true);
                                     }}
@@ -285,10 +297,11 @@ const Login = () => {
                                 </label>
                                 <input
                                     type="text"
-                                    className="mt-1 p-2 text-white w-full border border-slate-700 rounded-md focus:border-slate-100 outline-none ring-0 focus:outline-none focus:ring-gray-300 transition-colors duration-300"
+                                    className="mt-1 p-2 text-white w-full border border-slate-700 rounded-md focus:border-slate-100 outline-none ring-0 focus:outline-none focus:ring-gray-300 transition-colors duration-300 disabled:bg-slate-700"
                                     autoComplete="new-username"
                                     placeholder="Masukkan username"
                                     defaultValue={formLogin.username}
+                                    disabled={isLoading || isAuthLoading}
                                     onChange={(e) => {
                                         setFormLogin({
                                             ...formLogin,
@@ -301,10 +314,11 @@ const Login = () => {
                                 <label className="block text-sm font-medium text-white">Password</label>
                                 <input
                                     type={showPassword ? 'text' : 'password'}
-                                    className="mt-1 p-2 text-white w-full border border-slate-700 rounded-md focus:border-slate-100 outline-none ring-0 focus:outline-none focus:ring-gray-300 transition-colors duration-300"
+                                    className="mt-1 p-2 text-white w-full border border-slate-700 rounded-md focus:border-slate-100 outline-none ring-0 focus:outline-none focus:ring-gray-300 transition-colors duration-300 disabled:bg-slate-700"
                                     autoComplete="new-password"
                                     placeholder="Masukkan password"
                                     defaultValue={formLogin.password}
+                                    disabled={isLoading || isAuthLoading}
                                     onChange={(e) => {
                                         setFormLogin({
                                             ...formLogin,
@@ -319,6 +333,7 @@ const Login = () => {
                                         id="showPasswordCheckbox"
                                         value='true'
                                         checked={showPassword}
+                                        disabled={isLoading || isAuthLoading}
                                         className="mt-1 mr-2"
                                         onChange={(e) => {
                                             setShowPassword(!showPassword);
@@ -332,7 +347,7 @@ const Login = () => {
                                 </div>
                             </div>
                             <div>
-                                {MySession.status === 'loading' && (
+                                {/* {MySession.status === 'loading' && (
                                     <div className="w-full bg-blue-900 text-white p-2 rounded-md hover:bg-blue-800 focus:outline-none focus:bg-blue-900 focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300 cursor-pointer flex items-center justify-center gap-2">
                                         <div className="animate-spin">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6 text-white animate-spin">
@@ -341,17 +356,24 @@ const Login = () => {
                                             </svg>
                                         </div>
                                     </div>
-                                )}
+                                )} */}
+
                                 {MySession.status !== 'authenticated' && (
                                     <button
-                                        disabled={isLoading}
+                                        disabled={isLoading || isAuthLoading}
                                         type="submit"
                                         className="w-full bg-blue-900 text-white p-2 rounded-md hover:bg-blue-800 focus:outline-none focus:bg-blue-900 focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300 cursor-pointer flex items-center justify-center gap-2">
+
                                         <div className="">
-                                            <ArrowLeftEndOnRectangleIcon className="w-4 h-4" />
+                                            {!isAuthLoading ? (
+                                                <ArrowLeftEndOnRectangleIcon className="w-4 h-4" />
+                                            ) : (
+                                                <ArrowPathIcon className="h-5 w-5 animate-spin" />
+                                            )}
                                         </div>
+
                                         <div className="">
-                                            {isLoading ? 'Sedang Authentikasi...' : 'Masuk'}
+                                            {isAuthLoading ? 'Sedang Authentikasi...' : 'Masuk'}
                                         </div>
                                     </button>
                                 )}
@@ -372,7 +394,7 @@ const Login = () => {
             {/* modal */}
             <LoginSemesta
                 isOpen={isOpen}
-                isLoading={isLoading}
+                isLoading={isAuthLoading}
                 onClose={() => setIsOpen(false)}
                 onSubmit={(data) => {
                     handleLoginSemesta(data);

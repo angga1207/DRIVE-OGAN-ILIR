@@ -1,6 +1,6 @@
 "use client";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { ArrowRightCircleIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
+import { ArrowPathIcon, ArrowRightCircleIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from 'react';
 
 
@@ -79,8 +79,10 @@ const LoginSemesta = (
                                         <label className="font-semibold text-sm mb-1 text-slate-400 select-none">
                                             NIP
                                         </label>
-                                        <input className="w-full p-2 border border-slate-400 rounded ring-0 focus:ring-0 outline-0"
+                                        <input className="w-full p-2 border border-slate-400 rounded ring-0 focus:ring-0 outline-0 disabled:bg-slate-200"
                                             defaultValue={loginForm?.nip}
+                                            disabled={isLoading}
+                                            autoComplete="new-password"
                                             onChange={(e) => {
                                                 setLoginForm({
                                                     ...loginForm,
@@ -96,8 +98,10 @@ const LoginSemesta = (
                                             Password
                                         </label>
                                         <div className="relative">
-                                            <input className="w-full p-2 border border-slate-400 rounded ring-0 focus:ring-0 outline-0"
+                                            <input className="w-full p-2 border border-slate-400 rounded ring-0 focus:ring-0 outline-0 disabled:bg-slate-200"
                                                 defaultValue={loginForm?.password}
+                                                disabled={isLoading}
+                                                autoComplete="new-password"
                                                 onChange={(e) => {
                                                     setLoginForm({
                                                         ...loginForm,
@@ -116,12 +120,19 @@ const LoginSemesta = (
 
                                     <div className="">
                                         <button
+                                            disabled={isLoading}
                                             type="submit"
-                                            className="w-full flex items-center justify-center gap-2 bg-[#009ef7] hover:bg-[#007acc] text-white font-semibold py-2 px-4 rounded disabled:opacity-50">
-                                            <span>
-                                                Masuk menggunakan Semesta
-                                            </span>
-                                            <ArrowRightCircleIcon className="h-5 w-5" />
+                                            className="w-full flex items-center justify-center gap-2 bg-[#009ef7] hover:bg-[#007acc] text-white font-semibold py-2 px-4 rounded disabled:opacity-50 select-none transition-all duration-200">
+                                            <div className="">
+                                                {isLoading ? 'Sedang Authentikasi...' : 'Masuk menggunakan Semesta'}
+                                            </div>
+
+                                            {!isLoading ? (
+                                                <ArrowRightCircleIcon className="h-5 w-5" />
+                                            ) : (
+                                                <ArrowPathIcon className="h-5 w-5 animate-spin" />
+                                            )}
+
                                         </button>
                                     </div>
 

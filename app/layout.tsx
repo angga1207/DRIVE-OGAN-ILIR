@@ -49,8 +49,8 @@ export const metadata: Metadata = {
   },
   // robots
   robots: {
-    index: true,
-    follow: true,
+    index: false,
+    follow: false,
     noarchive: false,
   },
 };

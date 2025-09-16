@@ -56,7 +56,7 @@ const QueueList = (
             {isShow && (
                 <div
                     ref={ref}
-                    className="fixed bottom-2 right-0 w-[300px] lg:w-[30vw] h-[200px] bg-white shadow-xl group z-10">
+                    className="fixed bottom-2 right-0 w-[300px] lg:w-[30vw] h-[200px] rounded-b-xl bg-white shadow-xl group z-10">
                     <div
                         className="absolute top-0 left-0 w-10 h-10 text-white flex items-center justify-center cursor-pointer opacity-75 lg:opacity-0 group-hover:opacity-100 transition-all duration-300"
                         onClick={() => {
@@ -65,7 +65,7 @@ const QueueList = (
                     >
                         <ChevronDoubleDownIcon className="h-5 w-5 inline" />
                     </div>
-                    
+
                     {datas.length > 0 && (
                         <div
                             className="absolute top-0 left-10 w-10 h-10 text-white flex items-center justify-center cursor-pointer opacity-75 lg:opacity-0 group-hover:opacity-100 transition-all duration-300"
@@ -77,7 +77,7 @@ const QueueList = (
                         </div>
                     )}
 
-                    <div className="font-bold text-sm bg-gray-800 text-white flex items-center justify-center mb-2 border-b border-slate-200 pb-2 px-4 py-2">
+                    <div className="font-bold text-sm bg-gray-800 text-white flex items-center justify-center mb-2 border-b border-slate-200 pb-2 px-4 py-2 rounded-t-xl">
                         <div className="text-center">
                             Daftar Antrian Unggah
                         </div>
