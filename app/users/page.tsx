@@ -201,7 +201,7 @@ const Page = () => {
     }
 
     return (
-        <div className="w-full space-y-4">
+        <div className="w-full xl:max-w-7xl xl:py-4 mx-auto space-y-4">
             <div className="flex items-center justify-between gap-x-2">
                 <div className="">
                     <input

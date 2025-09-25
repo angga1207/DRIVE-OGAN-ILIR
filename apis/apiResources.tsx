@@ -1,6 +1,7 @@
 import { getCookie } from "cookies-next";
 import { serverDomain } from "./serverConfig";
 import axios, { AxiosRequestConfig } from "axios";
+import { decryptClient } from "@/lib/crypto-js";
 
 var CurrentToken = getCookie('token');
 const ServerDomain = serverDomain();
@@ -10,8 +11,8 @@ export async function getPath(slug: any = null) {
         const res = await axios.get(`${ServerDomain}/getPath`, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
-                // Authorization: document.cookie,
+                // Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             },
             params: {
                 slug: slug
@@ -32,7 +33,7 @@ export async function getItems(slug: any = null, sort: any = 'created_at', order
         const res = await axios.get(`${ServerDomain}/getItems`, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             },
             params: {
                 slug: slug,
@@ -55,7 +56,7 @@ export async function getFavoriteItems(slug: any = null) {
         const res = await axios.get(`${ServerDomain}/getFavoriteItems`, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             },
             params: {
                 slug: slug,
@@ -76,7 +77,7 @@ export async function getTrashItems() {
         const res = await axios.get(`${ServerDomain}/getItemsTrashed`, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             },
             // params: {
             //     slug: slug,
@@ -102,7 +103,7 @@ export async function postMakeFolder(slug: any, name: any) {
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             }
         });
         const response = await res.data;
@@ -123,7 +124,7 @@ export async function postRename(slug: any = null, name: any = null) {
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             }
         });
         const data = await res.data;
@@ -143,7 +144,7 @@ export async function postDelete(ids: any) {
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             }
         });
         const data = await res.data;
@@ -163,7 +164,7 @@ export async function postForceDelete(ids: any) {
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             }
         });
         const data = await res.data;
@@ -183,7 +184,7 @@ export async function postRestore(ids: any) {
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             }
         });
         const data = await res.data;
@@ -204,7 +205,7 @@ export async function postPublicity(slug: any = null, formData: any = null) {
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             }
         });
         const data = await res.data;
@@ -222,7 +223,7 @@ export async function getSharedItems(slug: any) {
         const res = await axios.get(`${ServerDomain}/getItemsSharer`, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             },
             params: {
                 slug: slug
@@ -243,7 +244,7 @@ export async function getSearch(search: any) {
         const res = await axios.get(`${ServerDomain}/search`, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             },
             params: {
                 search: search
@@ -266,7 +267,7 @@ export async function postDownload(ids: any) {
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             }
         });
         const data = await res.data;
@@ -284,7 +285,7 @@ export async function getFolders(slug: any = '', excludeIds: any[] = []) {
         const res = await axios.get(`${ServerDomain}/getFolders`, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             },
             params: {
                 slug: slug,
@@ -309,7 +310,7 @@ export async function moveItems(sourceIds: any[], targetId: any) {
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             }
         });
         const data = await res.data;
@@ -330,7 +331,7 @@ export async function setFavorite(ids: any[], status: boolean = true) {
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             }
         });
         const data = await res.data;

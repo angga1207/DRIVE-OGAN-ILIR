@@ -65,7 +65,7 @@ const Header = () => {
         }
     }, [isMounted]);
 
-    if (Pathname === '/login' || Pathname === '/register' || Pathname === '/logout') {
+    if (Pathname === '/login' || Pathname === '/register' || Pathname === '/logout' || Pathname === '/privacy-policy') {
         return (
             <>
             </>
@@ -135,7 +135,7 @@ const Header = () => {
     } else {
         return (
             <>
-                {Pathname !== '/login' && Pathname !== '/register' && Pathname !== '/logout' && (
+                {Pathname !== '/login' && Pathname !== '/register' && Pathname !== '/logout' && Pathname !== '/privacy-policy' && (
                     <AuthChecker />
                 )}
                 <Disclosure as="nav" className="bg-gray-800 select-none">

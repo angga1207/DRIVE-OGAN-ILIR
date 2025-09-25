@@ -1,3 +1,4 @@
+import { decryptClient } from "@/lib/crypto-js";
 import axios, { AxiosRequestConfig } from "axios";
 import { getCookie, setCookie } from "cookies-next";
 
@@ -32,7 +33,8 @@ export async function serverCheck() {
             headers: {
                 'Content-Type': 'application/json',
                 'access-control-allow-origin': '*',
-                Authorization: `Bearer ${CurrentToken}`,
+                // Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             }
         })
         const data = await res.data;

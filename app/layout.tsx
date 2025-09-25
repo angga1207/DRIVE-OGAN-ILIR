@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./Components/Header";
 import AuthProvider from "./providers/SessionProvider";
 import AppVersion from "./Components/AppVersion";
+import FirebaseSetup from "@/components/firebase/FirebaseSetup";
 const redHat = Red_Hat_Display({
   variable: "--font-red-hat",
   subsets: ["latin"],
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
     shortcut: "/favicon.png",
     apple: "/favicon.png",
   },
-  metadataBase: new URL('https://acme.com'),
+  metadataBase: new URL('https://drive.oganilir.go.id'),
   // open graph
   openGraph: {
     title: "Drive Ogan Ilir",
@@ -85,6 +86,7 @@ export default function RootLayout({
                 </div>
               </div>
             </main>
+            <FirebaseSetup />
           </AuthProvider>
 
         </div>

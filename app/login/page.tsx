@@ -7,7 +7,8 @@ import { atempLoginSemesta, attempLogin, loggedWithGoogle } from "@/apis/apiAuth
 import Swal from "sweetalert2";
 import { ArrowLeftEndOnRectangleIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
 import LoginSemesta from "../Components/LoginSemesta";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { encryptClient } from "@/lib/crypto-js";
 
 const SweetAlertToast = (icon: any, title: any, text: any) => {
     return Swal.fire({
@@ -25,6 +26,7 @@ const SweetAlertToast = (icon: any, title: any, text: any) => {
 const Login = () => {
     const [isMounted, setIsMounted] = useState(false);
     const MySession = useSession();
+    const router = useRouter();
     useEffect(() => {
         setIsMounted(true);
     }, []);
@@ -102,15 +104,19 @@ const Login = () => {
                         image: MySession.data?.user?.image,
                     }).then((res) => {
                         if (res.status === 'success') {
-                            localStorage.setItem('token', res.data.token);
+                            // localStorage.setItem('token', res.data.token);
                             localStorage.setItem('user', JSON.stringify(res.data.user));
-                            setCookie('token', res.data.token);
+                            // setCookie('token', res.data.token);
+                            setCookie('token', encryptClient(res.data.token));
                             setCookie('user', JSON.stringify(res.data.user));
                             localStorage.removeItem('logginByGoogle');
                             signIn('google', {
+                                // email: res.data.token,
                                 callbackUrl: '/',
                             });
+
                             window.location.href = '/';
+                            // router.replace('/');
                         } else {
                             SweetAlertToast('error', 'Error', res.message);
                         }
@@ -140,7 +146,8 @@ const Login = () => {
 
         attempLogin(formLogin).then((res) => {
             if (res.status === 'success') {
-                setCookie('token', res.data.token);
+                // setCookie('token', res.data.token);
+                setCookie('token', encryptClient(res.data.token));
                 setCookie('user', JSON.stringify(res.data.user));
                 localStorage.setItem('user', JSON.stringify(res.data.user));
                 signIn('credentials', {
@@ -162,7 +169,8 @@ const Login = () => {
         setIsAuthLoading(true);
         atempLoginSemesta(data).then((res) => {
             if (res.status === 'success') {
-                setCookie('token', res.data.token);
+                // setCookie('token', res.data.token);
+                setCookie('token', encryptClient(res.data.token));
                 setCookie('user', JSON.stringify(res.data.user));
                 localStorage.setItem('user', JSON.stringify(res.data.user));
                 signIn('credentials', {
@@ -200,7 +208,8 @@ const Login = () => {
         }).then((res) => {
             if (res.status === 'success') {
                 console.log(res)
-                setCookie('token', res.data.token);
+                // setCookie('token', res.data.token);
+                setCookie('token', encryptClient(res.data.token));
                 setCookie('user', JSON.stringify(res.data.user));
                 localStorage.setItem('user', JSON.stringify(res.data.user));
                 signIn('credentials', {

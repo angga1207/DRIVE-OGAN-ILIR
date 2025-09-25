@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   // missingSuspenseWithCSRBailout: false,
+  poweredByHeader: false,                 // <— penting
+  productionBrowserSourceMaps: false,     // jangan kirim sourcemap ke client
+  swcMinify: true,
 };
 
 // module.exports = nextConfig

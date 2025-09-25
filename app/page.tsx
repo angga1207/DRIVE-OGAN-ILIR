@@ -20,6 +20,8 @@ import Tippy from '@tippyjs/react';
 import ItemCardGrid from './Components/ItemCardGrid';
 import SideBar from './Components/SideBar';
 import AddMenu from './Components/addMenu';
+import { useSession } from 'next-auth/react';
+import { decryptClient } from '@/lib/crypto-js';
 
 const ServerDomain = serverDomain();
 
@@ -374,7 +376,8 @@ function Page() {
         const res = await axios.post(`${ServerDomain}/upload/${globalSlug}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${CurrentToken}`,
+            // Authorization: `Bearer ${CurrentToken}`,
+            Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
           },
           onUploadProgress: (progressEvent: any) => {
             const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
@@ -1000,7 +1003,7 @@ function Page() {
               </div>
 
               <div
-                className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto px-4 -mx-4 pb-4">
+                className="flex flex-col gap-y-2 max-h-[calc(100vh-200px)] overflow-y-auto px-4 -mx-4 pb-4">
 
                 {(items.length === 0) && (
                   <div className="flex flex-col gap-2 items-center justify-center w-full h-[calc(100vh-300px)] border border-dashed border-slate-300 rounded-lg">

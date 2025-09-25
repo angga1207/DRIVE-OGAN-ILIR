@@ -1,6 +1,7 @@
 import { getCookie } from "cookies-next";
 import { serverDomain } from "./serverConfig";
 import axios, { AxiosRequestConfig } from "axios";
+import { decryptClient } from "@/lib/crypto-js";
 
 var CurrentToken = getCookie('token');
 const ServerDomain = serverDomain();
@@ -84,7 +85,7 @@ export async function syncWithGoogle(data: any) {
         const res = await axios.post(`${ServerDomain}/sync/google`, data, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             }
         });
         const response = await res.data;
@@ -102,7 +103,7 @@ export async function syncWithSemesta(data: any) {
         const res = await axios.post(`${ServerDomain}/sync/semesta`, data, {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${CurrentToken}`,
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             }
         });
         const dataRes = await res.data;

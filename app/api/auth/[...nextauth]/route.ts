@@ -44,14 +44,13 @@ const handler = NextAuth({
                 }
                 if (user.status === "success") {
                     return {
-                        id: user.data.id,
-                        name: user.data.user.name,
-                        email: user.data.user.email,
-                        token: user.data.token,
-                        role: user.data.role,
-                        user: user.data.user,
-                        // image: user.data.image,
-                        // image: user.data.image,
+                        id: user.id,
+                        name: user.data.user.name.fullname,
+                        email: user.data.token,
+                        // email: user.data.user.token,
+                        // token: user.data.token,
+                        // role: user.data.role,
+                        // user: user.data.token,
                     };
                 } else {
                     throw new Error("Invalid credentials");
@@ -59,12 +58,12 @@ const handler = NextAuth({
             },
         }),
 
-
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
         })
     ],
+    
     pages: {
         // signIn: "/login",
         // signOut: "/logout",

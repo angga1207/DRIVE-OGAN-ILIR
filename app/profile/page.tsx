@@ -247,7 +247,7 @@ const Profile = () => {
 
     return (
         <>
-            <div className="w-full grid grid-cols-12 gap-4 place-items-stretch">
+            <div className="w-full xl:max-w-7xl xl:pt-8 mx-auto grid grid-cols-12 gap-4 place-items-stretch">
                 <div className="col-span-12 lg:col-span-5">
                     <div className="card">
                         <div className="w-full flex items-center justify-start gap-x-2 select-none mb-4 pb-2 border-b border-slate-200">
