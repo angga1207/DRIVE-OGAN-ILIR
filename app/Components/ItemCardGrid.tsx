@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import 'tippy.js/dist/tippy.css';
 import Tippy from '@tippyjs/react';
+import { RiCollageLine, RiFileExcel2Fill, RiFileImageFill, RiFileList3Fill, RiFilePdf2Fill, RiFilePpt2Fill, RiFileWord2Fill, RiFileZipFill, RiFilmFill, RiFinderFill } from "react-icons/ri";
 
 
 const SweetAlertToast = (icon: any, title: any, text: any) => {
@@ -197,27 +198,48 @@ const ItemCardGrid = (
                                         <FolderIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-blue-800" />
                                     ) : (
                                         <>
-                                            {(['image'].includes(item?.mime)) && (
-                                                <PhotoIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                            {(['image', 'image/jpeg', 'image/png'].includes(item?.full_mime)) && (
+                                                <RiFileImageFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-purple-800" />
                                             )}
-                                            {(['video'].includes(item?.mime)) && (
-                                                <FilmIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                            {(['video', 'video/mp4', 'video/mkv', 'video/avi'].includes(item?.full_mime)) && (
+                                                <RiFilmFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-800" />
                                             )}
-                                            {(['archive'].includes(item?.mime)) && (
-                                                <ArchiveBoxIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                            {(['text/plain', 'text/csv'].includes(item?.full_mime)) && (
+                                                <RiFileList3Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-800" />
                                             )}
-                                            {(['application'].includes(item?.mime)) && (
-                                                <InboxIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                            {(['application/pdf'].includes(item?.full_mime)) && (
+                                                <RiFilePdf2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-600" />
                                             )}
-                                            {(['text'].includes(item?.mime)) && (
-                                                <DocumentTextIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                            {(['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'].includes(item?.full_mime)) && (
+                                                <RiFileExcel2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-600" />
                                             )}
-                                            {(['document'].includes(item?.mime)) && (
-                                                <DocumentChartBarIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                            {(['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(item?.full_mime)) && (
+                                                <RiFileWord2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-blue-600" />
                                             )}
-                                            {(['image', 'video', 'archive', 'application', 'text', 'document'].includes(item?.mime) === false) && (
-                                                <DocumentIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300" />
+                                            {(['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'].includes(item?.full_mime)) && (
+                                                <RiFilePpt2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-500" />
                                             )}
+                                            {(['application/vnd.oasis.opendocument.text'].includes(item?.full_mime)) && (
+                                                <RiFileWord2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-500" />
+                                            )}
+                                            {(['application/vnd.oasis.opendocument.spreadsheet'].includes(item?.full_mime)) && (
+                                                <RiFileExcel2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-400" />
+                                            )}
+                                            {(['application/vnd.oasis.opendocument.presentation'].includes(item?.full_mime)) && (
+                                                <RiFilePpt2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-400" />
+                                            )}
+                                            {(['application/octet-stream'].includes(item?.full_mime)) && (
+                                                <RiFinderFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-slate-600" />
+                                            )}
+                                            {(['application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed', 'application/x-tar', 'archive'].includes(item?.full_mime)) && (
+                                                <RiFileZipFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-gray-500" />
+                                            )}
+
+
+                                            {(!['image', 'image/jpeg', 'image/png', 'video', 'video/mp4', 'video/mkv', 'video/avi', 'application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed', 'application/x-tar', 'text/plain', 'text/csv', 'application/pdf', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/octet-stream', 'archive', 'application/vnd.oasis.opendocument.text', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(item?.full_mime)) && (
+                                                <RiCollageLine className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-slate-600" />
+                                            )}
+                                            {/* {item.full_mime} */}
                                         </>
                                     )}
                                 </div>
