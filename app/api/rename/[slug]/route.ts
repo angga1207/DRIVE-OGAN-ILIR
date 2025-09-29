@@ -3,7 +3,7 @@ import axios from 'axios';
 import { serverDomain } from '@/apis/serverConfig';
 import { getBearerTokenForApi } from '@/utils/apiHelpers';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import { decryptClient } from '@/lib/crypto-js';
 
@@ -11,10 +11,11 @@ const ServerDomain = serverDomain();
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
     // Get slug from URL params
+    const params = await context.params;
     const { slug } = params;
     
     // Get request body for the name

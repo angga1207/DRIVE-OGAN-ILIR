@@ -3,7 +3,7 @@ import axios from 'axios';
 import { serverDomain } from '@/apis/serverConfig';
 import { getBearerTokenForApi } from '@/utils/apiHelpers';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import { decryptClient } from '@/lib/crypto-js';
 
@@ -11,16 +11,15 @@ const ServerDomain = serverDomain();
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { folderSlug: string } }
+  context: { params: Promise<{ folderSlug: string }> }
 ) {
   try {
-    // Get folderSlug from URL params
+    // Get folder slug from URL params
+    const params = await context.params;
     const { folderSlug } = params;
-    console.log('Upload request for folderSlug:', folderSlug);
     
-    // Get form data from request
+    // Get formData from request
     const formData = await request.formData();
-    console.log('FormData received with keys:', Array.from(formData.keys()));
 
     // Get bearer token - multiple fallback methods
     let bearerToken;
@@ -63,11 +62,11 @@ export async function POST(
       );
     }
 
-    // Configure axios request for multipart/form-data
+    // Configure axios request with multipart/form-data headers
     const axiosConfig = {
       headers: {
         'Authorization': `Bearer ${bearerToken}`,
-        // Don't set Content-Type for FormData, let axios handle it
+        'Content-Type': 'multipart/form-data',
       }
     };
 

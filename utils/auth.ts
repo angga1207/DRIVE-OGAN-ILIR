@@ -1,7 +1,7 @@
 import { getSession, useSession } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import { useEffect, useState } from "react";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 // Untuk Client Components
 export async function getClientBearerToken() {

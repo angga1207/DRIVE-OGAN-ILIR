@@ -3,7 +3,7 @@ import axios from 'axios';
 import { serverDomain } from '@/apis/serverConfig';
 import { getBearerTokenForApi } from '@/utils/apiHelpers';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import { decryptClient } from '@/lib/crypto-js';
 
