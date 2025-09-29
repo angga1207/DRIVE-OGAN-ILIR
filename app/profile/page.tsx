@@ -148,6 +148,7 @@ const Profile = () => {
 
         updateProfile(formData).then((res: any) => {
             if (res.status === 'success') {
+                console.log(res);
                 const userLocal = localStorage.getItem('user');
                 if (userLocal) {
                     const parsedUser = JSON.parse(userLocal);
@@ -159,6 +160,14 @@ const Profile = () => {
                         new_photo: '',
                     });
                     localStorage.setItem('user', JSON.stringify({
+                        ...parsedUser,
+                        ...res.data,
+                        password: '',
+                        password_confirmation: '',
+                        new_photo: '',
+                    }));
+                    // set cookie user
+                    setCookie('user', JSON.stringify({
                         ...parsedUser,
                         ...res.data,
                         password: '',

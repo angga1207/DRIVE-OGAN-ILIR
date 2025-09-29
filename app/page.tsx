@@ -22,6 +22,7 @@ import SideBar from './Components/SideBar';
 import AddMenu from './Components/addMenu';
 import { useSession } from 'next-auth/react';
 import { decryptClient } from '@/lib/crypto-js';
+import { createAxiosConfig, createAxiosConfigMultipart, getBearerTokenForApi } from '@/utils/apiHelpers';
 
 const ServerDomain = serverDomain();
 
@@ -54,155 +55,13 @@ const SweetAlertToast = (icon: any, title: any, text: any) => {
   })
 }
 
-// const [globalFilesData, setGlobalFilesData] = useState<any>([]);
-
-
-/** Hook: deteksi apakah user sedang mendrag FILE di atas window */
-function useDraggingFile() {
-  const [isDraggingFile, setIsDraggingFile] = useState(false);
-  const dragDepth = useRef(0);
-  const fileDragSeen = useRef(false);
-  const clearTimer = useRef<number | null>(null);
-
-  useEffect(() => {
-    const isFileDrag = (e: DragEvent) =>
-      !!e.dataTransfer && Array.from(e.dataTransfer.types || []).includes("Files");
-
-    const onDragEnter = (e: DragEvent) => {
-      if (!isFileDrag(e)) return;
-      e.preventDefault();
-      fileDragSeen.current = true;
-      dragDepth.current += 1;
-      setIsDraggingFile(true);
-    };
-
-    const onDragOver = (e: DragEvent) => {
-      if (!isFileDrag(e)) return;
-      e.preventDefault();
-      // jaga overlay tetap hidup selama drag
-      if (!isDraggingFile) setIsDraggingFile(true);
-    };
-
-    const onDragLeave = (e: DragEvent) => {
-      if (!fileDragSeen.current) return;
-      dragDepth.current = Math.max(0, dragDepth.current - 1);
-
-      // Kadang dragleave terpanggil saat pindah antar-child: delay sedikit
-      if (clearTimer.current) window.clearTimeout(clearTimer.current);
-      clearTimer.current = window.setTimeout(() => {
-        if (dragDepth.current === 0) {
-          fileDragSeen.current = false;
-          setIsDraggingFile(false);
-        }
-      }, 50);
-    };
-
-    const onDrop = (e: DragEvent) => {
-      if (fileDragSeen.current) e.preventDefault(); // cegah open file di tab
-      // Reset semua state
-      dragDepth.current = 0;
-      fileDragSeen.current = false;
-      setIsDraggingFile(false);
-      // Di sini Anda bisa ambil file:
-      // const files = e.dataTransfer?.files;
-    };
-
-    window.addEventListener("dragenter", onDragEnter);
-    window.addEventListener("dragover", onDragOver);
-    window.addEventListener("dragleave", onDragLeave);
-    window.addEventListener("drop", onDrop);
-
-    // Praktik baik: tetap cegah drop default di dokumen
-    const preventDefault = (e: Event) => e.preventDefault();
-    document.addEventListener("dragover", preventDefault);
-    document.addEventListener("drop", preventDefault);
-
-    return () => {
-      window.removeEventListener("dragenter", onDragEnter);
-      window.removeEventListener("dragover", onDragOver);
-      window.removeEventListener("dragleave", onDragLeave);
-      window.removeEventListener("drop", onDrop);
-      document.removeEventListener("dragover", preventDefault);
-      document.removeEventListener("drop", preventDefault);
-      if (clearTimer.current) window.clearTimeout(clearTimer.current);
-    };
-  }, [isDraggingFile]);
-
-  return isDraggingFile;
-}
-
-/** Hook: status tab/page aktif (visible + fokus) */
-// function usePageActive() {
-//   const [isActive, setIsActive] = useState<boolean>(() => {
-//     if (typeof document === "undefined") return true;
-//     return !document.hidden && document.hasFocus();
-//     // Saat SSR, anggap aktif; nilai akan disinkronkan di client.
-//   });
-
-//   useEffect(() => {
-//     const update = () => setIsActive(!document.hidden && document.hasFocus());
-//     const onFocus = () => setIsActive(!document.hidden && true);
-//     const onBlur = () => setIsActive(!document.hidden && false);
-
-//     document.addEventListener("visibilitychange", update);
-//     window.addEventListener("focus", onFocus);
-//     window.addEventListener("blur", onBlur);
-//     // sinkron awal
-//     update();
-//     return () => {
-//       document.removeEventListener("visibilitychange", update);
-//       window.removeEventListener("focus", onFocus);
-//       window.removeEventListener("blur", onBlur);
-//     };
-//   }, []);
-
-//   return isActive;
-// }
-
-// ** Hook: status tab/page aktif (visible + fokus) tanpa harus membuka inspect console **/
-// function usePageActiveNoInspect() {
-function usePageActive() {
-  const [isActive, setIsActive] = useState<boolean>(() => {
-    if (typeof document === "undefined") return true;
-    return !document.hidden && document.hasFocus();
-    // Saat SSR, anggap aktif; nilai akan disinkronkan di client.
-  });
-
-  useEffect(() => {
-    const update = () => setIsActive(!document.hidden && document.hasFocus());
-    const onFocus = () => setIsActive(!document.hidden && true);
-    const onBlur = () => setIsActive(!document.hidden && false);
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
-        e.preventDefault();
-        e.stopPropagation();
-        alert('Inspect Element is disabled');
-        return false;
-      }
-    };
-    document.addEventListener("visibilitychange", update);
-    window.addEventListener("focus", onFocus);
-    window.addEventListener("blur", onBlur);
-    window.addEventListener("keydown", onKeyDown);
-    // sinkron awal
-    update();
-    return () => {
-      document.removeEventListener("visibilitychange", update);
-      window.removeEventListener("focus", onFocus);
-      window.removeEventListener("blur", onBlur);
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, []);
-  return isActive;
-}
-
 function Page() {
 
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
 
-  var CurrentToken = getCookie('token');
+  // var CurrentToken = getCookie('token');
 
   const [user, setUser] = useState<any>(null);
 
@@ -240,18 +99,6 @@ function Page() {
   const [queueUploadFiles, setQueueUploadFiles] = useState<any>([]);
   const [queueBatch, setQueueBatch] = useState<any>(0);
 
-  const [dragIsUpload, setDragIsUpload] = useState<boolean>(true);
-
-  // const isDraggingFile = useDraggingFile();
-  const isDraggingFile = useDraggingFile();
-  const isPageActive = usePageActive();
-  // const dragIsUpload = useDraggingFile();
-
-  const showOverlay = useMemo(
-    () => isPageActive && isDraggingFile,
-    [isPageActive, isDraggingFile]
-  );
-
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -287,7 +134,7 @@ function Page() {
         getItems(searchParams.get('_p')).then((res: any) => {
           if (res.status === 'success') {
             setItems(res.data);
-          } else if (res.message.status == 401 && CurrentToken) {
+          } else if (res.message.status == 401) {
             window.location.href = '/logout';
           }
           setIsLoading(false);
@@ -306,7 +153,7 @@ function Page() {
         getItems().then((res: any) => {
           if (res.status === 'success') {
             setItems(res.data);
-          } else if (res.message.status == 401 && CurrentToken) {
+          } else if (res.message.status == 401) {
             window.location.href = '/logout';
           }
           setIsLoading(false);
@@ -373,11 +220,14 @@ function Page() {
       formData.append('files[]', file);
       formData.append('folderId', globalSlug as string);
       try {
-        const res = await axios.post(`${ServerDomain}/upload/${globalSlug}`, formData, {
+        // Get bearer token for authorization
+        const token = await getBearerTokenForApi();
+        
+        // Use axios for upload progress tracking with Next.js API route
+        const res = await axios.post(`/api/upload/${globalSlug}`, formData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
-            // Authorization: `Bearer ${CurrentToken}`,
-            Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
+            ...(token && { Authorization: `Bearer ${token}` }),
+            // Don't set Content-Type for FormData, let axios handle it
           },
           onUploadProgress: (progressEvent: any) => {
             const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
@@ -410,13 +260,11 @@ function Page() {
               });
             }
           }
-        }).then((res: any) => {
-          if (res.data.status == 'error') {
-            SweetAlertToast('error', 'Gagal', res.data.message);
-          }
         });
-        // const response = await res.data;
-        // return response;
+        const response = await res.data;
+        if (response.status == 'error') {
+          SweetAlertToast('error', 'Gagal', response.message);
+        }
       } catch (error) {
         return {
           status: 'error',
@@ -707,7 +555,6 @@ function Page() {
               isLoadingBreadcrumbs={isLoadingBreadcrumbs}
 
               onUploadFiles={(e: any) => {
-                setDragIsUpload(true);
                 handleUploadFiles(e);
               }}
 
@@ -1087,8 +934,7 @@ function Page() {
                 {viewMode === 'list' && (
                   items.map((item: any, index: number) => (
                     <ItemCardList
-                      // draggable={true}
-                      draggable={isDraggingFile === false}
+                      draggable={true}
                       // draggable={selectedItems.length == 0}
                       onDragging={(data: any) => {
                         setIsMoveDragging(data)
@@ -1326,60 +1172,6 @@ function Page() {
           )}
         </div>
       </div>
-
-
-      {showOverlay && (
-        <div className="fixed top-0 left-0 w-full h-full z-100">
-          <div className="absolute w-full h-full bg-slate-800/50  pointer-events-auto select-none blur-2xl"></div>
-          <div className="relative w-full flex flex-col items-center justify-center p-20">
-
-            <input
-              onDrop={(e) => {
-                e.preventDefault();
-                setIsLoadingUploadFiles(true);
-                setShowQueueList(true);
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                  setQueueBatch(queueBatch + 1);
-                  for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    const fileName = file.name;
-                    const fileSize = file.size;
-                    setQueueUploadFiles((prev: any) => {
-                      return [...prev, { id: (queueBatch + '-') + (i + 1), name: fileName, size: fileSize, progress: 0, status: 'uploading' }];
-                    });
-                  }
-                  AxiosUploadFiles(files).then((res: any) => {
-                    getItems(searchParams.get('_p')).then((res: any) => {
-                      if (res.status === 'success') {
-                        setItems(res.data);
-                      }
-                    });
-                    setIsLoadingUploadFiles(false);
-                  });
-                }
-                setUploadFiles([]);
-
-              }}
-              type="file"
-              className="absolute z-[101] w-full h-full opacity-0 cursor-pointer"
-              id="upload-files"
-              multiple
-            />
-            <div className="w-full h-[calc(100vh-150px)] p-4 rounded-lg border-2 border-dashed border-blue-300 bg-blue-50 text-center text-blue-700 flex items-center justify-center">
-              <div className="">
-                <div className="flex items-center justify-center gap-x-2">
-                  <ArchiveBoxArrowDownIcon className="h-6 w-6" />
-                  <span>Letakkan berkas di sini untuk mengunggah</span>
-                </div>
-                <div className="text-xs mt-1">Tarik dan letakkan berkas dari komputer Anda ke area ini untuk mengunggahnya.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-
 
       <ModalMove
         data={selectedItems}

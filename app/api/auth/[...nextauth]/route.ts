@@ -1,11 +1,33 @@
 import { attempLogin, autoLogin } from "@/apis/apiAuth";
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
     session: {
         strategy: "jwt",
+    },
+    callbacks: {
+        async jwt({ token, user }) {
+            // Saat login pertama kali, user object tersedia
+            if (user) {
+                token.accessToken = user.accessToken; // Bearer token dari response login
+                token.userId = user.id;
+                token.userName = user.name;
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            // Mengirim token ke client session
+            if (session) {
+                session.accessToken = token.accessToken as string;
+                if (session.user) {
+                    session.user.id = token.userId as string;
+                    session.user.name = token.userName as string;
+                }
+            }
+            return session;
+        },
     },
     providers: [
         CredentialsProvider({
@@ -46,11 +68,9 @@ const handler = NextAuth({
                     return {
                         id: user.id,
                         name: user.data.user.name.fullname,
-                        email: user.data.token,
-                        // email: user.data.user.token,
-                        // token: user.data.token,
-                        // role: user.data.role,
-                        // user: user.data.token,
+                        email: user.data.user.email || user.data.user.username, // Email asli user
+                        accessToken: user.data.token, // Bearer token yang akan disimpan di session
+                        // Additional user data bisa ditambahkan di sini
                     };
                 } else {
                     throw new Error("Invalid credentials");
@@ -68,5 +88,7 @@ const handler = NextAuth({
         // signIn: "/login",
         // signOut: "/logout",
     },
-});
+};
+
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

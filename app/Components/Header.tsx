@@ -11,7 +11,7 @@ import { getCookie } from 'cookies-next';
 const Header = () => {
     const [navigation, setNavigation] = useState([
         { name: 'Beranda', href: '/', current: false },
-        { name: 'Profil', href: '/profile', current: false },
+        // { name: 'Profil', href: '/profile', current: false },
     ]);
 
     const [userNavigation, setUserNavigation] = useState([
@@ -49,9 +49,8 @@ const Header = () => {
                 if ([1, 4].includes(user?.id)) {
                     setNavigation([
                         { name: 'Beranda', href: '/', current: false },
-                        { name: 'Profil', href: '/profile', current: false },
+                        // { name: 'Profil', href: '/profile', current: false },
                         { name: 'Pengguna', href: '/users', current: false },
-                        // { name: 'Sumber Daya', href: '/resources', current: false },
                     ]);
                 }
                 if (Pathname === '/sharer') {

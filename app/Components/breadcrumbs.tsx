@@ -53,7 +53,7 @@ const Breadcrumbs = (
                     </BreadcrumbLink>
                 </BreadcrumbItem>
 
-                {items?.paths?.length > 0 && (
+                {currentPath && (
                     <BreadcrumbSeparator />
                 )}
 

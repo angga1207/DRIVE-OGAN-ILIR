@@ -1,4 +1,5 @@
 import { decryptClient } from "@/lib/crypto-js";
+import { createAxiosConfig } from "@/utils/apiHelpers";
 import axios, { AxiosRequestConfig } from "axios";
 import { getCookie, setCookie } from "cookies-next";
 
@@ -27,20 +28,27 @@ export async function serverCheck() {
         // }
 
         // // CurrentToken = staticToken;
-        const CurrentToken = getCookie('token');
+        // const CurrentToken = getCookie('token');
 
-        const res = await axios.post(serverDomain() + '/a12', {}, {
-            headers: {
-                'Content-Type': 'application/json',
-                'access-control-allow-origin': '*',
-                // Authorization: `Bearer ${CurrentToken}`,
-                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
-            }
-        })
+        // const res = await axios.post(serverDomain() + '/a12', {}, {
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'access-control-allow-origin': '*',
+        //         // Authorization: `Bearer ${CurrentToken}`,
+        //         Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
+        //     }
+        // })
+        // const data = await res.data;
+
+        // // setCookie('token', CurrentToken, { maxAge: 60 * 60 * 24 * 30 });
+        // return data;
+
+        const axiosConfig = await createAxiosConfig();
+
+        const res = await axios.post(serverDomain() + '/a12', {}, axiosConfig);
         const data = await res.data;
-
-        // setCookie('token', CurrentToken, { maxAge: 60 * 60 * 24 * 30 });
         return data;
+
     } catch (error) {
         return {
             status: 'error',
