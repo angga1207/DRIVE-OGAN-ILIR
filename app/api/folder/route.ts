@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
   try {
     // Get request body
     const body = await request.json();
-    const { slug, name } = body;
+    const { parent_slug, name } = body;
 
     // Get bearer token - multiple fallback methods
     let bearerToken;
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
 
     // Prepare form data
     const formData = new FormData();
-    formData.append('slug', slug);
+    formData.append('parent_slug', parent_slug);
     formData.append('name', name);
 
     // Make request to actual server

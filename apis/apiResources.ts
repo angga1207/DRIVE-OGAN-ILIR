@@ -157,7 +157,7 @@ export async function getTrashItems() {
     }
 }
 
-export async function postMakeFolder(slug: any, name: any) {
+export async function postMakeFolder(parent_slug: any, name: any) {
     try {
         // Use Next.js API route instead of direct server call
         const url = '/api/folder';
@@ -177,7 +177,7 @@ export async function postMakeFolder(slug: any, name: any) {
             headers: headers,
             body: JSON.stringify({
                 name: name,
-                parent_slug: slug
+                parent_slug: parent_slug
             })
         });
         
