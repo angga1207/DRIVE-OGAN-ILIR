@@ -15,8 +15,8 @@ export function serverDomain() {
 }
 
 export function clientDomain() {
-    const uri = 'http://localhost:3000';
-    // const uri = 'https://drive.oganilirkab.go.id';
+    // const uri = 'http://localhost:3000';
+    const uri = 'https://drive.oganilirkab.go.id';
     return uri;
 }
 
