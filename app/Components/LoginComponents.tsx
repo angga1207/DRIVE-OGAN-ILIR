@@ -1,4 +1,6 @@
 import { ArrowLeftEndOnRectangleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { FaGooglePlay, FaApple } from "react-icons/fa6";
+
 
 interface LoginFormProps {
     formLogin: {
@@ -48,6 +50,7 @@ export const LoginForm = ({
                     type={showPassword ? 'text' : 'password'}
                     className="mt-1 p-2 text-white w-full border border-slate-700 rounded-md focus:border-slate-100 outline-none ring-0 focus:outline-none focus:ring-gray-300 transition-colors duration-300 disabled:bg-slate-700"
                     autoComplete="new-password"
+                    autoSave='off'
                     placeholder="Masukkan password"
                     value={formLogin.password}
                     disabled={isLoading || isAuthLoading}
@@ -76,8 +79,11 @@ export const LoginForm = ({
                     <button
                         disabled={isLoading || isAuthLoading}
                         type="submit"
-                        className="w-full bg-blue-900 text-white p-2 rounded-md hover:bg-blue-800 focus:outline-none focus:bg-blue-900 focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300 cursor-pointer flex items-center justify-center gap-2"
+                        className="w-full relative flex items-center justify-center gap-2 text-white group overflow-hidden bg-gradient-to-r from-blue-800 to-blue-600 py-2 px-3 rounded-lg border border-blue-400 shadow-lg hover:shadow-xl transition-all duration-500 cursor-pointer"
                     >
+                        {/* Scan Animation Overlay */}
+                        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+
                         <div>
                             {!isAuthLoading ? (
                                 <ArrowLeftEndOnRectangleIcon className="w-4 h-4" />
@@ -88,6 +94,9 @@ export const LoginForm = ({
                         <div>
                             {isAuthLoading ? 'Sedang Authentikasi...' : 'Masuk'}
                         </div>
+
+                        {/* Glow effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
                     </button>
                 )}
             </div>
@@ -109,34 +118,45 @@ export const SocialLoginButtons = ({
     onSemestaLogin,
 }: SocialLoginButtonsProps) => {
     return (
-        <div className="mt-4 flex flex-col lg:flex-row items-center justify-center flex-wrap gap-4">
-            <div className="w-full lg:w-2/3 mb-2 lg:mb-0">
-                <button
-                    type="button"
-                    className="w-full flex justify-center items-center gap-2 bg-blue-900 text-sm text-white p-2 rounded-md hover:bg-blue-700 border border-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={isLoading || isAuthLoading}
-                    onClick={onGoogleLogin}
-                >
-                    <GoogleIcon />
-                    Masuk menggunakan Google
-                </button>
-            </div>
+        <div className="mt-4 flex flex-col items-center justify-center gap-4">
+            <button
+                type="button"
+                className="w-full relative flex items-center justify-center gap-2 text-white group overflow-hidden bg-gradient-to-r from-blue-800 to-blue-600 py-2 px-3 rounded-lg border border-blue-400 shadow-lg hover:shadow-xl transition-all duration-500 cursor-pointer"
+                disabled={isLoading || isAuthLoading}
+                onClick={onGoogleLogin}
+            >
+                {/* Scan Animation Overlay */}
+                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
 
-            <div className="w-full lg:w-2/3 mb-2 lg:mb-0">
-                <button
-                    type="button"
-                    className="w-full flex justify-center items-center gap-2 bg-blue-900 text-sm text-white p-2 rounded-md hover:bg-blue-700 border border-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={isLoading || isAuthLoading}
-                    onClick={onSemestaLogin}
-                >
-                    <img
-                        src="https://semesta.oganilirkab.go.id/assets_login/images/bw_icon_only@4x.png"
-                        alt="Semesta"
-                        className="w-5 h-5"
-                    />
+                <GoogleIcon />
+                <div className='font-semibold whitespace-nowrap'>
+                    Masuk menggunakan Google
+                </div>
+
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
+            </button>
+
+            <button
+                type="button"
+                className="w-full relative flex items-center justify-center gap-2 text-white group overflow-hidden bg-gradient-to-r from-blue-800 to-blue-600 py-2 px-3 rounded-lg border border-blue-400 shadow-lg hover:shadow-xl transition-all duration-500 cursor-pointer"
+                disabled={isLoading || isAuthLoading}
+                onClick={onSemestaLogin}
+            >
+                {/* Scan Animation Overlay */}
+                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+                <img
+                    src="https://semesta.oganilirkab.go.id/assets_login/images/bw_icon_only@4x.png"
+                    alt="Semesta"
+                    className="w-5 h-5"
+                />
+                <div className='font-semibold whitespace-nowrap'>
                     Masuk menggunakan Semesta
-                </button>
-            </div>
+                </div>
+
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
+            </button>
         </div>
     );
 };
@@ -170,6 +190,45 @@ export const LoginLeftPanel = () => (
             <p className="text-sm font-normal mb-6 text-white text-center">
                 Drive Ogan Ilir adalah aplikasi berbasis web yang memudahkan masyarakat Kabupaten Ogan Ilir dalam menyimpan dan berbagi file secara online.
             </p>
+
+            <div className="flex justify-center gap-4 mt-4">
+                <a
+                    href="https://play.google.com/store/apps/details?id=id.go.oganilirkab.drive"
+                    className="relative flex items-center gap-2 text-white group overflow-hidden bg-gradient-to-r from-green-600 to-green-500 px-4 py-2 rounded-lg border border-green-400 shadow-lg hover:shadow-xl transition-all duration-500"
+                    target='_blank'
+                    rel='noopener noreferrer'
+                >
+                    {/* Scan Animation Overlay */}
+                    <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+
+                    <FaGooglePlay className="h-5 w-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative z-10" />
+                    <div className='text-xl font-semibold group-hover:text-green-100 transition-all duration-500 relative z-10'>
+                        <span className="sr-only">Download di</span> Google Play
+                    </div>
+
+                    {/* Glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-green-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
+                </a>
+
+                <a
+                    href="https://apps.apple.com/id/app/drive-ogan-ilir/id6444251234"
+                    className="relative flex items-center gap-2 text-white group overflow-hidden bg-gradient-to-r from-gray-800 to-gray-700 px-4 py-2 rounded-lg border border-gray-600 shadow-lg hover:shadow-xl transition-all duration-500"
+                    target='_blank'
+                    rel='noopener noreferrer'
+                >
+                    {/* Scan Animation Overlay */}
+                    <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+
+                    <FaApple className="h-5 w-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative z-10" />
+                    <div className='text-xl font-semibold group-hover:text-gray-100 transition-all duration-500 relative z-10'>
+                        <span className="sr-only">Download di</span> App Store
+                    </div>
+
+                    {/* Glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-600/20 to-gray-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
+                </a>
+            </div>
+
         </div>
     </div>
 );

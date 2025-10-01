@@ -127,8 +127,12 @@ export const handleGoogleLogin = async (userSession: any, setIsAuthLoading: (loa
             setCookie('user', JSON.stringify(res.data.user));
             localStorage.removeItem('logginByGoogle');
 
-            signIn('google', { callbackUrl: '/' });
-            window.location.href = '/';
+            // check cookie token
+            const tokenCookie = getCookie('token');
+            if (tokenCookie) {
+                signIn('google', { callbackUrl: '/' });
+                window.location.href = '/';
+            }
         } else {
             showToast('error', 'Error', res.message);
         }
