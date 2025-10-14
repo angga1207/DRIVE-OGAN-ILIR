@@ -91,7 +91,7 @@ const AddMenu = ({
                 {isDisabled && (
                     <Link
                         href={`#`}
-                        className="flex items-center justify-center gap-1 cursor-not-allowed rounded-xl shadow bg-gray-100 text-gray-400 px-3 py-2 select-none">
+                        className="flex items-center justify-center gap-1 cursor-not-allowed rounded-xl shadow bg-gray-400 text-gray-900 px-3 py-2 select-none">
                         <PlusCircleIcon className="h-6 w-6" />
                         <div className="font-semibold">
                             TAMBAH
@@ -104,7 +104,7 @@ const AddMenu = ({
                         <MenuButton>
 
                             {(isLoading === false && isLoadingFolder === false && isLoadingBreadcrumbs === false) ? (
-                                <div className="flex items-center justify-center gap-1 cursor-pointer rounded-xl shadow bg-blue-100 hover:bg-blue-200 text-blue-600 px-3 py-2 transition-all duration-300 select-none">
+                                <div className="flex items-center justify-center gap-1 cursor-pointer rounded-xl shadow bg-[#ebbd18] hover:bg-[#003a69] text-[#003a69] hover:text-[#ebbd18] hover:border hover:border-[#ebbd18] px-3 py-2 transition-all duration-300 select-none">
                                     <PlusCircleIcon className="h-6 w-6" />
                                     <div className="font-semibold">
                                         TAMBAH
@@ -117,7 +117,7 @@ const AddMenu = ({
                         <MenuItems
                             anchor="bottom end"
                             transition
-                            className="absolute right-0 z-10 mt-1 bg-white px-2 py-3 rounded-xl shadow w-[236px]"
+                            className="absolute right-0 z-10 mt-1 bg-[#ebbd18] px-2 py-3 rounded-xl shadow w-[236px]"
                         >
                             <MenuItem>
                                 {/* make folder start */}

@@ -1,0 +1,15 @@
+# Apple Sign In Private Keys
+*.p8
+*.p12
+*.pem
+*.key
+
+# Generated secrets
+apple-client-secret.txt
+apple-client-secret.env
+
+# Node modules (if any)
+node_modules/
+
+# Logs
+*.log

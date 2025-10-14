@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
 
     // Prepare form data
     const formData = new FormData();
-    formData.append('parent_slug', parent_slug);
+    formData.append('parent_slug', parent_slug ?? 0);
     formData.append('name', name);
 
     // Make request to actual server

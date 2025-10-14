@@ -75,15 +75,15 @@ const SideBar = ({
     return (
         <>
             <div className="grow flex-none">
-                <ul role="list" className="divide-y divide-slate-100">
+                <ul role="list" className="space-y-1">
 
-                    <li className={`px-3 py-2 rounded-xl cursor-pointer transition-all duration-300 ${activeMenu === 'home' ? 'bg-blue-200 hover:bg-blue-300 font-semibold' : 'hover:bg-slate-200'}`}>
+                    <li className={`px-3 py-2 rounded-xl cursor-pointer transition-all duration-300 ${activeMenu === 'home' ? 'bg-[#ebbd18] hover:bg-[#ebbd18] font-semibold' : 'hover:bg-[#ebbd18]'} group`}>
                         <Link
                             href={'/'}
                             className="flex items-center justify-between">
                             <div
                                 className="w-full">
-                                <p className={`text-sm text-slate-900`}>
+                                <p className={`text-sm ${activeMenu === 'home' ? 'text-[#003a69]' : 'text-[#ebbd18] group-hover:text-[#003a69]'}`}>
                                     {activeMenu === 'home' ? (
                                         <FolderIconSolid className="h-4 w-4 inline mb-0.5 mr-1" />
                                     ) : (
@@ -95,13 +95,13 @@ const SideBar = ({
                         </Link>
                     </li>
 
-                    <li className={`px-3 py-2 rounded-xl cursor-pointer transition-all duration-300 ${activeMenu === 'favorite' ? 'bg-blue-200 hover:bg-blue-300 font-semibold' : 'hover:bg-slate-200'}`}>
+                    <li className={`px-3 py-2 rounded-xl cursor-pointer transition-all duration-300 ${activeMenu === 'favorite' ? 'bg-[#ebbd18] hover:bg-[#ebbd18] font-semibold' : 'hover:bg-[#ebbd18]'} group`}>
                         <Link
                             href={'/favorite'}
                             className="flex items-center justify-between">
                             <div
                                 className="w-full">
-                                <p className={`text-sm text-slate-900`}>
+                                <p className={`text-sm ${activeMenu === 'favorite' ? 'text-[#003a69]' : 'text-[#ebbd18] group-hover:text-[#003a69]'}`}>
                                     {activeMenu === 'favorite' ? (
                                         <StarIconSolid className="h-4 w-4 inline mb-0.5 mr-1" />
                                     ) : (
@@ -115,13 +115,13 @@ const SideBar = ({
 
                     <div className="border-t border-slate-200 my-2"></div>
 
-                    <li className={`px-3 py-2 rounded-xl cursor-pointer transition-all duration-300 ${activeMenu === 'trash' ? 'bg-blue-200 hover:bg-blue-300 font-semibold' : 'hover:bg-slate-200'}`}>
+                    <li className={`px-3 py-2 rounded-xl cursor-pointer transition-all duration-300 ${activeMenu === 'trash' ? 'bg-[#ebbd18] hover:bg-[#ebbd18] font-semibold' : 'hover:bg-[#ebbd18]'} group`}>
                         <Link
                             href={'/trash'}
                             className="flex items-center justify-between">
                             <div
                                 className="w-full">
-                                <p className={`text-sm text-slate-900`}>
+                                <p className={`text-sm ${activeMenu === 'trash' ? 'text-[#003a69]' : 'text-[#ebbd18] group-hover:text-[#003a69]'}`}>
                                     {activeMenu === 'trash' ? (
                                         <TrashIconSolid className="h-4 w-4 inline mb-0.5 mr-1" />
                                     ) : (
@@ -148,7 +148,7 @@ const SideBar = ({
                     </div>
                     <div className="w-full h-4 border border-slate-200 bg-slate-100 rounded-xl">
                         <div
-                            className="h-full px-1 flex items-center bg-blue-300 text-[10px] text-blue-900 text-center leading-none rounded-xl whitespace-nowrap font-bold"
+                            className="h-full px-1 flex items-center bg-[#ebbd18] text-[10px] text-[#003a69] text-center leading-none rounded-xl whitespace-nowrap font-bold"
                             style={{
                                 width: `${userData?.storage?.percent}%`,
                                 minWidth: '30px',

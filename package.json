@@ -21,6 +21,7 @@
     "cookies-next": "^5.1.0",
     "crypto-js": "^4.2.0",
     "firebase": "^12.3.0",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.544.0",
     "next": "15.2.4",
     "next-auth": "^4.24.11",

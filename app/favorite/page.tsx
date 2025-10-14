@@ -339,7 +339,7 @@ const Page = () => {
             <div className="grid grid-cols-12">
 
                 <div className="col-span-12 lg:col-span-2">
-                    <div className="h-auto lg:h-[calc(100vh-64px)] flex flex-col bg-gray-100 pt-5 pb-20 px-2">
+                    <div className="h-auto lg:h-[calc(100vh-64px)] flex flex-col bg-[#003a69] pt-5 pb-20 px-2">
 
                         <AddMenu
                             isDisabled={true}

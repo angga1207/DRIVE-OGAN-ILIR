@@ -54,7 +54,7 @@ const SearchEngine = () => {
         <div className="relative w-full">
             <div className="relative flex items-center group">
                 <div className="absolute w-8 h-full flex items-center justify-center pointer-events-none">
-                    <MagnifyingGlassIcon className="w-5 h-5 text-blue-400" />
+                    <MagnifyingGlassIcon className="w-5 h-5 text-white group-focus-within:text-[#003a69]" />
                 </div>
                 <Input
                     type="search"
@@ -76,7 +76,7 @@ const SearchEngine = () => {
                             setSearchOpen(false);
                         }
                     }}
-                    className="border border-white focus:border-slate-400 rounded-xl text-white focus:bg-white focus:text-slate-800 px-2 py-1 pl-8 w-full outline-0 ring-0" />
+                    className="border border-white focus:border-slate-400 rounded-xl text-white placeholder:text-white focus:bg-white focus:text-slate-800 px-2 py-1 pl-8 w-full outline-0 ring-0" />
             </div>
 
             {searchOpen && (

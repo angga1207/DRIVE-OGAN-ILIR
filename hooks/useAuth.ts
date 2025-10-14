@@ -122,23 +122,33 @@ export const handleGoogleLogin = async (userSession: any, setIsAuthLoading: (loa
         });
 
         if (res.status === 'success') {
+            // Konfigurasi cookie yang konsisten
+            const cookieOptions = { 
+                maxAge: 60 * 60 * 24 * 30, // 30 hari
+                httpOnly: false,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax' as const,
+                path: '/'
+            };
+
+            // Simpan token dan user data
+            setCookie('token', encryptClient(res.data.token), cookieOptions);
+            setCookie('user', JSON.stringify(res.data.user), cookieOptions);
             localStorage.setItem('user', JSON.stringify(res.data.user));
-            setCookie('token', encryptClient(res.data.token));
-            setCookie('user', JSON.stringify(res.data.user));
             localStorage.removeItem('logginByGoogle');
 
-            // check cookie token
-            const tokenCookie = getCookie('token');
-            if (tokenCookie) {
-                signIn('google', { callbackUrl: '/' });
-                window.location.href = '/';
-            }
+            console.log('Google login token tersimpan:', getCookie('token')); // Debug log
+
+            // Redirect ke halaman utama
+            window.location.href = '/';
         } else {
             showToast('error', 'Error', res.message);
+            localStorage.removeItem('logginByGoogle');
         }
     } catch (error) {
         console.error('Google login error:', error);
         showToast('error', 'Error', 'Terjadi kesalahan saat login dengan Google');
+        localStorage.removeItem('logginByGoogle');
     } finally {
         setIsAuthLoading(false);
     }
@@ -154,15 +164,34 @@ export const handleCredentialsLogin = async (
         const res = await attempLogin(formData);
 
         if (res.status === 'success') {
-            setCookie('token', encryptClient(res.data.token));
-            setCookie('user', JSON.stringify(res.data.user));
+            // Simpan token dan user data dengan konfigurasi cookie yang lebih baik
+            const cookieOptions = { 
+                maxAge: 60 * 60 * 24 * 30, // 30 hari
+                httpOnly: false, // Agar bisa diakses dari client-side
+                secure: process.env.NODE_ENV === 'production', // HTTPS di production
+                sameSite: 'lax' as const, // Untuk cross-origin yang lebih aman
+                path: '/' // Tersedia di seluruh aplikasi
+            };
+
+            setCookie('token', encryptClient(res.data.token), cookieOptions);
+            setCookie('user', JSON.stringify(res.data.user), cookieOptions);
             localStorage.setItem('user', JSON.stringify(res.data.user));
 
-            signIn('credentials', {
+            console.log('Token tersimpan:', getCookie('token')); // Debug log
+
+            // Sign in dengan NextAuth
+            const result = await signIn('credentials', {
                 username: formData.username,
                 password: formData.password,
                 redirect: false,
             });
+
+            if (result?.ok) {
+                // Redirect ke halaman utama setelah login berhasil
+                window.location.href = '/';
+            } else {
+                showToast('error', 'Error', 'Gagal melakukan login');
+            }
         } else if (res.status === 'error') {
             showToast('error', 'Error', res.message);
         } else if (res.status === 'error validation') {
@@ -186,15 +215,35 @@ export const handleSemestaLogin = async (
         const res = await atempLoginSemesta(data);
 
         if (res.status === 'success') {
-            setCookie('token', encryptClient(res.data.token));
-            setCookie('user', JSON.stringify(res.data.user));
+            // Konfigurasi cookie yang konsisten
+            const cookieOptions = { 
+                maxAge: 60 * 60 * 24 * 30, // 30 hari
+                httpOnly: false,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax' as const,
+                path: '/'
+            };
+
+            // Simpan token dan user data
+            setCookie('token', encryptClient(res.data.token), cookieOptions);
+            setCookie('user', JSON.stringify(res.data.user), cookieOptions);
             localStorage.setItem('user', JSON.stringify(res.data.user));
 
-            signIn('credentials', {
+            console.log('Semesta login token tersimpan:', getCookie('token')); // Debug log
+
+            // Sign in dengan NextAuth
+            const result = await signIn('credentials', {
                 username: data.nip,
                 password: data.password,
                 redirect: false,
             });
+
+            if (result?.ok) {
+                // Redirect ke halaman utama setelah login berhasil
+                window.location.href = '/';
+            } else {
+                showToast('error', 'Error', 'Gagal melakukan login');
+            }
         } else if (res.status === 'error') {
             showToast('error', 'Error', res.message);
         }
@@ -221,19 +270,43 @@ export const handleAutoLoginSubmit = async (
         });
 
         if (res.status === 'success') {
-            console.log(res);
-            setCookie('token', encryptClient(res.data.token));
-            setCookie('user', JSON.stringify(res.data.user));
+            console.log('Auto login success:', res);
+            
+            // Konfigurasi cookie yang konsisten
+            const cookieOptions = { 
+                maxAge: 60 * 60 * 24 * 30, // 30 hari
+                httpOnly: false,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax' as const,
+                path: '/'
+            };
+
+            // Simpan token dan user data dengan konfigurasi yang tepat
+            setCookie('token', encryptClient(res.data.token), cookieOptions);
+            setCookie('user', JSON.stringify(res.data.user), cookieOptions);
             localStorage.setItem('user', JSON.stringify(res.data.user));
 
-            signIn('credentials', {
+            console.log('Auto login token tersimpan:', getCookie('token')); // Debug log
+
+            // Sign in dengan NextAuth
+            const result = await signIn('credentials', {
                 username: nip,
                 autoLogin: '1',
                 redirect: false,
             });
+
+            if (result?.ok) {
+                // Redirect ke halaman utama setelah auto login berhasil
+                window.location.href = '/';
+            } else {
+                showToast('error', 'Error', 'Gagal melakukan auto login');
+            }
+        } else {
+            showToast('error', 'Error', res.message || 'Auto login gagal');
         }
     } catch (error) {
         console.error('Auto login error:', error);
+        showToast('error', 'Error', 'Terjadi kesalahan saat auto login');
     } finally {
         setIsAuthLoading(false);
     }

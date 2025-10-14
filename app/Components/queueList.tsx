@@ -77,7 +77,7 @@ const QueueList = (
                         </div>
                     )}
 
-                    <div className="font-bold text-sm bg-gray-800 text-white flex items-center justify-center mb-2 border-b border-slate-200 pb-2 px-4 py-2 rounded-t-xl">
+                    <div className="font-bold text-sm bg-[#003a69] text-white flex items-center justify-center mb-2 border-b border-slate-200 pb-2 px-4 py-2 rounded-t-xl">
                         <div className="text-center">
                             Daftar Antrian Unggah
                         </div>
@@ -133,7 +133,7 @@ const QueueList = (
             {isShow == false && (
                 <div className="fixed bottom-20 right-0">
                     <div
-                        className="absolute top-3 -left-10 w-10 h-10 rounded-l-lg bg-gray-800 text-white border border-r-0 border-white shadow-sm flex items-center justify-center cursor-pointer opacity-50 hover:opacity-100 transition-all duration-300"
+                        className="absolute top-3 -left-10 w-10 h-10 rounded-l-lg bg-[#003a69] text-white border border-r-0 border-white shadow-sm flex items-center justify-center cursor-pointer opacity-50 hover:opacity-100 transition-all duration-300"
                         onClick={() => {
                             onOpen();
                         }}

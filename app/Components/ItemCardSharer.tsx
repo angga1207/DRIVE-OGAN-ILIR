@@ -199,7 +199,7 @@ const ItemCardSharer = (
                                     title={item?.author?.fullname}
                                 >
                                     <div className="h-4 w-4 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-semibold text-xs select-none">
-                                        <img src={item?.author?.photo ? item?.author?.photo : '/avatar.png'} alt={item?.author?.fullname} className="h-4 w-4 rounded-full" />
+                                        <img src={item?.author?.photo ? item?.author?.photo : '/favicon.png'} alt={item?.author?.fullname} className="h-4 w-4 rounded-full" />
                                     </div>
                                 </div>
                             </Tippy>

@@ -1,5 +1,7 @@
 import { ArrowLeftEndOnRectangleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 import { FaGooglePlay, FaApple } from "react-icons/fa6";
+import { GiExitDoor } from "react-icons/gi";
 
 
 interface LoginFormProps {
@@ -35,7 +37,7 @@ export const LoginForm = ({
                 </label>
                 <input
                     type="text"
-                    className="mt-1 p-2 text-white w-full border border-slate-700 rounded-md focus:border-slate-100 outline-none ring-0 focus:outline-none focus:ring-gray-300 transition-colors duration-300 disabled:bg-slate-700"
+                    className="mt-1 p-2 text-white w-full border border-white rounded-md focus:border-slate-100 outline-none ring-0 focus:outline-none focus:ring-gray-300 transition-colors duration-300 disabled:bg-slate-500/50"
                     autoComplete="new-username"
                     placeholder="Masukkan username"
                     value={formLogin.username}
@@ -48,7 +50,7 @@ export const LoginForm = ({
                 <label className="block text-sm font-medium text-white">Password</label>
                 <input
                     type={showPassword ? 'text' : 'password'}
-                    className="mt-1 p-2 text-white w-full border border-slate-700 rounded-md focus:border-slate-100 outline-none ring-0 focus:outline-none focus:ring-gray-300 transition-colors duration-300 disabled:bg-slate-700"
+                    className="mt-1 p-2 text-white w-full border border-white rounded-md focus:border-slate-100 outline-none ring-0 focus:outline-none focus:ring-gray-300 transition-colors duration-300 disabled:bg-slate-500/50"
                     autoComplete="new-password"
                     autoSave='off'
                     placeholder="Masukkan password"
@@ -79,14 +81,14 @@ export const LoginForm = ({
                     <button
                         disabled={isLoading || isAuthLoading}
                         type="submit"
-                        className="w-full relative flex items-center justify-center gap-2 text-white group overflow-hidden bg-gradient-to-r from-blue-800 to-blue-600 py-2 px-3 rounded-lg border border-blue-400 shadow-lg hover:shadow-xl transition-all duration-500 cursor-pointer"
+                        className="w-full relative flex items-center justify-center gap-2 group overflow-hidden bg-gradient-to-r from-slate-100 to-slate-200 py-2 px-3 rounded-lg border border-slate-400 shadow-lg hover:shadow-xl transition-all duration-500 cursor-pointer"
                     >
                         {/* Scan Animation Overlay */}
                         <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
 
                         <div>
                             {!isAuthLoading ? (
-                                <ArrowLeftEndOnRectangleIcon className="w-4 h-4" />
+                                <GiExitDoor className="w-5 h-5" />
                             ) : (
                                 <ArrowPathIcon className="h-5 w-5 animate-spin" />
                             )}
@@ -96,7 +98,7 @@ export const LoginForm = ({
                         </div>
 
                         {/* Glow effect */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-200/20 to-indigo-300/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
                     </button>
                 )}
             </div>
@@ -121,7 +123,7 @@ export const SocialLoginButtons = ({
         <div className="mt-4 flex flex-col items-center justify-center gap-4">
             <button
                 type="button"
-                className="w-full relative flex items-center justify-center gap-2 text-white group overflow-hidden bg-gradient-to-r from-blue-800 to-blue-600 py-2 px-3 rounded-lg border border-blue-400 shadow-lg hover:shadow-xl transition-all duration-500 cursor-pointer"
+                className="w-full relative flex items-center justify-center gap-2 group overflow-hidden bg-gradient-to-r from-slate-100 to-slate-200 py-2 px-3 rounded-lg border border-slate-400 shadow-lg hover:shadow-xl transition-all duration-500 cursor-pointer"
                 disabled={isLoading || isAuthLoading}
                 onClick={onGoogleLogin}
             >
@@ -134,19 +136,19 @@ export const SocialLoginButtons = ({
                 </div>
 
                 {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-200/20 to-indigo-300/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
             </button>
 
             <button
                 type="button"
-                className="w-full relative flex items-center justify-center gap-2 text-white group overflow-hidden bg-gradient-to-r from-blue-800 to-blue-600 py-2 px-3 rounded-lg border border-blue-400 shadow-lg hover:shadow-xl transition-all duration-500 cursor-pointer"
+                className="w-full relative flex items-center justify-center gap-2 group overflow-hidden bg-gradient-to-r from-slate-100 to-slate-200 py-2 px-3 rounded-lg border border-slate-400 shadow-lg hover:shadow-xl transition-all duration-500 cursor-pointer"
                 disabled={isLoading || isAuthLoading}
                 onClick={onSemestaLogin}
             >
                 {/* Scan Animation Overlay */}
                 <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
                 <img
-                    src="https://semesta.oganilirkab.go.id/assets_login/images/bw_icon_only@4x.png"
+                    src="/logo-semesta.png"
                     alt="Semesta"
                     className="w-5 h-5"
                 />
@@ -155,7 +157,7 @@ export const SocialLoginButtons = ({
                 </div>
 
                 {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-200/20 to-indigo-300/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
             </button>
         </div>
     );
@@ -172,22 +174,33 @@ const GoogleIcon = () => (
 
 export const LoginBackground = () => (
     <>
-        <div className="fixed top-0 left-0 w-full h-screen bg-[url('/login-bg.jpg')] bg-opacity-50 bg-cover bg-center bg-no-repeat -z-2"></div>
-        <div className="fixed top-0 left-0 w-full h-screen bg-radial-[at_25%_55%] to-slate-300/50 from-slate-900/70 bg-cover bg-center bg-no-repeat -z-1"></div>
+        <div className="fixed top-0 left-0 w-full lg:w-1/2 h-full bg-[url('/login-bg.png')] bg-center bg-opacity-50 bg-cover bg-no-repeat -z-2"></div>
+        {/* <div className="fixed top-0 left-0 w-full h-screen bg-radial-[at_25%_55%] to-slate-800/50 from-slate-500/70 bg-cover bg-center bg-no-repeat -z-1"></div> */}
     </>
 );
 
 export const LoginLeftPanel = () => (
     <div className="hidden lg:flex items-center justify-center flex-1 text-black">
         <div className="max-w-md text-center">
-            <div className="mb-6">
+            <Link
+                href={'/filosofi.pdf'}
+                download={true}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mb-6 flex items-center justify-center gap-x-4 select-none">
                 <img
                     alt="Drive Ogan Ilir"
-                    src="/logo.png"
+                    // src="/logo.png"
+                    src="/favicon.png"
                     className="h-40 w-full object-contain"
                 />
-            </div>
-            <p className="text-sm font-normal mb-6 text-white text-center">
+                <img
+                    alt="Drive Ogan Ilir"
+                    src="/word.png"
+                    className="h-32 w-full object-contain"
+                />
+            </Link>
+            <p className="text-sm font-semibold mb-6 text-center text-white select-none">
                 Drive Ogan Ilir adalah aplikasi berbasis web yang memudahkan masyarakat Kabupaten Ogan Ilir dalam menyimpan dan berbagi file secara online.
             </p>
 

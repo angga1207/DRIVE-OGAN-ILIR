@@ -136,6 +136,10 @@ function Page() {
             setItems(res.data);
           } else if (res.message.status == 401) {
             window.location.href = '/logout';
+          } else if (res.status == 'error') {
+            if (res.code == 401 || res.message == 'Unauthenticated') {
+              window.location.href = '/logout';
+            }
           }
           setIsLoading(false);
         });
@@ -155,8 +159,13 @@ function Page() {
             setItems(res.data);
           } else if (res.message.status == 401) {
             window.location.href = '/logout';
+          } else if (res.status == 'error') {
+            if (res.code == 401 || res.message == 'Unauthenticated') {
+              window.location.href = '/logout';
+            }
           }
           setIsLoading(false);
+
         });
       }
       setSort(sorts[0]);
@@ -222,7 +231,7 @@ function Page() {
       try {
         // Get bearer token for authorization
         const token = await getBearerTokenForApi();
-        
+
         // Use axios for upload progress tracking with Next.js API route
         const res = await axios.post(`/api/upload/${globalSlug}`, formData, {
           headers: {
@@ -546,7 +555,7 @@ function Page() {
 
       <div className="grid grid-cols-12">
         <div className="col-span-12 lg:col-span-2">
-          <div className="h-auto lg:h-[calc(100vh-64px)] flex flex-col bg-gray-100 pt-5 pb-20 px-2">
+          <div className="h-auto lg:h-[calc(100vh-64px)] flex flex-col bg-[#003a69] pt-5 pb-20 px-2">
 
             <AddMenu
               isDisabled={false}

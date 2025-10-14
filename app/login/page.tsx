@@ -44,12 +44,15 @@ const Login = () => {
     useEffect(() => {
         if (!isMounted) return;
 
-        if (session.status !== 'authenticated') {
-            handleServerCheck(setIsLoading);
+        // Jika sudah authenticated dan ada token, redirect ke halaman utama
+        if (session.status === 'authenticated' && getCookie('token')) {
+            window.location.href = '/';
+            return;
         }
 
-        if (session.status === 'authenticated' && getCookie('token')) {
-            handleServerCheck(setIsLoading, true);
+        // Jika belum authenticated, lakukan server check
+        if (session.status !== 'authenticated') {
+            handleServerCheck(setIsLoading);
         }
     }, [isMounted, session.status]);
 
@@ -96,7 +99,7 @@ const Login = () => {
             <div className="flex w-full h-screen items-center justify-center -my-0">
                 <LoginLeftPanel />
 
-                <div className="w-full h-full overflow-y-auto bg-[#243158] lg:w-1/2 flex items-center justify-center">
+                <div className="w-full h-full overflow-y-auto lg:bg-gradient-to-b lg:from-[#003a69] lg:from-35% lg:to-[#ebbd18] lg:w-1/2 flex items-center justify-center">
                     <div className="max-w-md w-full p-6">
                         <LoginHeader />
 

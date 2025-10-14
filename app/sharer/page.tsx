@@ -42,7 +42,6 @@ function Page() {
 
     useEffect(() => {
         if (isMounted) {
-            console.log(globalSlug)
             setItems([]);
             setIsLoading(true);
             setIsLoadingBreadcrumbs(true);
