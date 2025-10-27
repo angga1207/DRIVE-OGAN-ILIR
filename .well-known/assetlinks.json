@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "id.go.oganilirkab.drive",
+            "sha256_cert_fingerprints": [
+                "FE:B2:6A:E7:A0:37:5D:BE:7A:E4:D1:B4:51:8A:88:36:E9:87:FD:B1:3F:CB:2E:38:47:B8:DA:40:D4:0C:9E:52"
+            ]
+        }
+    }
+]
