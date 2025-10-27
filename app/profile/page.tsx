@@ -148,7 +148,7 @@ const Profile = () => {
 
         updateProfile(formData).then((res: any) => {
             if (res.status === 'success') {
-                console.log(res);
+                // console.log(res);
                 const userLocal = localStorage.getItem('user');
                 if (userLocal) {
                     const parsedUser = JSON.parse(userLocal);
