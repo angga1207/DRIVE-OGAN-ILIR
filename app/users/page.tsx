@@ -98,12 +98,18 @@ const Page = () => {
                         setTotalData(0);
                     }
                 });
+                SweetAlertConfirm(
+                    "Berhasil",
+                    "Data berhasil diubah",
+                    "Tutup",
+                );
+            } else {
+                SweetAlertConfirm(
+                    "Gagal",
+                    res.message || "Data gagal diubah",
+                    "Tutup",
+                );
             }
-            SweetAlertConfirm(
-                "Berhasil",
-                "Data berhasil diubah",
-                "Tutup",
-            );
             setLoading(false);
             setDetailData(null);
             setModalOpen(false);

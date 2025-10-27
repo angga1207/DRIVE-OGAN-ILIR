@@ -46,7 +46,7 @@ const Breadcrumbs = (
 
                 <BreadcrumbItem>
                     <BreadcrumbLink asChild>
-                        <Link href={`/`} className="font-semibold hover:text-blue-500 flex gap-x-1 items-center transition-all duration-300">
+                        <Link href={`/`} className="font-semibold text-[#003a69] hover:text-[#ebbd18] flex gap-x-1 items-center transition-all duration-300">
                             <FolderIcon className="h-5 w-5 inline" />
                             Drive Saya
                         </Link>
@@ -65,7 +65,7 @@ const Breadcrumbs = (
                                     <>
                                         <BreadcrumbItem key={`bc-${index}`}>
                                             <BreadcrumbLink asChild>
-                                                <Link href={`/?_p=${item?.slug}`} className="font-semibold hover:text-blue-500 flex gap-x-1 items-center transition-all duration-300">
+                                                <Link href={`/?_p=${item?.slug}`} className="font-semibold text-[#003a69] hover:text-[#ebbd18] flex gap-x-1 items-center transition-all duration-300">
                                                     <FolderIcon className="h-5 w-5 inline" />
                                                     {item?.name}
                                                 </Link>
@@ -82,7 +82,7 @@ const Breadcrumbs = (
                                     <>
                                         <BreadcrumbItem key={`bc-${index}`}>
                                             <BreadcrumbLink asChild>
-                                                <Link href={`/?_p=${item?.slug}`} className="font-semibold hover:text-blue-500 flex gap-x-1 items-center transition-all duration-300">
+                                                <Link href={`/?_p=${item?.slug}`} className="font-semibold text-[#003a69] hover:text-[#ebbd18] flex gap-x-1 items-center transition-all duration-300">
                                                     <FolderIcon className="h-5 w-5 inline" />
                                                     <div className='truncate max-w-[180px]'>
                                                         {item?.name}
@@ -106,7 +106,7 @@ const Breadcrumbs = (
                                             <DropdownMenuContent align="start">
                                                 {items?.paths?.slice(1, -1).map((item: any, index: number) => (
                                                     <DropdownMenuItem key={`bc-${index}`}>
-                                                        <Link href={`/?_p=${item?.slug}`} className="font-semibold hover:text-blue-500 flex gap-x-1 items-center transition-all duration-300">
+                                                        <Link href={`/?_p=${item?.slug}`} className="font-semibold text-[#003a69] hover:text-[#ebbd18] flex gap-x-1 items-center transition-all duration-300">
                                                             <FolderIcon className="h-5 w-5 inline" />
                                                             <div className='truncate max-w-[180px]'>
                                                                 {item?.name}
@@ -127,7 +127,7 @@ const Breadcrumbs = (
                                     <>
                                         <BreadcrumbItem key={`bc-${index}`}>
                                             <BreadcrumbLink asChild>
-                                                <Link href={`/?_p=${item?.slug}`} className="font-semibold hover:text-blue-500 flex gap-x-1 items-center transition-all duration-300">
+                                                <Link href={`/?_p=${item?.slug}`} className="font-semibold text-[#003a69] hover:text-[#ebbd18] flex gap-x-1 items-center transition-all duration-300">
                                                     <FolderIcon className="h-5 w-5 inline" />
                                                     <div className='truncate max-w-[180px]'>
                                                         {item?.name}
@@ -145,9 +145,9 @@ const Breadcrumbs = (
 
                 {currentPath && (
                     <BreadcrumbItem>
-                        <BreadcrumbPage className="font-semibold text-slate-900 flex gap-x-1 items-center transition-all duration-300">
+                        <BreadcrumbPage className="font-semibold text-[#003a69] flex gap-x-1 items-center transition-all duration-300">
                             <Menu>
-                                <MenuButton className="font-semibold text-slate-900 flex gap-x-1 items-center transition-all duration-300 cursor-pointer select-none">
+                                <MenuButton className="font-semibold text-[#003a69] flex gap-x-1 items-center transition-all duration-300 cursor-pointer select-none">
                                     <FolderIcon className="h-5 w-5 inline" />
                                     <div className='truncate max-w-[180px]'>
                                         {currentPath?.name}

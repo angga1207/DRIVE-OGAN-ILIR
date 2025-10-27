@@ -282,13 +282,13 @@ const Page = () => {
         setFavorite([data.slug], status).then((res: any) => {
             if (res.status === 'success') {
                 if (searchParams.get('_p')) {
-                    getItems(searchParams.get('_p')).then((res: any) => {
+                    getFavoriteItems(searchParams.get('_p')).then((res: any) => {
                         if (res.status === 'success') {
                             setItems(res.data);
                         }
                     });
                 } else {
-                    getItems().then((res: any) => {
+                    getFavoriteItems().then((res: any) => {
                         if (res.status === 'success') {
                             setItems(res.data);
                         }
@@ -336,7 +336,7 @@ const Page = () => {
     return (
         <div
             onContextMenu={(e) => e.preventDefault()}>
-            <div className="grid grid-cols-12">
+            <div className="grid grid-cols-12 bg-gray-200">
 
                 <div className="col-span-12 lg:col-span-2">
                     <div className="h-auto lg:h-[calc(100vh-64px)] flex flex-col bg-[#003a69] pt-5 pb-20 px-2">
@@ -490,7 +490,7 @@ const Page = () => {
                                             <TrashIcon className="h-20 w-20 text-slate-300" />
                                         </div>
                                         <div className="text-slate-300 text-xl font-bold">
-                                            Kotak Sampah Kosong
+                                            Berkas Favorit Kosong
                                         </div>
                                         <div className="text-slate-300">
                                             Berkas yang dihapus akan muncul di sini
@@ -498,77 +498,80 @@ const Page = () => {
                                     </div>
                                 )}
 
-                                {items.map((item: any, index: number) => (
-                                    <ItemCardList
-                                        // draggable={true}
-                                        draggable={false}
-                                        // draggable={selectedItems.length == 0}
-                                        onDragging={(data: any) => {
-                                            setIsMoveDragging(data)
-                                        }}
+                                <div
+                                    className="flex flex-col gap-y-2 max-h-[calc(100vh-200px)] overflow-y-auto px-4 -mx-4 pb-4">
+                                    {items.map((item: any, index: number) => (
+                                        <ItemCardList
+                                            // draggable={true}
+                                            draggable={false}
+                                            // draggable={selectedItems.length == 0}
+                                            onDragging={(data: any) => {
+                                                setIsMoveDragging(data)
+                                            }}
 
-                                        key={`item-${index}`}
-                                        item={item}
+                                            key={`item-${index}`}
+                                            item={item}
 
-                                        onItemClick={() => {
+                                            onItemClick={() => {
 
-                                        }}
+                                            }}
 
-                                        onItemShare={(e: any) => {
-                                            setOpenModalShare(true);
-                                            setInDetailItem(e);
-                                        }}
-                                        onItemEdit={(e: any) => {
-                                            if (e.type === 'folder') {
-                                                setOpenModalFolder(true);
+                                            onItemShare={(e: any) => {
+                                                setOpenModalShare(true);
                                                 setInDetailItem(e);
-                                            } else if (e.type === 'file') {
-                                                setOpenModalFolder(true);
-                                                setInDetailItem(e);
-                                            }
-                                        }}
-                                        onItemDownload={(e: any) => {
-                                            handleDownload(e);
-                                        }}
-                                        isDownloading={isDownloading?.find((i: any) => i.id === item.id) ? true : false}
-                                        onItemOpen={(e: any) => {
-                                            if (e.type === 'folder') {
-                                                handleGoFolder(e.slug);
-                                            } else if (e.type === 'file') {
-                                                setOpenModal(true);
-                                                setInDetailItem(e);
-                                            }
-                                        }}
-                                        onItemDelete={(e: any) => {
-                                            SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin menghapus berkas ini?', 'Ya, Hapus!', 'Batalkan').then((result) => {
-                                                if (result.isConfirmed) {
-                                                    handleDeleteFile(e);
+                                            }}
+                                            onItemEdit={(e: any) => {
+                                                if (e.type === 'folder') {
+                                                    setOpenModalFolder(true);
+                                                    setInDetailItem(e);
+                                                } else if (e.type === 'file') {
+                                                    setOpenModalFolder(true);
+                                                    setInDetailItem(e);
                                                 }
-                                            });
-                                        }}
-                                        onItemSelect={(e: any) => {
-                                            setSelectedItems((prev: any) => {
-                                                if (prev.find((i: any) => i.id === e.id)) {
-                                                    return prev.filter((item: any) => item.id !== e.id);
-                                                } else {
-                                                    return [...prev, e];
+                                            }}
+                                            onItemDownload={(e: any) => {
+                                                handleDownload(e);
+                                            }}
+                                            isDownloading={isDownloading?.find((i: any) => i.id === item.id) ? true : false}
+                                            onItemOpen={(e: any) => {
+                                                if (e.type === 'folder') {
+                                                    handleGoFolder(e.slug);
+                                                } else if (e.type === 'file') {
+                                                    setOpenModal(true);
+                                                    setInDetailItem(e);
                                                 }
+                                            }}
+                                            onItemDelete={(e: any) => {
+                                                SweetAlertConfirm('Peringatan', 'Apakah anda yakin ingin menghapus berkas ini?', 'Ya, Hapus!', 'Batalkan').then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        handleDeleteFile(e);
+                                                    }
+                                                });
+                                            }}
+                                            onItemSelect={(e: any) => {
+                                                setSelectedItems((prev: any) => {
+                                                    if (prev.find((i: any) => i.id === e.id)) {
+                                                        return prev.filter((item: any) => item.id !== e.id);
+                                                    } else {
+                                                        return [...prev, e];
+                                                    }
 
-                                            });
-                                        }}
-                                        onMoveItems={(sourceItems: any, targetFolder: any) => {
-                                            // handleMoveToFolder(sourceItems, targetFolder);
-                                        }}
-                                        onSetFavorite={(e: any, is_favorite: boolean) => {
-                                            handleSetFavorite(e, is_favorite);
-                                        }}
-                                        selectedItems={selectedItems}
-                                        isLoading={false}
-                                        isError={false}
-                                        isSelected={selectedItems.find((i: any) => i.id === item.id) ? true : false}
-                                        isSelectedMode={selectedItems.length > 0}
-                                    />
-                                ))}
+                                                });
+                                            }}
+                                            onMoveItems={(sourceItems: any, targetFolder: any) => {
+                                                // handleMoveToFolder(sourceItems, targetFolder);
+                                            }}
+                                            onSetFavorite={(e: any, is_favorite: boolean) => {
+                                                handleSetFavorite(e, is_favorite);
+                                            }}
+                                            selectedItems={selectedItems}
+                                            isLoading={false}
+                                            isError={false}
+                                            isSelected={selectedItems.find((i: any) => i.id === item.id) ? true : false}
+                                            isSelectedMode={selectedItems.length > 0}
+                                        />
+                                    ))}
+                                </div>
 
                             </div>
 

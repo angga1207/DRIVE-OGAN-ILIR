@@ -228,7 +228,7 @@ const Page = () => {
     return (
         <div
             onContextMenu={(e) => e.preventDefault()}>
-            <div className="grid grid-cols-12">
+            <div className="grid grid-cols-12 bg-gray-200">
 
                 <div className="col-span-12 lg:col-span-2">
                     <div className="h-auto lg:h-[calc(100vh-64px)] flex flex-col bg-[#003a69] pt-5 pb-20 px-2">

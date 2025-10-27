@@ -138,7 +138,7 @@ const SideBar = ({
 
             <div className="w-full select-none mt-5">
                 <div className="">
-                    <div className="w-full flex align-middle justify-between text-[10px] text-slate-500 font-semibold px-1.5">
+                    <div className="w-full flex align-middle justify-between text-[10px] font-semibold px-1.5 text-[#ebbd18]">
                         <div className="">
                             {userData?.storage?.used} / {userData?.storage?.total}
                         </div>

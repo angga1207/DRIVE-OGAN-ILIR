@@ -553,7 +553,7 @@ function Page() {
     <div
       onContextMenu={(e) => e.preventDefault()}>
 
-      <div className="grid grid-cols-12">
+      <div className="grid grid-cols-12 gap-0 lg:gap-4 bg-gray-200">
         <div className="col-span-12 lg:col-span-2">
           <div className="h-auto lg:h-[calc(100vh-64px)] flex flex-col bg-[#003a69] pt-5 pb-20 px-2">
 
@@ -658,16 +658,16 @@ function Page() {
               {(isLoading === false && isLoadingFolder === false && isLoadingBreadcrumbs === false) ? (
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
-                    <MenuButton className="flex items-center w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 cursor-pointer select-none whitespace-nowrap">
-                      <ArrowsUpDownIcon className="-ml-1 size-4 text-gray-400" />
+                    <MenuButton className="flex items-center w-full justify-center gap-x-1.5 rounded-md hover:bg-[#ebbd18] bg-[#003a69] hover:text-[#003a69] text-[#ebbd18] border border-transparent hover:border-[#003a69] px-3 py-2 text-sm font-semibold ring-1 shadow-xs ring-gray-300 ring-inset cursor-pointer select-none whitespace-nowrap group">
+                      <ArrowsUpDownIcon className="-ml-1 size-4 text-[#ebbd18] group-hover:text-[#003a69]" />
                       {sort.name}
-                      <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
+                      <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-[#ebbd18] group-hover:text-[#003a69]" />
                     </MenuButton>
                   </div>
 
                   <MenuItems
                     transition
-                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white ring-1 shadow-lg ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-[#003a69] ring-1 shadow-lg ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
                   >
                     <div className="py-1">
                       {sorts.map((item: any, index: number) => (
@@ -677,7 +677,7 @@ function Page() {
                               // setSort(item);
                               handleSort(item);
                             }}
-                            className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden cursor-pointer select-none"
+                            className="block px-4 py-2 text-sm text-[#ebbd18] data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden cursor-pointer select-none"
                           >
                             {item.name}
                           </div>
@@ -687,7 +687,7 @@ function Page() {
                   </MenuItems>
                 </Menu>
               ) : (
-                <div className="h-10 w-24 inline-flex items-center justify-center gap-x-1.5 rounded-md bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset hover:bg-slate-200 cursor-pointer select-none whitespace-nowrap animate-pulse"></div>
+                <div className="h-10 w-24 inline-flex items-center justify-center gap-x-1.5 rounded-md bg-[#003a69] px-3 py-2 text-sm font-semibold text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset hover:bg-slate-200 cursor-pointer select-none whitespace-nowrap animate-pulse"></div>
               )}
               {/* sort end */}
 
@@ -695,7 +695,7 @@ function Page() {
               {(isLoading === false && isLoadingFolder === false && isLoadingBreadcrumbs === false) ? (
                 <Tippy content={viewMode === 'list' ? 'List View' : 'Grid View'} arrow={true}>
                   <div
-                    className="flex items-center w-12 justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 cursor-pointer select-none whitespace-nowrap"
+                    className="flex items-center w-12 justify-center gap-x-1.5 rounded-md hover:bg-[#ebbd18] bg-[#003a69] hover:text-[#003a69] text-[#ebbd18] px-3 py-2 text-sm font-semibold ring-1 shadow-xs ring-gray-300 ring-inset cursor-pointer select-none whitespace-nowrap"
                     onClick={(e) => {
                       e.preventDefault();
                       setViewMode(viewMode === 'list' ? 'grid' : 'list');
@@ -709,7 +709,7 @@ function Page() {
                   </div>
                 </Tippy>
               ) : (
-                <div className="h-10 w-12 inline-flex items-center justify-center gap-x-1.5 rounded-md bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset hover:bg-slate-200 cursor-pointer select-none whitespace-nowrap animate-pulse"></div>
+                <div className="h-10 w-12 inline-flex items-center justify-center gap-x-1.5 rounded-md bg-[#003a69] px-3 py-2 text-sm font-semibold text-slate-900 ring-1 shadow-xs ring-slate-300 ring-inset hover:bg-slate-200 cursor-pointer select-none whitespace-nowrap animate-pulse"></div>
               )}
               {/* view mode end */}
 
@@ -877,7 +877,7 @@ function Page() {
                       {(isLoading === false && isLoadingFolder === false && isLoadingBreadcrumbs === false) ? (
                         <div className="">
                           <button
-                            className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md bg-blue-100 px-3 py-2 text-sm font-semibold text-blue-900 ring-1 shadow-xs ring-blue-300 ring-inset hover:bg-blue-200 cursor-pointer select-none whitespace-nowrap"
+                            className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md bg-[#003a69] px-3 py-2 text-sm font-semibold text-[#ebbd18] ring-1 shadow-xs ring-[#003a69] ring-inset hover:bg-[#003a69]/90 cursor-pointer select-none whitespace-nowrap transition-all duration-300"
                             onClick={() => {
                               setOpenModalFolder(true);
                               setIsFolderCreate(true);
@@ -921,7 +921,7 @@ function Page() {
                             }}
                           />
                           <div
-                            className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md bg-green-100 px-3 py-2 text-sm font-semibold text-green-900 ring-1 shadow-xs ring-green-300 ring-inset hover:bg-green-200 cursor-pointer select-none whitespace-nowrap"
+                            className="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md bg-[#003a69] px-3 py-2 text-sm font-semibold text-[#ebbd18] ring-1 shadow-xs ring-[#003a69] ring-inset hover:bg-[#003a69]/90 cursor-pointer select-none whitespace-nowrap transition-all duration-300"
                             onClick={(e: any) => {
                               const uploadFiles = document.getElementById('upload-files') as HTMLInputElement;
                               uploadFiles.click();
@@ -1174,7 +1174,7 @@ function Page() {
               {/* skeletons */}
               {([0, 1, 2, 3, 4, 5].map((item: any, index: number) => (
                 <div key={`loading-${index}`} className="animate-pulse flex items-center gap-x-2">
-                  <div className="h-18 w-full card bg-slate-100"></div>
+                  <div className="h-18 w-full card bg-[#003a69]/50"></div>
                 </div>
               )))}
             </div>

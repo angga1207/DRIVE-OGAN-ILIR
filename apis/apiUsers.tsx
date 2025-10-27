@@ -2,7 +2,7 @@ import { getCookie } from "cookies-next";
 import { serverDomain } from "./serverConfig";
 import axios, { AxiosRequestConfig } from "axios";
 import { decryptClient } from "@/lib/crypto-js";
-import { createAxiosConfig } from "@/utils/apiHelpers";
+import { createAxiosConfig, getBearerTokenForApi } from "@/utils/apiHelpers";
 
 var CurrentToken = getCookie('token');
 const ServerDomain = serverDomain();
@@ -37,25 +37,33 @@ export async function getUsers(search: any = null) {
     }
 }
 
-export async function createUser(data: any) {
+export async function createUser(formData: any) {
     try {
-        const axiosConfig = await createAxiosConfig({
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            }
+        // Use Next.js API route instead of direct server call
+        const url = '/api/createUser';
+
+        // Get bearer token for authorization
+        const token = await getBearerTokenForApi();
+        const headers: any = {
+            'Content-Type': 'application/json',
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(formData),
         });
 
-        const res = await axios.post(`${ServerDomain}/createUser`, data, axiosConfig);
-        const response = await res.data;
-        return response;
-        // const res = await axios.post(`${ServerDomain}/createUser`, data, {
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data',
-        //         Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
-        //     }
-        // });
-        // const response = await res.data;
-        // return response;
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        return data;
     } catch (error) {
         return {
             status: 'error',
@@ -69,6 +77,7 @@ export async function updateUser(data: any) {
         const axiosConfig = await createAxiosConfig({
             headers: {
                 'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
             }
         });
 
@@ -82,20 +91,6 @@ export async function updateUser(data: any) {
         const response = await res.data;
         return response;
 
-        // if (!data.id) {
-        //     return {
-        //         status: 'error',
-        //         message: 'User ID is required'
-        //     }
-        // }
-        // const res = await axios.post(`${ServerDomain}/updateUser/${data.id}`, data, {
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data',
-        //         Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
-        //     }
-        // });
-        // const response = await res.data;
-        // return response;
     } catch (error) {
         return {
             status: 'error',
@@ -104,38 +99,75 @@ export async function updateUser(data: any) {
     }
 }
 
+// export async function updateUserAccess(id: any, access: any) {
+//     try {
+//         const axiosConfig = await createAxiosConfig({
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             }
+//         });
+
+//         if (!id) {
+//             return {
+//                 status: 'error',
+//                 message: 'User ID is required'
+//             }
+//         }
+//         const res = await axios.post(`${ServerDomain}/updateUserAccess/${id}`, { access: access }, axiosConfig);
+//         const response = await res.data;
+//         return response;
+
+//         // if (!id) {
+//         //     return {
+//         //         status: 'error',
+//         //         message: 'User ID is required'
+//         //     }
+//         // }
+//         // const res = await axios.post(`${ServerDomain}/updateUserAccess/${id}`, { access: access }, {
+//         //     headers: {
+//         //         'Content-Type': 'application/json',
+//         //         Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
+//         //     }
+//         // });
+//         // const response = await res.data;
+//         // return response;
+//     } catch (error) {
+//         return {
+//             status: 'error',
+//             message: error
+//         }
+//     }
+// }
+
 export async function updateUserAccess(id: any, access: any) {
     try {
-        const axiosConfig = await createAxiosConfig({
-            headers: {
-                'Content-Type': 'application/json',
-            }
+        // Use Next.js API route instead of direct server call
+        const url = ServerDomain + '/updateUserAccess/' + id;
+
+        // Get bearer token for authorization
+        const token = await getBearerTokenForApi();
+        const headers: any = {
+            'Content-Type': 'application/json',
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+                access: access
+            }),
         });
 
-        if (!id) {
-            return {
-                status: 'error',
-                message: 'User ID is required'
-            }
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
         }
-        const res = await axios.post(`${ServerDomain}/updateUserAccess/${id}`, { access: access }, axiosConfig);
-        const response = await res.data;
-        return response;
 
-        // if (!id) {
-        //     return {
-        //         status: 'error',
-        //         message: 'User ID is required'
-        //     }
-        // }
-        // const res = await axios.post(`${ServerDomain}/updateUserAccess/${id}`, { access: access }, {
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
-        //     }
-        // });
-        // const response = await res.data;
-        // return response;
+        const data = await res.json();
+        return data;
     } catch (error) {
         return {
             status: 'error',
