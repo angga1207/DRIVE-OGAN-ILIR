@@ -38,7 +38,7 @@ function Page() {
             }
             setGlobalSlug(searchParams.get('_id'));
         }
-    }, [isMounted]);
+    }, [isMounted, searchParams]);
 
     useEffect(() => {
         if (isMounted) {
