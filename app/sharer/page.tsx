@@ -85,6 +85,30 @@ function Page() {
         });
     }
 
+    const handleGoFolder = (slug: string) => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('_id', slug);
+        window.history.pushState({}, '', url.toString());
+        // Trigger a re-render by updating state
+        setGlobalSlug(slug);
+        setItems([]);
+        setIsLoading(true);
+        setIsLoadingBreadcrumbs(true);
+        getPath(slug).then((res: any) => {
+            if (res.status === 'success') {
+                setArrBreadcrumbs(res.data);
+                setCurrentPath(res.data.current);
+            }
+            setIsLoadingBreadcrumbs(false);
+        });
+        getSharedItems(slug).then((res: any) => {
+            if (res.status === 'success') {
+                setItems(res.data);
+            }
+            setIsLoading(false);
+        });
+    }
+
     return (
         <div className="px-4 py-6 sm:px-6 lg:px-8"
             onContextMenu={(e) => e.preventDefault()}>
@@ -113,7 +137,11 @@ function Page() {
                         <ItemCardSharer
                             key={index}
                             item={item}
-                            onItemClick={() => { }}
+                            onItemClick={() => {
+                                if (item.type === 'folder') {
+                                    handleGoFolder(item.slug);
+                                }
+                            }}
                             onItemDownload={(e: any) => {
                                 handleDownload(e);
                             }}
