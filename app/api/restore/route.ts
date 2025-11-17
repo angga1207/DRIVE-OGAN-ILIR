@@ -1,29 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from "next-auth/jwt";
 import { cookies } from 'next/headers';
+import { serverDomain } from '@/apis/serverConfig';
+const ServerDomain = serverDomain();
 
 export async function POST(request: NextRequest) {
     try {
         // Get authorization token with 3-layer fallback
         let token = null;
-        
+
         // 1. Try Authorization header
         const authHeader = request.headers.get('Authorization');
         if (authHeader?.startsWith('Bearer ')) {
             token = authHeader.substring(7);
         }
-        
+
         // 2. Try NextAuth session if no header token
         if (!token) {
-            const nextAuthToken = await getToken({ 
+            const nextAuthToken = await getToken({
                 req: request,
-                secret: process.env.NEXTAUTH_SECRET 
+                secret: process.env.NEXTAUTH_SECRET
             });
             if (nextAuthToken?.accessToken) {
                 token = nextAuthToken.accessToken as string;
             }
         }
-        
+
         // 3. Try encrypted cookies as last resort
         if (!token) {
             const cookieStore = await cookies();
@@ -38,7 +40,7 @@ export async function POST(request: NextRequest) {
                 }
             }
         }
-        
+
         if (!token) {
             return NextResponse.json(
                 { message: 'Unauthorized' },
@@ -51,8 +53,8 @@ export async function POST(request: NextRequest) {
         const { ids } = body;
 
         // Make request to Laravel backend
-        const backendUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/restore`;
-        
+        const backendUrl = `${ServerDomain}/restore`;
+
         const response = await fetch(backendUrl, {
             method: 'POST',
             headers: {
