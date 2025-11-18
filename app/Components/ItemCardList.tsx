@@ -74,13 +74,13 @@ const ItemCardList = (
     if (isLoading) {
         return (
             <div className="animate-pulse flex items-center gap-x-2">
-                <div className="h-18 w-full card bg-slate-100"></div>
+                <div className="h-18 w-full card bg-slate-100 !rounded-2xl"></div>
             </div>
         )
     }
     if (isError) {
         return (
-            <div className="card text-red-500 select-none">
+            <div className="card text-red-500 select-none !rounded-2xl">
                 Error loading item
             </div>
         )
@@ -138,7 +138,7 @@ const ItemCardList = (
             <ContextMenu>
                 <ContextMenuTrigger>
                     <div
-                        className={`relative card ${item?.type == 'folder' ? 'bg-gradient-to-r from-[#003a69] from-50% via-60% to-100% to-[#004c8b]' : 'bg-gradient-to-r from-[#003a69] from-50% via-60% to-100% to-[#004c8b]'} group cursor-pointer ${isSelected === true ? '!bg-green-100' : ''} ${(isDragging && isSelected) ? 'opacity-50' : ''}${(isDragging) ? 'opacity-50' : ''} transition-all duration-500`}
+                        className={`relative card ${item?.type == 'folder' ? 'bg-slate-200' : 'bg-white'} group cursor-pointer ${isSelected === true ? '!bg-green-100' : ''} ${(isDragging && isSelected) ? 'opacity-50' : ''}${(isDragging) ? 'opacity-50' : ''} transition-all duration-500 !rounded-2xl`}
                         id={`item-${item?.slug}`}
 
                         draggable={draggable}
@@ -159,9 +159,9 @@ const ItemCardList = (
                     >
                         {isDownloading ? (
                             <div className="absolute top-0 left-0 h-full w-full bg-[#003a69]/50 z-1 select-none">
-                                <div className="w-full h-20 flex items-center justify-center animate-pulse bg-[#003a69] text-[#ebbd18] font-semibold text-lg">
+                                <div className="w-full h-20 flex items-center justify-center animate-pulse bg-[#003a69] text-[#003a69] font-semibold text-lg">
                                     <StopCircleIcon className="h-8 w-8 animate-spin" />
-                                    <div className="text-[#ebbd18] font-semibold text-lg">
+                                    <div className="text-[#003a69] font-semibold text-lg">
                                         {item?.type === 'folder' ? 'Membuka Folder...' : 'Mengunduh Berkas...'}
                                     </div>
                                 </div>
@@ -192,49 +192,49 @@ const ItemCardList = (
                                             }}
                                         >
                                             {item.type === 'folder' ? (
-                                                <FolderIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-[#ebbd18] group-hover:text-white" />
+                                                <FolderIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-[#003a69] group-hover:text-slate-500" />
                                             ) : (
                                                 <>
                                                     {(['image', 'image/jpeg', 'image/png'].includes(item?.full_mime)) && (
-                                                        <RiFileImageFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-purple-800 group-hover:text-white" />
+                                                        <RiFileImageFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-purple-800 group-hover:text-slate-500" />
                                                     )}
                                                     {(['video', 'video/mp4', 'video/mkv', 'video/avi'].includes(item?.full_mime)) && (
-                                                        <RiFilmFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-800 group-hover:text-white" />
+                                                        <RiFilmFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-800 group-hover:text-slate-500" />
                                                     )}
                                                     {(['text/plain', 'text/csv'].includes(item?.full_mime)) && (
-                                                        <RiFileList3Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-800 group-hover:text-white" />
+                                                        <RiFileList3Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-800 group-hover:text-slate-500" />
                                                     )}
                                                     {(['application/pdf'].includes(item?.full_mime)) && (
-                                                        <RiFilePdf2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-600 group-hover:text-white" />
+                                                        <RiFilePdf2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-600 group-hover:text-slate-500" />
                                                     )}
                                                     {(['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'].includes(item?.full_mime)) && (
-                                                        <RiFileExcel2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-600 group-hover:text-white" />
+                                                        <RiFileExcel2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-600 group-hover:text-slate-500" />
                                                     )}
                                                     {(['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(item?.full_mime)) && (
-                                                        <RiFileWord2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-blue-600 group-hover:text-white" />
+                                                        <RiFileWord2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-blue-600 group-hover:text-slate-500" />
                                                     )}
                                                     {(['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'].includes(item?.full_mime)) && (
-                                                        <RiFilePpt2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-500 group-hover:text-white" />
+                                                        <RiFilePpt2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-500 group-hover:text-slate-500" />
                                                     )}
                                                     {(['application/vnd.oasis.opendocument.text'].includes(item?.full_mime)) && (
-                                                        <RiFileWord2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-500 group-hover:text-white" />
+                                                        <RiFileWord2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-500 group-hover:text-slate-500" />
                                                     )}
                                                     {(['application/vnd.oasis.opendocument.spreadsheet'].includes(item?.full_mime)) && (
-                                                        <RiFileExcel2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-400 group-hover:text-white" />
+                                                        <RiFileExcel2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-400 group-hover:text-slate-500" />
                                                     )}
                                                     {(['application/vnd.oasis.opendocument.presentation'].includes(item?.full_mime)) && (
-                                                        <RiFilePpt2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-400 group-hover:text-white" />
+                                                        <RiFilePpt2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-400 group-hover:text-slate-500" />
                                                     )}
                                                     {(['application/octet-stream'].includes(item?.full_mime)) && (
-                                                        <RiFinderFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-slate-600 group-hover:text-white" />
+                                                        <RiFinderFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-slate-600 group-hover:text-slate-500" />
                                                     )}
                                                     {(['application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed', 'application/x-tar', 'archive'].includes(item?.full_mime)) && (
-                                                        <RiFileZipFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-gray-500 group-hover:text-white" />
+                                                        <RiFileZipFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-gray-500 group-hover:text-slate-500" />
                                                     )}
 
 
                                                     {(!['image', 'image/jpeg', 'image/png', 'video', 'video/mp4', 'video/mkv', 'video/avi', 'application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed', 'application/x-tar', 'text/plain', 'text/csv', 'application/pdf', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/octet-stream', 'archive', 'application/vnd.oasis.opendocument.text', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(item?.full_mime)) && (
-                                                        <RiCollageLine className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-slate-600 group-hover:text-white" />
+                                                        <RiCollageLine className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-slate-600 group-hover:text-slate-500" />
                                                     )}
                                                     {/* {item.full_mime} */}
                                                 </>
@@ -254,7 +254,7 @@ const ItemCardList = (
                                             <div className="flex items-center gap-2 shrink">
 
                                                 <div
-                                                    className="font-semibold select-none line-clamp-1 text-[#ebbd18] transition-all duration-300">
+                                                    className="font-semibold select-none line-clamp-1 text-[#003a69] transition-all duration-300">
                                                     {item?.name}
                                                     {item?.type === 'file' && (
                                                         <>
@@ -266,21 +266,21 @@ const ItemCardList = (
                                                 <div className="ml-2 select-none">
                                                     {item?.publicity?.status === 'private' && (
                                                         <>
-                                                            <LockClosedIcon className="h-3 w-3 inline text-white" />
+                                                            <LockClosedIcon className="h-3 w-3 inline text-[#003a69]" />
                                                         </>
                                                     )}
                                                     {item?.publicity?.status === 'public' && (
                                                         <div
-                                                            className='flex items-center gap-x-1 text-green-500 hover:text-white hover:bg-green-500 p-1 rounded transition-all duration-300'
+                                                            className='flex items-center gap-x-1 text-[#ebbd18] hover:text-white hover:bg-[#ebbd18] p-1 rounded-xl px-2 transition-all duration-300'
                                                             onClick={() => {
                                                                 navigator.clipboard.writeText(clientDomain() + '/sharer?_id=' + item?.slug);
 
                                                                 SweetAlertToast('success', 'Tautan berhasil disalin', clientDomain() + '/sharer?_id=' + item?.slug)
                                                             }}
                                                         >
-                                                            <ShareIcon className="h-3 w-3 inline" />
+                                                            <ShareIcon className="h-3 w-3 inline text-[#003a69]" />
                                                             <div className='group-hover:opacity-100 opacity-0 transition-all duration-300'>
-                                                                <div className='text-[10px]'>
+                                                                <div className='text-[10px] text-[#003a69]'>
                                                                     Salin Tautan
                                                                 </div>
                                                             </div>
@@ -288,7 +288,7 @@ const ItemCardList = (
                                                     )}
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-x-1 text-slate-50 select-none">
+                                            <div className="flex items-center gap-x-1 text-[#003a69] select-none">
                                                 {item.type === 'folder' && (
                                                     <div className="text-[10px]">
                                                         {item?.childs} Berkas
@@ -318,7 +318,7 @@ const ItemCardList = (
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="self-end flex items-center gap-x-1 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-[#003a69]/70 p-1 rounded-full">
+                                    <div className="self-end flex items-center gap-x-1 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-[#fff]/70 p-1 rounded-full">
                                         {item.type === 'file' && (
                                             <Tippy
                                                 content={`Buka ${item?.type === 'folder' ? 'Folder' : 'Berkas'}`}
@@ -367,12 +367,12 @@ const ItemCardList = (
 
                                         <Tippy content="Ganti Nama">
                                             <div
-                                                className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-slate-600 transition-all duration-300"
+                                                className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-slate-300 transition-all duration-300"
                                                 onClick={() => {
                                                     onItemEdit(item)
                                                 }}
                                             >
-                                                <PencilSquareIcon className="h-4 w-4 text-slate-100 inline transition-all duration-300" />
+                                                <PencilSquareIcon className="h-4 w-4 text-[#003a69] inline transition-all duration-300" />
                                             </div>
                                         </Tippy>
 

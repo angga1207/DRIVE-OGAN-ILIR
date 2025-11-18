@@ -146,14 +146,16 @@ const SideBar = ({
                             {userData?.storage?.rest}
                         </div>
                     </div>
-                    <div className="w-full h-4 border border-slate-200 bg-slate-100 rounded-xl">
+                    <div className="w-full h-4 border border-slate-200 bg-slate-100 rounded-xl relative mt-2">
                         <div
-                            className="h-full px-1 flex items-center bg-[#ebbd18] text-[10px] text-[#003a69] text-center leading-none rounded-xl whitespace-nowrap font-bold"
+                            className="h-full px-1 flex items-center bg-[#ebbd18] leading-none rounded-xl whitespace-nowrap"
                             style={{
                                 width: `${userData?.storage?.percent}%`,
-                                minWidth: '30px',
+                                minWidth: '0px',
                             }}>
-                            <div>
+                        </div>
+                        <div className="absolute top-0 w-full mx-0">
+                            <div className="w-full flex items-center justify-center font-bold text-[10px] text-[#003a69] text-center">
                                 {new Intl.NumberFormat('id-ID', {
                                     minimumFractionDigits: 0,
                                     maximumFractionDigits: 2,
