@@ -586,6 +586,10 @@ const Page = () => {
             <ModalDetail
                 data={inDetailItem}
                 isOpen={openModal}
+                onItemDownload={(e: any) => {
+                    handleDownload(e);
+                }}
+                isDownloading={isDownloading?.find((i: any) => i.id === inDetailItem?.id) ? true : false}
                 onClose={() => {
                     setOpenModal(false);
                     setInDetailItem(null);
