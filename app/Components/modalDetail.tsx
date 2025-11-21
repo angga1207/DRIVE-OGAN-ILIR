@@ -10,6 +10,7 @@ const ModalDetail = (
         onSubmit,
         onItemDownload,
         isDownloading,
+        isShowDownloadButton = true,
     }: {
         data: any
         isOpen: boolean
@@ -17,6 +18,7 @@ const ModalDetail = (
         onSubmit: () => void
         onItemDownload: (data: any) => void
         isDownloading: boolean
+        isShowDownloadButton?: boolean
     }
 ) => {
     return (
@@ -133,16 +135,19 @@ const ModalDetail = (
                                 Tutup
                             </button>
 
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    onItemDownload(data)
-                                }
-                                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#003a69] px-3 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-blue-300 ring-inset hover:bg-[#003a69]/90 sm:mt-0 sm:w-auto cursor-pointer select-none whitespace-nowrap"
-                            >
-                                <ArrowDownTrayIcon className="h-4 w-4 inline" />
-                                Download
-                            </button>
+                            {isShowDownloadButton && (
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        onItemDownload(data)
+                                    }
+                                    className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#003a69] px-3 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-blue-300 ring-inset hover:bg-[#003a69]/90 sm:mt-0 sm:w-auto cursor-pointer select-none whitespace-nowrap"
+                                >
+                                    <ArrowDownTrayIcon className="h-4 w-4 inline" />
+                                    Download
+                                </button>
+                            )}
+                            
                         </div>
                     </DialogPanel>
                 </div>

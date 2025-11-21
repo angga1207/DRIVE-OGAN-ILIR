@@ -461,6 +461,11 @@ const Page = () => {
             <ModalDetail
                 data={inDetailItem}
                 isOpen={openModal}
+                isShowDownloadButton={false}
+                onItemDownload={(e: any) => {
+                    // handleDownload(e);
+                }}
+                isDownloading={false}
                 onClose={() => {
                     setOpenModal(false);
                     setInDetailItem(null);
