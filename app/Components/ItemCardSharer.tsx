@@ -184,7 +184,7 @@ const ItemCardSharer = (
                     </div>
                 </div>
                 {item.type === 'file' && (
-                    <div className="self-center md:self-end flex items-center gap-x-1 md:opacity-0 group-hover:opacity-100 transition-all duration-300 bg-[#fff]/70 p-1 rounded-full mt-4 md:mt-0">
+                    <div className="self-center lg:self-end flex items-center gap-x-1 lg:opacity-0 group-hover:opacity-100 transition-all duration-300 bg-[#fff]/70 p-1 rounded-full mt-4 lg:mt-0">
                         <Tippy
                             content={item?.author?.fullname}
                         >

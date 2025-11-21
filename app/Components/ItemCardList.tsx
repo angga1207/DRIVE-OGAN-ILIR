@@ -272,7 +272,7 @@ const ItemCardList = (
                                                     )}
                                                     {item?.publicity?.status === 'public' && (
                                                         <div
-                                                            className=' hidden md:flex items-center gap-x-1 text-[#ebbd18] hover:text-white hover:bg-[#ebbd18] p-1 rounded-xl px-2 transition-all duration-300'
+                                                            className=' hidden lg:flex items-center gap-x-1 text-[#ebbd18] hover:text-white hover:bg-[#ebbd18] p-1 rounded-xl px-2 transition-all duration-300'
                                                             onClick={() => {
                                                                 navigator.clipboard.writeText(clientDomain() + '/sharer?_id=' + item?.slug);
 
@@ -319,7 +319,7 @@ const ItemCardList = (
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="self-center md:self-end flex items-center gap-x-1 md:opacity-0 group-hover:opacity-100 transition-all duration-300 bg-[#fff]/70 p-1 rounded-full mt-4 md:mt-0">
+                                    <div className="self-center lg:self-end flex items-center gap-x-1 lg:opacity-0 group-hover:opacity-100 transition-all duration-300 bg-[#fff]/70 p-1 rounded-full mt-4 lg:mt-0">
                                         {item.type === 'file' && (
                                             <Tippy
                                                 content={`Buka ${item?.type === 'folder' ? 'Folder' : 'Berkas'}`}
