@@ -170,7 +170,7 @@ const ItemCardList = (
                             <>
                                 <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-x-5">
                                     {/* mobile responsive */}
-                                    <div className='grow flex items-center gap-x-2'>
+                                    <div className='grow flex items-center gap-x-2 max-w-full'>
 
                                         <div className="">
                                             <input
@@ -252,15 +252,16 @@ const ItemCardList = (
                                             }}
                                         >
                                             <div className="flex items-center gap-2 shrink">
-
                                                 <div
                                                     className="font-semibold select-none line-clamp-1 text-[#003a69] transition-all duration-300">
-                                                    {item?.name}
-                                                    {item?.type === 'file' && (
-                                                        <>
-                                                            .{item?.extension}
-                                                        </>
-                                                    )}
+                                                    <div className='w-full line-clamp-1'>
+                                                        {item?.name}
+                                                        {item?.type === 'file' && (
+                                                            <>
+                                                                .{item?.extension}
+                                                            </>
+                                                        )}
+                                                    </div>
                                                 </div>
 
                                                 <div className="ml-2 select-none">
@@ -271,7 +272,7 @@ const ItemCardList = (
                                                     )}
                                                     {item?.publicity?.status === 'public' && (
                                                         <div
-                                                            className='flex items-center gap-x-1 text-[#ebbd18] hover:text-white hover:bg-[#ebbd18] p-1 rounded-xl px-2 transition-all duration-300'
+                                                            className=' hidden md:flex items-center gap-x-1 text-[#ebbd18] hover:text-white hover:bg-[#ebbd18] p-1 rounded-xl px-2 transition-all duration-300'
                                                             onClick={() => {
                                                                 navigator.clipboard.writeText(clientDomain() + '/sharer?_id=' + item?.slug);
 
@@ -318,7 +319,7 @@ const ItemCardList = (
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="self-end flex items-center gap-x-1 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-[#fff]/70 p-1 rounded-full">
+                                    <div className="self-center md:self-end flex items-center gap-x-1 md:opacity-0 group-hover:opacity-100 transition-all duration-300 bg-[#fff]/70 p-1 rounded-full mt-4 md:mt-0">
                                         {item.type === 'file' && (
                                             <Tippy
                                                 content={`Buka ${item?.type === 'folder' ? 'Folder' : 'Berkas'}`}

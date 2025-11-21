@@ -1,6 +1,6 @@
 "use client";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { DocumentIcon, PhotoIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline'
+import { DocumentIcon, PhotoIcon, ArchiveBoxIcon, XMarkIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 
 const ModalDetail = (
     {
@@ -8,11 +8,15 @@ const ModalDetail = (
         isOpen,
         onClose,
         onSubmit,
+        onItemDownload,
+        isDownloading,
     }: {
         data: any
         isOpen: boolean
         onClose: () => void
         onSubmit: () => void
+        onItemDownload: (data: any) => void
+        isDownloading: boolean
     }
 ) => {
     return (
@@ -26,7 +30,7 @@ const ModalDetail = (
                 <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                     <DialogPanel
                         transition
-                        className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-[calc(100vw-300px)] data-closed:sm:translate-y-0 data-closed:sm:scale-95"
+                        className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 w-full sm:max-w-[calc(100vw-300px)] data-closed:sm:translate-y-0 data-closed:sm:scale-95"
                     >
                         <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <div className="flex items-center gap-x-2">
@@ -117,15 +121,27 @@ const ModalDetail = (
                                 )} */}
                             </div>
                         </div>
-                        <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-3">
                             <button
                                 type="button"
                                 onClick={() =>
                                     onClose()
                                 }
-                                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto cursor-pointer select-none whitespace-nowrap"
+                                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto cursor-pointer select-none whitespace-nowrap"
                             >
+                                <XMarkIcon className="h-4 w-4 inline" />
                                 Tutup
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    onItemDownload(data)
+                                }
+                                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#003a69] px-3 py-2 text-sm font-semibold text-white ring-1 shadow-xs ring-blue-300 ring-inset hover:bg-[#003a69]/90 sm:mt-0 sm:w-auto cursor-pointer select-none whitespace-nowrap"
+                            >
+                                <ArrowDownTrayIcon className="h-4 w-4 inline" />
+                                Download
                             </button>
                         </div>
                     </DialogPanel>

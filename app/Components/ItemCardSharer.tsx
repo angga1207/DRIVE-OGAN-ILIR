@@ -68,15 +68,7 @@ const ItemCardSharer = (
             )}
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-x-5">
-                <div className='grow flex items-center gap-x-2'>
-                    {/* <div className="">
-                        <input
-                            type="checkbox"
-                            className="h-3.5 w-3.5 rounded-full border-0 border-gray-200 text-indigo-600 focus:ring-indigo-500"
-                            checked={selectedItems?.includes(item?.id)}
-                            onChange={() => onItemSelect(item)}
-                        />
-                    </div> */}
+                <div className='grow flex items-center gap-x-2 max-w-full'>
                     <div
                         className="text-slate-500"
                         onDoubleClick={() => onItemOpen(item)}
@@ -150,14 +142,15 @@ const ItemCardSharer = (
                     >
                         <div className="flex items-center gap-2 shrink">
                             <div
-                                title={item?.name}
-                                className="font-semibold select-none line-clamp-1">
-                                {item?.name}
-                                {item?.type === 'file' && (
-                                    <>
-                                        .{item?.extension}
-                                    </>
-                                )}
+                                className="font-semibold select-none line-clamp-1 text-[#003a69] transition-all duration-300">
+                                <div className='w-full line-clamp-1'>
+                                    {item?.name}
+                                    {item?.type === 'file' && (
+                                        <>
+                                            .{item?.extension}
+                                        </>
+                                    )}
+                                </div>
                             </div>
                         </div>
                         <div className="flex items-center gap-x-1 text-slate-400 select-none">
@@ -189,57 +182,51 @@ const ItemCardSharer = (
                             </div>
                         </div>
                     </div>
-                    <div className="self-end flex items-center gap-x-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <div className="">
-                            <Tippy
-                                content={item?.author?.fullname}
-                            >
-                                <div
-                                    className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-all duration-300"
-                                    title={item?.author?.fullname}
-                                >
-                                    <div className="h-4 w-4 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-semibold text-xs select-none">
-                                        <img src={item?.author?.photo ? item?.author?.photo : '/favicon.png'} alt={item?.author?.fullname} className="h-4 w-4 rounded-full" />
-                                    </div>
-                                </div>
-                            </Tippy>
-                        </div>
-
-                        {item.type === 'file' && (
-                            <Tippy
-                                content={`Buka ${item?.type === 'folder' ? 'Folder' : 'Berkas'}`}
-                            >
-                                <div
-                                    className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-lime-200 transition-all duration-300"
-                                    onClick={() => {
-                                        onItemOpen(item)
-                                    }}
-                                >
-                                    <EyeIcon className="h-4 w-4 text-lime-600 inline transition-all duration-300" />
-                                </div>
-                            </Tippy>
-                        )}
-
-                        {item.type !== 'folder' && (
-                            <Tippy
-                                content={isDownloading ? 'Membatalkan Unduhan' : 'Unduh Berkas'}
-                            >
-                                <div
-                                    className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-cyan-200 transition-all duration-300"
-                                    onClick={() => {
-                                        isDownloading ? null : onItemDownload(item)
-                                    }}
-                                >
-                                    {isDownloading ? (
-                                        <StopCircleIcon className="animate-spin h-4 w-4 text-cyan-600 inline transition-all duration-300" />
-                                    ) : (
-                                        <ArchiveBoxArrowDownIcon className="h-4 w-4 text-cyan-600 inline transition-all duration-300" />
-                                    )}
-                                </div>
-                            </Tippy>
-                        )}
-                    </div>
                 </div>
+                {item.type === 'file' && (
+                    <div className="self-center md:self-end flex items-center gap-x-1 md:opacity-0 group-hover:opacity-100 transition-all duration-300 bg-[#fff]/70 p-1 rounded-full mt-4 md:mt-0">
+                        <Tippy
+                            content={item?.author?.fullname}
+                        >
+                            <div
+                                className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-all duration-300"
+                                title={item?.author?.fullname}
+                            >
+                                <div className="h-4 w-4 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-semibold text-xs select-none">
+                                    <img src={item?.author?.photo ? item?.author?.photo : '/favicon.png'} alt={item?.author?.fullname} className="h-4 w-4 rounded-full" />
+                                </div>
+                            </div>
+                        </Tippy>
+                        <Tippy
+                            content={`Buka ${item?.type === 'folder' ? 'Folder' : 'Berkas'}`}
+                        >
+                            <div
+                                className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-lime-200 transition-all duration-300"
+                                onClick={() => {
+                                    onItemOpen(item)
+                                }}
+                            >
+                                <EyeIcon className="h-4 w-4 text-lime-600 inline transition-all duration-300" />
+                            </div>
+                        </Tippy>
+                        <Tippy
+                            content={isDownloading ? 'Membatalkan Unduhan' : 'Unduh Berkas'}
+                        >
+                            <div
+                                className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-cyan-200 transition-all duration-300"
+                                onClick={() => {
+                                    isDownloading ? null : onItemDownload(item)
+                                }}
+                            >
+                                {isDownloading ? (
+                                    <StopCircleIcon className="animate-spin h-4 w-4 text-cyan-600 inline transition-all duration-300" />
+                                ) : (
+                                    <ArchiveBoxArrowDownIcon className="h-4 w-4 text-cyan-600 inline transition-all duration-300" />
+                                )}
+                            </div>
+                        </Tippy>
+                    </div>
+                )}
             </div>
         </div>
     );

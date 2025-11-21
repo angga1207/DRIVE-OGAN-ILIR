@@ -859,7 +859,7 @@ function Page() {
               </div>
 
               <div
-                className="flex flex-col gap-y-2 max-h-[calc(100vh-200px)] overflow-y-auto px-4 -mx-4 pb-4">
+                className="flex flex-col gap-y-2 max-w-full max-h-[calc(100vh-200px)] overflow-x-hidden overflow-y-auto px-4 -mx-4 pb-4">
 
                 {(items.length === 0) && (
                   <div className="flex flex-col gap-2 items-center justify-center w-full h-[calc(100vh-300px)] border border-dashed border-slate-300 rounded-lg">
@@ -1211,6 +1211,10 @@ function Page() {
       <ModalDetail
         data={inDetailItem}
         isOpen={openModal}
+        onItemDownload={(e: any) => {
+          handleDownload(e);
+        }}
+        isDownloading={isDownloading?.find((i: any) => i.id === inDetailItem?.id) ? true : false}
         onClose={() => {
           setOpenModal(false);
           setInDetailItem(null);

@@ -81,14 +81,13 @@ const TrashedItemCardList = (
         <>
             <div
                 id={`item-${item?.slug}`}
-                // className={`relative card ${item?.type == 'folder' ? ' bg-blue-100/50 hover:bg-blue-100' : 'bg-white hover:bg-slate-100'} group cursor-pointer ${isSelected === true ? '!bg-green-100' : ''}`}
-                className={`relative card ${item?.type == 'folder' ? 'bg-gradient-to-r from-[#003a69] from-50% via-60% to-100% to-[#004c8b]' : 'bg-gradient-to-r from-[#003a69] from-50% via-60% to-100% to-[#004c8b]'} group cursor-pointer ${isSelected === true ? '!bg-green-100' : ''} transition-all duration-500`}
+                className={`relative card ${item?.type == 'folder' ? 'bg-slate-200' : 'bg-white'} group cursor-pointer ${isSelected === true ? '!bg-green-100' : ''} transition-all duration-500 !rounded-2xl`}
 
                 aria-selected={isSelected}
             >
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-x-5">
                     {/* mobile responsive */}
-                    <div className='grow flex items-center gap-x-2'>
+                    <div className='grow flex items-center gap-x-2 max-w-full'>
 
                         <div className="">
                             <input
@@ -110,49 +109,49 @@ const TrashedItemCardList = (
                             }}
                         >
                             {item.type === 'folder' ? (
-                                <FolderIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-[#ebbd18] group-hover:text-white" />
+                                <FolderIcon className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-[#ebbd18] group-hover:text-slate-500" />
                             ) : (
                                 <>
                                     {(['image', 'image/jpeg', 'image/png'].includes(item?.full_mime)) && (
-                                        <RiFileImageFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-purple-800 group-hover:text-white" />
+                                        <RiFileImageFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-purple-800 group-hover:text-slate-500" />
                                     )}
                                     {(['video', 'video/mp4', 'video/mkv', 'video/avi'].includes(item?.full_mime)) && (
-                                        <RiFilmFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-800 group-hover:text-white" />
+                                        <RiFilmFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-800 group-hover:text-slate-500" />
                                     )}
                                     {(['text/plain', 'text/csv'].includes(item?.full_mime)) && (
-                                        <RiFileList3Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-800 group-hover:text-white" />
+                                        <RiFileList3Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-800 group-hover:text-slate-500" />
                                     )}
                                     {(['application/pdf'].includes(item?.full_mime)) && (
-                                        <RiFilePdf2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-600 group-hover:text-white" />
+                                        <RiFilePdf2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-600 group-hover:text-slate-500" />
                                     )}
                                     {(['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'].includes(item?.full_mime)) && (
-                                        <RiFileExcel2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-600 group-hover:text-white" />
+                                        <RiFileExcel2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-600 group-hover:text-slate-500" />
                                     )}
                                     {(['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(item?.full_mime)) && (
-                                        <RiFileWord2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-blue-600 group-hover:text-white" />
+                                        <RiFileWord2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-blue-600 group-hover:text-slate-500" />
                                     )}
                                     {(['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'].includes(item?.full_mime)) && (
-                                        <RiFilePpt2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-500 group-hover:text-white" />
+                                        <RiFilePpt2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-500 group-hover:text-slate-500" />
                                     )}
                                     {(['application/vnd.oasis.opendocument.text'].includes(item?.full_mime)) && (
-                                        <RiFileWord2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-500 group-hover:text-white" />
+                                        <RiFileWord2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-500 group-hover:text-slate-500" />
                                     )}
                                     {(['application/vnd.oasis.opendocument.spreadsheet'].includes(item?.full_mime)) && (
-                                        <RiFileExcel2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-400 group-hover:text-white" />
+                                        <RiFileExcel2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-green-400 group-hover:text-slate-500" />
                                     )}
                                     {(['application/vnd.oasis.opendocument.presentation'].includes(item?.full_mime)) && (
-                                        <RiFilePpt2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-400 group-hover:text-white" />
+                                        <RiFilePpt2Fill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-red-400 group-hover:text-slate-500" />
                                     )}
                                     {(['application/octet-stream'].includes(item?.full_mime)) && (
-                                        <RiFinderFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-slate-600 group-hover:text-white" />
+                                        <RiFinderFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-slate-600 group-hover:text-slate-500" />
                                     )}
                                     {(['application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed', 'application/x-tar', 'archive'].includes(item?.full_mime)) && (
-                                        <RiFileZipFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-gray-500 group-hover:text-white" />
+                                        <RiFileZipFill className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-gray-500 group-hover:text-slate-500" />
                                     )}
 
 
                                     {(!['image', 'image/jpeg', 'image/png', 'video', 'video/mp4', 'video/mkv', 'video/avi', 'application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed', 'application/x-tar', 'text/plain', 'text/csv', 'application/pdf', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/octet-stream', 'archive', 'application/vnd.oasis.opendocument.text', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(item?.full_mime)) && (
-                                        <RiCollageLine className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-slate-600 group-hover:text-white" />
+                                        <RiCollageLine className="h-8 w-8 inline group-hover:h-9 group-hover:w-9 group-hover:-rotate-3 transition-all duration-300 text-slate-600 group-hover:text-slate-500" />
                                     )}
                                     {/* {item.full_mime} */}
                                 </>
@@ -171,16 +170,18 @@ const TrashedItemCardList = (
                         >
                             <div className="flex items-center gap-2 shrink">
                                 <div
-                                    className="font-semibold select-none line-clamp-1 text-[#ebbd18] transition-all duration-300">
-                                    {item?.name}
-                                    {item?.type === 'file' && (
-                                        <>
-                                            .{item?.extension}
-                                        </>
-                                    )}
+                                    className="font-semibold select-none line-clamp-1 text-[#003a69] transition-all duration-300">
+                                    <div className='w-full line-clamp-1'>
+                                        {item?.name}
+                                        {item?.type === 'file' && (
+                                            <>
+                                                .{item?.extension}
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-x-1 text-slate-50 select-none">
+                            <div className="flex items-center gap-x-1 text-[#003a69] select-none">
                                 {/* {item.type === 'folder' && (
                                     <div className="text-[10px]">
                                         {item?.childs} Berkas
@@ -217,7 +218,7 @@ const TrashedItemCardList = (
                             </div>
                         </div>
                     </div>
-                    <div className="self-end flex items-center gap-x-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <div className="self-end flex items-center gap-x-1 md:opacity-0 group-hover:opacity-100 transition-all duration-300">
                         {item.type === 'file' && (
                             <Tippy
                                 content={`Buka ${item?.type === 'folder' ? 'Folder' : 'Berkas'}`}

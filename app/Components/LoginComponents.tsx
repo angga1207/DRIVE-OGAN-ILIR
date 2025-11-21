@@ -201,7 +201,8 @@ export const LoginLeftPanel = () => (
                 />
             </Link>
             <p className="text-sm font-semibold mb-6 text-center text-white select-none">
-                Drive Ogan Ilir adalah aplikasi berbasis web yang memudahkan masyarakat Kabupaten Ogan Ilir dalam menyimpan dan berbagi file secara online.
+                {/* Drive Ogan Ilir adalah aplikasi berbasis web yang memudahkan masyarakat Kabupaten Ogan Ilir dalam menyimpan dan berbagi file secara online. */}
+                Drive Ogan Ilir hadir sebagai solusi digital yang memudahkan dalam menyimpan dan berbagi file secara daring. Lebih praktis, aman, dan dapat diakses kapan saja.
             </p>
 
             <div className="flex justify-center gap-4 mt-4">
