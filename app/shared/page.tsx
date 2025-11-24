@@ -5,7 +5,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import ItemCardList from "../Components/ItemCardList";
 import Breadcrumbs from "../Components/breadcrumbs";
-import { getPublicPath, getSharedFolders, getSharedItems, postDownload, postMakeFolder, postRename } from "@/apis/apiResources";
+import { getPublicPath, getSharedFolders, getSharedItems, postDelete, postDownload, postMakeFolder, postRename } from "@/apis/apiResources";
 import { getCookie } from "cookies-next";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import ModalDetail from "../Components/modalDetail";
@@ -252,6 +252,33 @@ const Page = () => {
         });
     }
 
+
+    const handleDeleteFile = (data: any, callback: any = null) => {
+        // setIsLoading(true);
+        postDelete([data.slug]).then((res: any) => {
+            if (res.status === 'success') {
+                setItems((prev: any) => {
+                    return prev.filter((item: any) => item.id !== data.id);
+                });
+                setSelectedItems([]);
+                setIsSelectedMode(false);
+                setIsLoading(false);
+                setIsError(false);
+                SweetAlertToast('success', 'Berhasil', 'Berkas berhasil dihapus');
+
+                if (callback) {
+                    // redirect to callback uri
+                    // window.location.href = '/?_id=' + callback;
+
+                    if (callback !== 'root') {
+                        router.push('/shared?_id=' + (callback ?? ''));
+                    } else {
+                        router.push('/shared');
+                    }
+                }
+            }
+        });
+    }
 
     const handleUploadFiles = (e: any) => {
         setIsLoadingUploadFiles(true);
@@ -667,7 +694,7 @@ const Page = () => {
                                                 // handleMoveToFolder(sourceItems, targetFolder);
                                             }}
                                             onSetFavorite={(e: any, is_favorite: boolean) => {
-                                                handleSetFavorite(e, is_favorite);
+                                                // handleSetFavorite(e, is_favorite);
                                             }}
                                             options={{
                                                 view: true,
