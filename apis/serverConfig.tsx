@@ -9,14 +9,14 @@ const staticToken = '1816|zDB4IWBoirDGP40onWgjyfd0uek16vrKYGSVw5qtbbd5bdf6';
 // const serverDomain = 'https://drive-backend.oganilirkab.go.id/api/';
 
 export function serverDomain() {
-    const uri = 'http://127.0.0.1:8000/api';
-    // const uri = 'https://drive-backend.oganilirkab.go.id/api';
+    // const uri = 'http://127.0.0.1:8000/api';
+    const uri = 'https://drive-backend.oganilirkab.go.id/api';
     return uri;
 }
 
 export function clientDomain() {
-    const uri = 'http://localhost:3000';
-    // const uri = 'https://drive.oganilirkab.go.id';
+    // const uri = 'http://localhost:3000';
+    const uri = 'https://drive.oganilirkab.go.id';
     return uri;
 }
 
