@@ -323,7 +323,8 @@ function Page() {
 
             <ModalDetailShared
                 data={inDetailItem}
-                isEditable={isEditable}
+                // isEditable={isEditable}
+                isEditable={false}
                 isOpen={openModal}
                 onItemDownload={(e: any) => {
                     handleDownload(e);

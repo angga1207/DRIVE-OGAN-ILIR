@@ -17,6 +17,7 @@ import QueueList from "./Components/queueList";
 import ModalShare from "./Components/modalShare";
 import ModalMove from './Components/modalMove';
 import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 import ItemCardGrid from './Components/ItemCardGrid';
 import SideBar from './Components/SideBar';
 import AddMenu from './Components/addMenu';

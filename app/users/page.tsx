@@ -4,8 +4,10 @@ import { CogIcon, EnvelopeIcon, PencilSquareIcon, TrashIcon } from "@heroicons/r
 import { useEffect, useState } from "react";
 import ModalUser from "../Components/modalUser";
 import Swal from "sweetalert2";
+import 'tippy.js/dist/tippy.css';
 import Tippy from "@tippyjs/react";
 import { UserCircle } from "lucide-react";
+import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa6";
 
 const SweetAlertConfirm = (title: any, text: any, confirmButtonText: any, cancelButtonText: any = null) => {
     return Swal.fire({
@@ -54,6 +56,8 @@ const Page = () => {
     const [isCreate, setIsCreate] = useState(false);
     const [detailData, setDetailData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [sortBy, setSortBy] = useState('id');
+    const [sortDirection, setSortDirection] = useState('desc');
 
     const [dataCounts, setDataCounts] = useState({
         totalUsers: 0,
@@ -61,11 +65,13 @@ const Page = () => {
         googleUsers: 0,
         accessedUsers: 0,
         unaccessedUsers: 0,
+        googleAndSemestaUsers: 0,
+        noIntegratedUsers: 0,
     });
 
     const _getData = () => {
         setLoading(true);
-        getUsers(search, page, limit).then((res: any) => {
+        getUsers(search, page, limit, sortBy, sortDirection).then((res: any) => {
             if (res.status === "success") {
                 setTotalData(res.data.total);
                 setData(res.data.data);
@@ -80,6 +86,8 @@ const Page = () => {
                     googleUsers: res.data.google_users_count,
                     accessedUsers: res.data.accessed_users_count,
                     unaccessedUsers: res.data.unaccessed_users_count,
+                    googleAndSemestaUsers: res.data.google_and_semesta_users_count,
+                    noIntegratedUsers: res.data.no_integrated_users_count,
                 });
             } else {
                 setData([]);
@@ -105,7 +113,7 @@ const Page = () => {
         if (isMounted) {
             _getData();
         }
-    }, [page, limit]);
+    }, [page, limit, sortBy, sortDirection]);
 
     const handleUpdate = (data: any) => {
         setLoading(true);
@@ -236,21 +244,50 @@ const Page = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 bg-blue-200 rounded-md shadow-md border border-blue-300">
-                    <div className="text-sm text-slate-500">Total Pengguna</div>
-                    <div className="text-2xl font-bold">{dataCounts.totalUsers}</div>
+                <div className="p-4 bg-linear-to-br from-blue-800 to-blue-400 rounded-md shadow-md border border-blue-300 text-white text-center">
+                    <div className="text-[50px] font-bold mb-1">
+                        {dataCounts.totalUsers}
+                    </div>
+                    <div className="text-sm font-semibold">Total Pengguna</div>
                 </div>
-                <div className="p-4 bg-indigo-200 rounded-md shadow-md border border-indigo-300">
-                    <div className="text-sm text-slate-500">Pengguna Terintegrasi Semesta</div>
-                    <div className="text-2xl font-bold">{dataCounts.semestaUsers}</div>
+                <div className="p-4 bg-linear-to-br from-indigo-800 to-indigo-400 rounded-md shadow-md border border-indigo-300 text-white text-center">
+                    <div className="text-[50px] font-bold mb-1">
+                        {dataCounts.semestaUsers}
+                    </div>
+                    <div className="text-sm font-semibold">Pengguna Terintegrasi Semesta</div>
                 </div>
-                <div className="p-4 bg-orange-200 rounded-md shadow-md border border-orange-300">
-                    <div className="text-sm text-slate-500">Pengguna Terintegrasi Google</div>
-                    <div className="text-2xl font-bold">{dataCounts.googleUsers}</div>
+                <div className="p-4 bg-linear-to-br from-orange-800 to-orange-400 rounded-md shadow-md border border-orange-300 text-white text-center">
+                    <div className="text-[50px] font-bold mb-1">
+                        {dataCounts.googleUsers}
+                    </div>
+                    <div className="text-sm font-semibold">Pengguna Terintegrasi Google</div>
                 </div>
-                <div className="p-4 bg-green-200 rounded-md shadow-md border border-green-300">
-                    <div className="text-sm text-slate-500">Pengguna Dengan Akses</div>
-                    <div className="text-2xl font-bold">{dataCounts.accessedUsers}</div>
+                <div className="p-4 bg-linear-to-br from-blue-800 to-blue-400 rounded-md shadow-md border border-blue-300 text-white text-center">
+                    <div className="text-[50px] font-bold mb-1">
+                        {dataCounts.googleAndSemestaUsers}
+                    </div>
+                    <div className="text-sm font-semibold">Terintegrasi Google & Semesta</div>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 bg-linear-to-br from-slate-800 to-slate-400 rounded-md shadow-md border border-slate-300 text-white text-center">
+                    <div className="text-[50px] font-bold mb-1">
+                        {dataCounts.noIntegratedUsers}
+                    </div>
+                    <div className="text-sm font-semibold">Pengguna Yang Tidak Terintegrasi</div>
+                </div>
+                <div className="p-4 bg-linear-to-br from-green-800 to-green-400 rounded-md shadow-md border border-green-300 text-white text-center">
+                    <div className="text-[50px] font-bold mb-1">
+                        {dataCounts.accessedUsers}
+                    </div>
+                    <div className="text-sm font-semibold">Pengguna Dengan Akses</div>
+                </div>
+                <div className="p-4 bg-linear-to-br from-red-800 to-red-400 rounded-md shadow-md border border-red-300 text-white text-center">
+                    <div className="text-[50px] font-bold mb-1">
+                        {dataCounts.unaccessedUsers}
+                    </div>
+                    <div className="text-sm font-semibold">Pengguna Tanpa Akses</div>
                 </div>
             </div>
 
@@ -259,16 +296,80 @@ const Page = () => {
                     <thead>
                         <tr>
                             <th className="px-4 py-2 border">
-                                Nama Pengguna
+                                <div className="flex items-center justify-start gap-x-1 cursor-pointer"
+                                    onClick={() => {
+                                        setSortBy('fullname');
+                                        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+                                    }}>
+                                    <div>
+                                        Pengguna
+                                    </div>
+                                    <div className="flex items-center gap-x-1">
+                                        <button>
+                                            {sortBy === 'fullname' ? (
+                                                sortDirection === 'asc' ? (
+                                                    <FaSortUp className="w-3 h-3 text-slate-500" />
+                                                ) : (
+                                                    <FaSortDown className="w-3 h-3 text-slate-500" />
+                                                )
+                                            ) : (
+                                                <FaSort className="w-3 h-3 text-slate-300" />
+                                            )}
+                                        </button>
+                                    </div>
+                                </div>
                             </th>
                             <th className="px-4 py-2 border">
-                                Tanggal pendaftaran
+                                <div className="flex items-center justify-center gap-x-1 cursor-pointer"
+                                    onClick={() => {
+                                        setSortBy('id');
+                                        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+                                    }}>
+                                    <div>
+                                        Tanggal Dibuat
+                                    </div>
+                                    <div className="flex items-center gap-x-1">
+                                        <button>
+                                            {sortBy === 'id' ? (
+                                                sortDirection === 'asc' ? (
+                                                    <FaSortUp className="w-3 h-3 text-slate-500" />
+                                                ) : (
+                                                    <FaSortDown className="w-3 h-3 text-slate-500" />
+                                                )
+                                            ) : (
+                                                <FaSort className="w-3 h-3 text-slate-300" />
+                                            )}
+                                        </button>
+                                    </div>
+                                </div>
                             </th>
                             <th className="px-4 py-2 border">
                                 Akses
                             </th>
                             <th className="px-4 py-2 border">
-                                Kapasitas
+                                <div className="flex items-center justify-center gap-x-1 cursor-pointer"
+                                    onClick={() => {
+                                        setSortBy('drive_usage');
+                                        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+                                    }}
+                                >
+                                    <div>
+                                        Kapasitas
+                                    </div>
+                                    <div className="flex items-center gap-x-1">
+                                        <button>
+                                            {sortBy === 'drive_usage' ? (
+                                                sortDirection === 'asc' ? (
+                                                    <FaSortUp className="w-3 h-3 text-slate-500" />
+                                                ) : (
+                                                    <FaSortDown className="w-3 h-3 text-slate-500" />
+                                                )
+                                            ) : (
+                                                <FaSort className="w-3 h-3 text-slate-300" />
+                                            )}
+                                        </button>
+                                    </div>
+                                </div>
                             </th>
                             <th className="px-4 py-2 border">
                                 <div className="flex justify-center items-center">
@@ -278,7 +379,14 @@ const Page = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((item: any, index: any) => (
+                        {loading && (
+                            <tr>
+                                <td colSpan={5} className="text-center py-4 border">
+                                    Loading...
+                                </td>
+                            </tr>
+                        )}
+                        {!loading && data.map((item: any, index: any) => (
                             <tr key={index} className="hover:bg-slate-100">
                                 <td className="px-4 py-2 border">
                                     <div className="flex items-center gap-x-2">

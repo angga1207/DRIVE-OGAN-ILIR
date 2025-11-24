@@ -72,24 +72,27 @@ const ModalDetail = (
                             <div className="mt-2 flex items-center justify-center w-full h-[calc(100vh-300px)]">
                                 {data?.sv_in == 1 && (
                                     <>
+                                        <embed src={`https://drive.google.com/file/d/${data?.path}/preview`}
+                                            className="w-full h-full" />
+
                                         {/* Default View */}
-                                        {(['xls', 'xlsx', 'doc', 'docx'].includes(data?.extension) === false) && (
+                                        {/* {(['xls', 'xlsx', 'doc', 'docx'].includes(data?.extension) === false) && (
                                             <embed src={`https://drive.google.com/file/d/${data?.path}/preview`}
                                                 className="w-full h-full" />
-                                        )}
+                                        )} */}
 
                                         {/* if full_mime has sheet */}
-                                        {(['xls', 'xlsx'].includes(data?.extension)) && (
+                                        {/* {(['xls', 'xlsx'].includes(data?.extension)) && (
                                             <iframe
                                                 src={`https://docs.google.com/spreadsheets/d/${data?.path}/edit?usp=sharing&ouid=${myGoogleId}&rtpof=true&sd=true`}
                                                 className="w-full h-full" />
-                                        )}
+                                        )} */}
 
-                                        {(['doc', 'docx'].includes(data?.extension)) && (
+                                        {/* {(['doc', 'docx'].includes(data?.extension)) && (
                                             <iframe
                                                 src={`https://docs.google.com/document/d/${data?.path}/edit?usp=sharing&ouid=${myGoogleId}&rtpof=true&sd=true`}
                                                 className="w-full h-full" />
-                                        )}
+                                        )} */}
 
                                     </>
                                 )}
