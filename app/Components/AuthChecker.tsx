@@ -11,14 +11,22 @@ const AuthChecker = () => {
     const MySession = useSession();
 
     useEffect(() => {
-        if (isMounted && MySession.status !== 'loading') {
-            if (MySession.status === 'unauthenticated') {
-                signOut({
-                    callbackUrl: '/login',
-                });
-                return;
+        setTimeout(() => {
+            if (isMounted && MySession.status !== 'loading') {
+                // Jika session expired atau tidak ada session, lakukan sign out dan redirect ke login page, lakukan dalam timeout agar tidak bentrok dengan proses lainnya
+                if (MySession.status === 'unauthenticated') {
+                    signOut({
+                        callbackUrl: '/login',
+                    });
+                }
+                // if (MySession.status === 'unauthenticated') {
+                //     signOut({
+                //         callbackUrl: '/login',
+                //     });
+                //     return;
+                // }
             }
-        }
+        }, 2000);
     }, [isMounted, MySession]);
 
     return (

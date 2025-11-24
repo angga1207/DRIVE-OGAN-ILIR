@@ -35,7 +35,6 @@ const Header = () => {
 
     useEffect(() => {
         if (isMounted) {
-
             const cookieUser = getCookie('user');
             if (cookieUser) {
                 const user = JSON.parse(cookieUser as string);

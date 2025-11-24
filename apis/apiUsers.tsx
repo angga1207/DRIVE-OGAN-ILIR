@@ -7,15 +7,17 @@ import { createAxiosConfig, getBearerTokenForApi } from "@/utils/apiHelpers";
 var CurrentToken = getCookie('token');
 const ServerDomain = serverDomain();
 
-export async function getUsers(search: any = null) {
+export async function getUsers(search: any = null, page: number = 1, limit: number = 10) {
     try {
         const axiosConfig = await createAxiosConfig({
             params: {
                 search: search,
+                page: page,
+                per_page: limit
             }
         });
 
-        const res = await axios.get(`${ServerDomain}/getUsers`, axiosConfig);
+        const res = await axios.get(`${ServerDomain}/v2/getUsers`, axiosConfig);
         const data = await res.data;
         return data;
         // const res = await axios.get(`${ServerDomain}/getUsers`, {

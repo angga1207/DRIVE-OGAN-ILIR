@@ -4,6 +4,7 @@ import { FolderIcon as FolderIconSolid } from "@heroicons/react/24/solid";
 import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
 import { HomeIcon as HomeIconSolid } from "@heroicons/react/24/solid";
 import { TrashIcon as TrashIconSolid } from "@heroicons/react/24/solid";
+import { MdOutlineFolderShared } from "react-icons/md";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -61,6 +62,10 @@ const SideBar = ({
                 setActiveMenu('favorite');
             }
 
+            if (pathname === '/shared') {
+                setActiveMenu('shared');
+            }
+
             if (pathname === '/trash') {
                 setActiveMenu('trash');
             }
@@ -108,6 +113,24 @@ const SideBar = ({
                                         <StarIcon className="h-4 w-4 inline mb-0.5 mr-1" />
                                     )}
                                     Favorit
+                                </p>
+                            </div>
+                        </Link>
+                    </li>
+
+                    <li className={`px-3 py-2 rounded-xl cursor-pointer transition-all duration-300 ${activeMenu === 'shared' ? 'bg-[#ebbd18] hover:bg-[#ebbd18] font-semibold' : 'hover:bg-[#ebbd18]'} group`}>
+                        <Link
+                            href={'/shared'}
+                            className="flex items-center justify-between">
+                            <div
+                                className="w-full">
+                                <p className={`text-sm ${activeMenu === 'shared' ? 'text-[#003a69]' : 'text-[#ebbd18] group-hover:text-[#003a69]'}`}>
+                                    {activeMenu === 'shared' ? (
+                                        <MdOutlineFolderShared className="h-4 w-4 inline mb-0.5 mr-1" />
+                                    ) : (
+                                        <MdOutlineFolderShared className="h-4 w-4 inline mb-0.5 mr-1" />
+                                    )}
+                                    Shared
                                 </p>
                             </div>
                         </Link>

@@ -20,7 +20,7 @@ import Tippy from '@tippyjs/react';
 import ItemCardGrid from './Components/ItemCardGrid';
 import SideBar from './Components/SideBar';
 import AddMenu from './Components/addMenu';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { decryptClient } from '@/lib/crypto-js';
 import { createAxiosConfig, createAxiosConfigMultipart, getBearerTokenForApi } from '@/utils/apiHelpers';
 
@@ -126,6 +126,9 @@ function Page() {
             setArrBreadcrumbs(res.data);
           }
           else if (res.message.status == 401) {
+            signOut({
+              callbackUrl: '/logout'
+            });
             window.location.href = '/logout';
           }
           setIsLoadingBreadcrumbs(false);
@@ -135,10 +138,16 @@ function Page() {
           if (res.status === 'success') {
             setItems(res.data);
           } else if (res.message.status == 401) {
-            window.location.href = '/logout';
+            signOut({
+              callbackUrl: '/logout'
+            })
+            // window.location.href = '/logout';
           } else if (res.status == 'error') {
             if (res.code == 401 || res.message == 'Unauthenticated') {
-              window.location.href = '/logout';
+              signOut({
+                callbackUrl: '/logout'
+              })
+              // window.location.href = '/logout';
             }
           }
           setIsLoading(false);
@@ -149,7 +158,10 @@ function Page() {
             setArrBreadcrumbs(res.data);
           }
           else if (res.message.status) {
-            window.location.href = '/logout';
+            signOut({
+              callbackUrl: '/logout'
+            })
+            // window.location.href = '/logout';
           }
           setIsLoadingBreadcrumbs(false);
         });
@@ -158,10 +170,16 @@ function Page() {
           if (res.status === 'success') {
             setItems(res.data);
           } else if (res.message.status == 401) {
-            window.location.href = '/logout';
+            signOut({
+              callbackUrl: '/logout'
+            })
+            // window.location.href = '/logout';
           } else if (res.status == 'error') {
             if (res.code == 401 || res.message == 'Unauthenticated') {
-              window.location.href = '/logout';
+              signOut({
+                callbackUrl: '/logout'
+              })
+              // window.location.href = '/logout';
             }
           }
           setIsLoading(false);
@@ -647,7 +665,6 @@ function Page() {
                     setIsLoading(false);
                     setIsError(false);
                   }}
-
                 />
               )}
             </div>
@@ -1006,6 +1023,16 @@ function Page() {
                       onSetFavorite={(e: any, is_favorite: boolean) => {
                         handleSetFavorite(e, is_favorite);
                       }}
+                      options={{
+                        view: true,
+                        favorite: true,
+                        edit_name: true,
+                        share: true,
+                        download: true,
+                        delete: true,
+                        copy_link: true,
+                      }}
+                      isOwner={user?.id == item?.author?.id ? true : false}
                       selectedItems={selectedItems}
                       isLoading={false}
                       isError={false}

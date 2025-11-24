@@ -80,7 +80,7 @@ const ModalShare = (
                                 </div>
                             </div>
 
-                            <div className="mt-2 w-full space-y-2 min-h-[100px]">
+                            <div className="mt-2 w-full space-y-4 min-h-[100px]">
                                 <div className="">
                                     <label className='text-xs text-slate-500 font-semibold'>
                                         Status Publikasi
@@ -123,6 +123,80 @@ const ModalShare = (
 
                                 {newData?.publicity?.status === 'public' && (
                                     <>
+
+                                        <div className="flex justify-between items-center">
+                                            <label htmlFor="editable" className="text-sm text-slate-400 font-semibold cursor-pointer">
+                                                Dapat diedit
+                                            </label>
+                                            <div className="relative">
+                                                <input
+                                                    onChange={(e) => {
+                                                        setNewData({
+                                                            ...newData,
+                                                            publicity: {
+                                                                ...newData?.publicity,
+                                                                editable: e.target.checked
+                                                            }
+                                                        });
+                                                    }}
+                                                    id="editable"
+                                                    type="checkbox"
+                                                    checked={newData?.publicity?.editable}
+                                                    disabled={isLoading}
+                                                    className="sr-only"
+                                                />
+                                                <label
+                                                    htmlFor="editable"
+                                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer ${newData?.publicity?.editable
+                                                        ? 'bg-green-500'
+                                                        : 'bg-gray-300'
+                                                        } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                >
+                                                    <span
+                                                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${newData?.publicity?.editable ? 'translate-x-6' : 'translate-x-1'
+                                                            }`}
+                                                    />
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex justify-between items-center">
+                                            <label htmlFor="forever" className="text-sm text-slate-400 font-semibold cursor-pointer">
+                                                Selamanya
+                                            </label>
+                                            <div className="relative">
+                                                <input
+                                                    onChange={(e) => {
+                                                        setNewData({
+                                                            ...newData,
+                                                            publicity: {
+                                                                ...newData?.publicity,
+                                                                expired_at: e.target.checked ? '9999-12-31 23:59:59' : null,
+                                                                forever: e.target.checked
+                                                            }
+                                                        });
+                                                    }}
+                                                    id="forever"
+                                                    type="checkbox"
+                                                    checked={newData?.publicity?.forever}
+                                                    disabled={isLoading}
+                                                    className="sr-only"
+                                                />
+                                                <label
+                                                    htmlFor="forever"
+                                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer ${newData?.publicity?.forever
+                                                        ? 'bg-green-500'
+                                                        : 'bg-gray-300'
+                                                        } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                >
+                                                    <span
+                                                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${newData?.publicity?.forever ? 'translate-x-6' : 'translate-x-1'
+                                                            }`}
+                                                    />
+                                                </label>
+                                            </div>
+                                        </div>
+
                                         {newData?.publicity?.forever === false && (
                                             <div className="">
                                                 <label className='text-xs text-slate-500 font-semibold'>
@@ -150,29 +224,6 @@ const ModalShare = (
                                                 </div>
                                             </div>
                                         )}
-
-                                        <div className="flex justify-start items-center gap-2">
-                                            <input
-                                                onChange={(e) => {
-                                                    setNewData({
-                                                        ...newData,
-                                                        publicity: {
-                                                            ...newData?.publicity,
-                                                            expired_at: e.target.checked ? '9999-12-31 23:59:59' : null,
-                                                            forever: e.target.checked
-                                                        }
-                                                    });
-                                                }}
-                                                id="forever"
-                                                type="checkbox"
-                                                checked={newData?.publicity?.forever}
-                                                value="true"
-                                                disabled={isLoading}
-                                                className="border border-gray-300 rounded-md p-2 cursor-pointer" />
-                                            <label htmlFor="forever" className="text-sm text-slate-400 font-semibold cursor-pointer">
-                                                Selamanya
-                                            </label>
-                                        </div>
                                     </>
                                 )}
 
@@ -181,7 +232,8 @@ const ModalShare = (
 
                         <div className="bg-gray-50 px-4 py-3 flex items-center justify-between">
                             <div className="">
-                                {data?.publicity?.status === 'public' && (
+                                {/* {data?.publicity?.status === 'public' && ( */}
+                                {newData?.publicity?.status === 'public' && (
                                     <button
                                         type='button'
                                         className='mt-3 flex items-center gap-x-2 w-full justify-center rounded-md bg-green-100 px-3 py-2 text-sm font-semibold text-green-900 shadow-xs ring-0 border border-green-300 hover:bg-green-200 sm:mt-0 sm:w-auto cursor-pointer select-none whitespace-nowrap transition-all duration-300'
@@ -233,7 +285,8 @@ const ModalShare = (
                                         </span>
                                     ) : (
                                         <span>
-                                            Bagikan
+                                            <ShareIcon className="h-3 w-3 inline mr-1" />
+                                            Simpan
                                         </span>
                                     )}
                                 </button>

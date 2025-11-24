@@ -50,6 +50,8 @@ const ItemCardList = (
         isError,
         isSelected,
         isSelectedMode,
+        options,
+        isOwner,
     }: {
         item: any
         onItemClick: (item: any) => void
@@ -69,6 +71,8 @@ const ItemCardList = (
         isError: boolean
         isSelected: boolean
         isSelectedMode: boolean
+        options?: any
+        isOwner?: boolean
     }
 ) => {
     if (isLoading) {
@@ -138,7 +142,7 @@ const ItemCardList = (
             <ContextMenu>
                 <ContextMenuTrigger>
                     <div
-                        className={`relative card ${item?.type == 'folder' ? 'bg-slate-200' : 'bg-white'} group cursor-pointer ${isSelected === true ? '!bg-green-100' : ''} ${(isDragging && isSelected) ? 'opacity-50' : ''}${(isDragging) ? 'opacity-50' : ''} transition-all duration-500 !rounded-2xl`}
+                        className={`relative card max-w-full ${item?.type == 'folder' ? 'bg-slate-200' : 'bg-white'} group cursor-pointer ${isSelected === true ? '!bg-green-100' : ''} ${(isDragging && isSelected) ? 'opacity-50' : ''}${(isDragging) ? 'opacity-50' : ''} transition-all duration-500 !rounded-2xl max-w-full overflow-hidden`}
                         id={`item-${item?.slug}`}
 
                         draggable={draggable}
@@ -158,19 +162,19 @@ const ItemCardList = (
                         aria-selected={isSelected}
                     >
                         {isDownloading ? (
-                            <div className="absolute top-0 left-0 h-full w-full bg-[#003a69]/50 z-1 select-none">
+                            <div className="relative top-0 left-0 h-20 w-[calc(100%+40px)] bg-[#003a69]/50 z-1 select-none !m-[-20px]">
                                 <div className="w-full h-20 flex items-center justify-center animate-pulse bg-[#003a69] text-[#003a69] font-semibold text-lg">
                                     <StopCircleIcon className="h-8 w-8 animate-spin" />
-                                    <div className="text-[#003a69] font-semibold text-lg">
+                                    <div className="text-[#ffffff] font-semibold text-lg">
                                         {item?.type === 'folder' ? 'Membuka Folder...' : 'Mengunduh Berkas...'}
                                     </div>
                                 </div>
                             </div>
                         ) : (
                             <>
-                                <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-x-5">
+                                <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-x-5 max-w-full">
                                     {/* mobile responsive */}
-                                    <div className='grow flex items-center gap-x-2 max-w-full'>
+                                    <div className='grow flex items-center gap-x-2'>
 
                                         <div className="">
                                             <input
@@ -253,8 +257,8 @@ const ItemCardList = (
                                         >
                                             <div className="flex items-center gap-2 shrink">
                                                 <div
-                                                    className="font-semibold select-none line-clamp-1 text-[#003a69] transition-all duration-300">
-                                                    <div className='w-full line-clamp-1'>
+                                                    className="font-semibold select-none text-[#003a69] transition-all duration-300">
+                                                    <div className='w-full max-w-[200px] sm:max-w-[300px] md:max-w-[400px] xl:max-w-[800px] truncate'>
                                                         {item?.name}
                                                         {item?.type === 'file' && (
                                                             <>
@@ -264,30 +268,33 @@ const ItemCardList = (
                                                     </div>
                                                 </div>
 
-                                                <div className="ml-2 select-none">
-                                                    {item?.publicity?.status === 'private' && (
-                                                        <>
-                                                            <LockClosedIcon className="h-3 w-3 inline text-[#003a69]" />
-                                                        </>
-                                                    )}
-                                                    {item?.publicity?.status === 'public' && (
-                                                        <div
-                                                            className=' hidden xl:flex items-center gap-x-1 text-[#ebbd18] hover:text-white hover:bg-[#ebbd18] p-1 rounded-xl px-2 transition-all duration-300'
-                                                            onClick={() => {
-                                                                navigator.clipboard.writeText(clientDomain() + '/sharer?_id=' + item?.slug);
+                                                {options?.copy_link && (
+                                                    <div className="ml-2 select-none">
+                                                        {item?.publicity?.status === 'private' && (
+                                                            <>
+                                                                <LockClosedIcon className="h-3 w-3 inline text-[#003a69]" />
+                                                            </>
+                                                        )}
+                                                        {item?.publicity?.status === 'public' && (
+                                                            <div
+                                                                className=' hidden xl:flex items-center gap-x-1 text-[#ebbd18] hover:text-white hover:bg-[#ebbd18] p-1 rounded-xl px-2 transition-all duration-300'
+                                                                onClick={() => {
+                                                                    navigator.clipboard.writeText(clientDomain() + '/sharer?_id=' + item?.slug);
 
-                                                                SweetAlertToast('success', 'Tautan berhasil disalin', clientDomain() + '/sharer?_id=' + item?.slug)
-                                                            }}
-                                                        >
-                                                            <ShareIcon className="h-3 w-3 inline text-[#003a69]" />
-                                                            <div className='group-hover:opacity-100 opacity-0 transition-all duration-300'>
-                                                                <div className='text-[10px] text-[#003a69]'>
-                                                                    Salin Tautan
+                                                                    SweetAlertToast('success', 'Tautan berhasil disalin', clientDomain() + '/sharer?_id=' + item?.slug)
+                                                                }}
+                                                            >
+                                                                <ShareIcon className="h-3 w-3 inline text-[#003a69]" />
+                                                                <div className='group-hover:opacity-100 opacity-0 transition-all duration-300'>
+                                                                    <div className='text-[10px] text-[#003a69]'>
+                                                                        Salin Tautan
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    )}
-                                                </div>
+                                                        )}
+                                                    </div>
+                                                )}
+
                                             </div>
                                             <div className="flex items-center gap-x-1 text-[#003a69] select-none">
                                                 {item.type === 'folder' && (
@@ -320,7 +327,21 @@ const ItemCardList = (
                                         </div>
                                     </div>
                                     <div className="self-center xl:self-end flex items-center gap-x-1 xl:opacity-0 group-hover:opacity-100 transition-all duration-300 bg-[#fff]/70 p-1 rounded-full mt-4 xl:mt-0">
-                                        {item.type === 'file' && (
+
+                                        <Tippy
+                                            content={item?.author?.fullname}
+                                        >
+                                            <div
+                                                className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-all duration-300"
+                                                title={item?.author?.fullname}
+                                            >
+                                                <div className="h-4 w-4 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-semibold text-xs select-none">
+                                                    <img src={item?.author?.photo ? item?.author?.photo : '/favicon.png'} alt={item?.author?.fullname} className="h-4 w-4 rounded-full" />
+                                                </div>
+                                            </div>
+                                        </Tippy>
+
+                                        {(item.type === 'file' && options?.view) && (
                                             <Tippy
                                                 content={`Buka ${item?.type === 'folder' ? 'Folder' : 'Berkas'}`}
                                             >
@@ -335,49 +356,54 @@ const ItemCardList = (
                                             </Tippy>
                                         )}
 
-                                        <Tippy
-                                            // content={item?.favorite ? 'Hapus dari Favorit' : 'Tambahkan ke Favorit'}
-                                            content={`${item?.favorite ? 'Hapus dari' : 'Tambahkan ke'} Favorit`}
-                                        >
-                                            <div
-                                                className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-pink-200 transition-all duration-300"
-                                                onClick={() => {
-                                                    onSetFavorite(item, !item?.favorite)
-                                                }}
+                                        {options?.favorite && (
+                                            <Tippy
+                                                content={`${item?.favorite ? 'Hapus dari' : 'Tambahkan ke'} Favorit`}
                                             >
-                                                {item?.favorite ?
-                                                    <StarIconSolid className={`h-4 w-4 text-pink-600 inline transition-all duration-300`} />
-                                                    :
-                                                    <StarIcon className={`h-4 w-4 text-pink-600 inline transition-all duration-300`} />
-                                                }
-                                            </div>
-                                        </Tippy>
+                                                <div
+                                                    className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-pink-200 transition-all duration-300"
+                                                    onClick={() => {
+                                                        onSetFavorite(item, !item?.favorite)
+                                                    }}
+                                                >
+                                                    {item?.favorite ?
+                                                        <StarIconSolid className={`h-4 w-4 text-pink-600 inline transition-all duration-300`} />
+                                                        :
+                                                        <StarIcon className={`h-4 w-4 text-pink-600 inline transition-all duration-300`} />
+                                                    }
+                                                </div>
+                                            </Tippy>
+                                        )}
 
-                                        <Tippy
-                                            content="Bagikan"
-                                        >
-                                            <div
-                                                className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-green-200 transition-all duration-300"
-                                                onClick={() => {
-                                                    onItemShare(item)
-                                                }}
+                                        {options?.share && (
+                                            <Tippy
+                                                content="Bagikan"
                                             >
-                                                <ShareIcon className="h-4 w-4 text-green-600 inline transition-all duration-300" />
-                                            </div>
-                                        </Tippy>
+                                                <div
+                                                    className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-green-200 transition-all duration-300"
+                                                    onClick={() => {
+                                                        onItemShare(item)
+                                                    }}
+                                                >
+                                                    <ShareIcon className="h-4 w-4 text-green-600 inline transition-all duration-300" />
+                                                </div>
+                                            </Tippy>
+                                        )}
 
-                                        <Tippy content="Ganti Nama">
-                                            <div
-                                                className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-slate-300 transition-all duration-300"
-                                                onClick={() => {
-                                                    onItemEdit(item)
-                                                }}
-                                            >
-                                                <PencilSquareIcon className="h-4 w-4 text-[#003a69] inline transition-all duration-300" />
-                                            </div>
-                                        </Tippy>
+                                        {options?.edit_name && (
+                                            <Tippy content="Ganti Nama">
+                                                <div
+                                                    className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-slate-300 transition-all duration-300"
+                                                    onClick={() => {
+                                                        onItemEdit(item)
+                                                    }}
+                                                >
+                                                    <PencilSquareIcon className="h-4 w-4 text-[#003a69] inline transition-all duration-300" />
+                                                </div>
+                                            </Tippy>
+                                        )}
 
-                                        {item.type !== 'folder' && (
+                                        {(item.type !== 'folder' && options?.download) && (
                                             <Tippy
                                                 content={isDownloading ? 'Membatalkan Unduhan' : 'Unduh Berkas'}
                                             >
@@ -396,23 +422,26 @@ const ItemCardList = (
                                             </Tippy>
                                         )}
 
-                                        <Tippy
-                                            content="Hapus"
-                                        >
-                                            <div
-                                                className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-red-200 transition-all duration-300"
-                                                onClick={() => {
-                                                    onItemDelete(item)
-                                                }}
+                                        {(options?.delete && isOwner) && (
+                                            <Tippy
+                                                content="Hapus"
                                             >
-                                                <TrashIcon className="h-4 w-4 text-red-600 inline transition-all duration-300" />
-                                            </div>
-                                        </Tippy>
+                                                <div
+                                                    className="p-1.5 rounded-full flex items-center justify-center cursor-pointer hover:bg-red-200 transition-all duration-300"
+                                                    onClick={() => {
+                                                        onItemDelete(item)
+                                                    }}
+                                                >
+                                                    <TrashIcon className="h-4 w-4 text-red-600 inline transition-all duration-300" />
+                                                </div>
+                                            </Tippy>
+                                        )}
+
                                     </div>
                                 </div>
-                                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
+                                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out max-w-full"></div>
                                 {/* Glow effect */}
-                                <div className="absolute inset-0 bg-gradient-to-r from-[#ebbd18]/10 to-[#ebbd18]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded"></div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-[#ebbd18]/10 to-[#ebbd18]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded max-w-full"></div>
                             </>
                         )}
                     </div>

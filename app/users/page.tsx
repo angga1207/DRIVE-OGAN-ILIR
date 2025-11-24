@@ -1,10 +1,11 @@
 "use client";
 import { createUser, deleteUser, getUsers, updateUser, updateUserAccess } from "@/apis/apiUsers";
-import { CogIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { CogIcon, EnvelopeIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import ModalUser from "../Components/modalUser";
 import Swal from "sweetalert2";
 import Tippy from "@tippyjs/react";
+import { UserCircle } from "lucide-react";
 
 const SweetAlertConfirm = (title: any, text: any, confirmButtonText: any, cancelButtonText: any = null) => {
     return Swal.fire({
@@ -48,56 +49,69 @@ const Page = () => {
     const [limit, setLimit] = useState(10);
     const [totalData, setTotalData] = useState(0);
     const [data, setData] = useState<any>([]);
-    const [dataRaw, setDataRaw] = useState<any>([]);
     const [loading, setLoading] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [isCreate, setIsCreate] = useState(false);
     const [detailData, setDetailData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    const [dataCounts, setDataCounts] = useState({
+        totalUsers: 0,
+        semestaUsers: 0,
+        googleUsers: 0,
+        accessedUsers: 0,
+        unaccessedUsers: 0,
+    });
+
+    const _getData = () => {
+        setLoading(true);
+        getUsers(search, page, limit).then((res: any) => {
+            if (res.status === "success") {
+                setTotalData(res.data.total);
+                setData(res.data.data);
+                setPage(res.data.current_page);
+                if (res.data.per_page != limit) {
+                    setLimit(res.data.per_page);
+                }
+
+                setDataCounts({
+                    totalUsers: res.data.total,
+                    semestaUsers: res.data.semesta_users_count,
+                    googleUsers: res.data.google_users_count,
+                    accessedUsers: res.data.accessed_users_count,
+                    unaccessedUsers: res.data.unaccessed_users_count,
+                });
+            } else {
+                setData([]);
+                setTotalData(0);
+            }
+            setLoading(false);
+        });
+    }
 
     useEffect(() => {
         if (isMounted) {
             setLoading(true);
-            getUsers().then((res: any) => {
-                if (res.status === "success") {
-                    setDataRaw(res.data);
-                    setTotalData(res.total);
-                } else {
-                    setData([]);
-                    setTotalData(0);
-                }
-                setLoading(false);
-            });
+            _getData();
         }
     }, [isMounted]);
 
-    useEffect(() => {
-        setLoading(true);
-        const filteredData = dataRaw.filter((item: any) => {
-            return (
-                item?.fullname?.toLowerCase().includes(search.toLowerCase())
-            );
-        });
-        setTotalData(filteredData.length);
-        setData(filteredData.slice((page - 1) * limit, page * limit));
-        setLoading(false);
-    }, [dataRaw, search, page, limit]);
+    const handleSearch = () => {
+        _getData();
+        setPage(1);
+    }
 
+    useEffect(() => {
+        if (isMounted) {
+            _getData();
+        }
+    }, [page, limit]);
 
     const handleUpdate = (data: any) => {
         setLoading(true);
         updateUser(data).then((res: any) => {
             if (res.status === "success") {
-                getUsers().then((res: any) => {
-                    if (res.status === "success") {
-                        setDataRaw(res.data);
-                        setTotalData(res.total);
-                    } else {
-                        setData([]);
-                        setTotalData(0);
-                    }
-                });
+                _getData();
                 SweetAlertConfirm(
                     "Berhasil",
                     "Data berhasil diubah",
@@ -121,15 +135,7 @@ const Page = () => {
         // create user
         createUser(data).then((res: any) => {
             if (res.status === "success") {
-                getUsers().then((res: any) => {
-                    if (res.status === "success") {
-                        setDataRaw(res.data);
-                        setTotalData(res.total);
-                    } else {
-                        setData([]);
-                        setTotalData(0);
-                    }
-                });
+                _getData();
             }
             SweetAlertConfirm(
                 "Berhasil",
@@ -153,15 +159,7 @@ const Page = () => {
             if (result.isConfirmed) {
                 updateUserAccess(id, access).then((res: any) => {
                     if (res.status === "success") {
-                        getUsers().then((res: any) => {
-                            if (res.status === "success") {
-                                setDataRaw(res.data);
-                                setTotalData(res.total);
-                            } else {
-                                setData([]);
-                                setTotalData(0);
-                            }
-                        });
+                        _getData();
                     }
                     SweetAlertConfirm(
                         "Berhasil",
@@ -185,15 +183,7 @@ const Page = () => {
             if (result.isConfirmed) {
                 deleteUser(id).then((res: any) => {
                     if (res.status === "success") {
-                        getUsers().then((res: any) => {
-                            if (res.status === "success") {
-                                setDataRaw(res.data);
-                                setTotalData(res.total);
-                            } else {
-                                setData([]);
-                                setTotalData(0);
-                            }
-                        });
+                        _getData();
                     }
                     SweetAlertConfirm(
                         "Berhasil",
@@ -207,9 +197,14 @@ const Page = () => {
     }
 
     return (
-        <div className="w-full xl:max-w-7xl xl:py-4 mx-auto space-y-4">
+        <div className="w-full xl:max-w-7xl p-8 xl:px-0 xl:py-4 mx-auto space-y-4">
             <div className="flex items-center justify-between gap-x-2">
-                <div className="">
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleSearch();
+                    }}
+                    className="flex items-center gap-x-2">
                     <input
                         type="search"
                         placeholder="Pencarian"
@@ -222,11 +217,9 @@ const Page = () => {
                             e.currentTarget.focus();
                         }}
                         onChange={(e) => {
-                            setSearch(e.target.value);
-                            setPage(1);
-                        }}
-                    />
-                </div>
+                            setSearch(e.currentTarget.value);
+                        }} />
+                </form>
 
                 <div className="">
                     <button
@@ -239,6 +232,25 @@ const Page = () => {
                         className="px-3 py-2 bg-blue-500 text-white rounded-md cursor-pointer select-none">
                         Tambah Pengguna
                     </button>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 bg-blue-200 rounded-md shadow-md border border-blue-300">
+                    <div className="text-sm text-slate-500">Total Pengguna</div>
+                    <div className="text-2xl font-bold">{dataCounts.totalUsers}</div>
+                </div>
+                <div className="p-4 bg-indigo-200 rounded-md shadow-md border border-indigo-300">
+                    <div className="text-sm text-slate-500">Pengguna Terintegrasi Semesta</div>
+                    <div className="text-2xl font-bold">{dataCounts.semestaUsers}</div>
+                </div>
+                <div className="p-4 bg-orange-200 rounded-md shadow-md border border-orange-300">
+                    <div className="text-sm text-slate-500">Pengguna Terintegrasi Google</div>
+                    <div className="text-2xl font-bold">{dataCounts.googleUsers}</div>
+                </div>
+                <div className="p-4 bg-green-200 rounded-md shadow-md border border-green-300">
+                    <div className="text-sm text-slate-500">Pengguna Dengan Akses</div>
+                    <div className="text-2xl font-bold">{dataCounts.accessedUsers}</div>
                 </div>
             </div>
 
@@ -275,7 +287,6 @@ const Page = () => {
                                                 <img
                                                     src={item.photo}
                                                     onError={(e) => {
-                                                        // e.currentTarget.src = '/favicon.png';
                                                         e.currentTarget.src = '/logo-oi.webp';
                                                     }}
                                                     alt={item.fullname}
@@ -288,21 +299,40 @@ const Page = () => {
                                         </div>
                                         <div className="flex flex-col">
                                             <span className="text-sm font-semibold">{item.fullname}</span>
-                                            <span className="text-xs text-slate-500">{item.email}</span>
-                                            <span className="text-xs text-slate-500">{item.phone}</span>
+                                            <span className="text-xs text-slate-500">
+                                                <EnvelopeIcon className="w-3 h-3 inline-block mr-1" />
+                                                {item.email}
+                                            </span>
+                                            <span className="text-xs font-bold text-slate-500">
+                                                <UserCircle className="w-3 h-3 inline-block mr-1" />
+                                                {item.username}
+                                            </span>
+
+                                            <div className="flex items-center gap-x-1 mt-1">
+                                                {item.googleIntegated && (
+                                                    <Tippy content="Integrated with Google">
+                                                        <div className="flex items-center gap-x-1">
+                                                            <img src="/assets/images/google.png" className="w-3 h-3 inline-block cursor-pointer" />
+                                                            <span className="text-xs font-semibold text-green-500">
+                                                                Google
+                                                            </span>
+                                                        </div>
+                                                    </Tippy>
+                                                )}
+
+                                                {item.semestaIntegrated && (
+                                                    <Tippy content="Integrated with Semesta">
+                                                        <div className="flex items-center gap-x-1">
+                                                            <img src="https://aptika.oganilirkab.go.id/storage/images/thumbnail/original/semesta-ogan-ilir.png" className="w-3 h-3 inline-block cursor-pointer" />
+                                                            <span className="text-xs font-semibold text-indigo-500">
+                                                                Semesta
+                                                            </span>
+                                                        </div>
+                                                    </Tippy>
+                                                )}
+                                            </div>
                                         </div>
 
-                                        {item.googleIntegated && (
-                                            <Tippy content="Integrated with Google">
-                                                <img src="/assets/images/google.png" className="w-3 h-3 inline-block cursor-pointer" />
-                                            </Tippy>
-                                        )}
-
-                                        {item.semestaIntegrated && (
-                                            <Tippy content="Integrated with Semesta">
-                                                <img src="https://aptika.oganilirkab.go.id/storage/images/thumbnail/original/semesta-ogan-ilir.png" className="w-3 h-3 inline-block cursor-pointer" />
-                                            </Tippy>
-                                        )}
 
                                     </div>
                                 </td>
@@ -381,6 +411,7 @@ const Page = () => {
                                         <select
                                             className="px-3 py-1 border border-slate-400 focus:border-slate-500 rounded-md focus:outline-none ring-0 outline-0"
                                             value={limit}
+                                            disabled={loading}
                                             onChange={(e) => {
                                                 setLimit(parseInt(e.target.value));
                                                 setPage(1);
@@ -406,7 +437,8 @@ const Page = () => {
                                                     setPage(page - 1);
                                                 }
                                             }}
-                                            className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md ring-0 outline-0 cursor-pointer"
+                                            disabled={loading || (page <= 1)}
+                                            className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md ring-0 outline-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                             Sebelumnya
                                         </button>
@@ -417,7 +449,8 @@ const Page = () => {
                                                     setPage(page + 1);
                                                 }
                                             }}
-                                            className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md ring-0 outline-0 cursor-pointer"
+                                            disabled={loading || (page * limit >= totalData)}
+                                            className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md ring-0 outline-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                             Selanjutnya
                                         </button>

@@ -79,7 +79,10 @@ const Login = () => {
     const handleGoogleLoginClick = () => {
         if (isLoading) return;
         localStorage.setItem('logginByGoogle', 'true');
-        signIn('google');
+        setTimeout(() => {
+            // showToast('Mengalihkan ke halaman Google Sign-In...', 'info');
+            signIn('google');
+        }, 100);
     };
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {

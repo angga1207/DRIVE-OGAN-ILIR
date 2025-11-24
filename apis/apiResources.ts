@@ -39,6 +39,39 @@ export async function getPath(slug: any = null) {
     }
 }
 
+export async function getPublicPath(slug: any = null) {
+    try {
+        // Use Next.js API route instead of direct server call
+        const params = new URLSearchParams();
+        if (slug) {
+            params.append('slug', slug);
+        }
+
+        const url = `/api/publicPath${params.toString() ? '?' + params.toString() : ''}`;
+
+        const headers: any = {
+            'Content-Type': 'application/json',
+        };
+
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: headers,
+        });
+
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        return {
+            status: 'error',
+            message: error
+        }
+    }
+}
+
 export async function getItems(slug: any = null, sort: any = 'created_at', order: any = 'asc') {
     try {
         // Use Next.js API route instead of direct server call
@@ -600,6 +633,77 @@ export async function setFavorite(ids: any[], status: boolean = true) {
                 ids: ids,
                 status: status
             })
+        });
+
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        return {
+            status: 'error',
+            message: error
+        }
+    }
+}
+
+export async function getAccessToFolder(slug: any) {
+    try {
+        // Use Next.js API route instead of direct server call
+        const url = '/api/getAccessToFolder';
+
+        // Get bearer token for authorization
+        const token = await getBearerTokenForApi();
+        const headers: any = {
+            'Content-Type': 'application/json',
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+                slug: slug
+            })
+        });
+
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        return {
+            status: 'error',
+            message: error
+        }
+    }
+}
+
+export async function getSharedFolders() {
+    try {
+        // Use Next.js API route instead of direct server call
+        const url = '/api/getSharedFolders';
+
+        // Get bearer token for authorization
+        const token = await getBearerTokenForApi();
+        const headers: any = {
+            'Content-Type': 'application/json',
+        };
+
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: headers,
         });
 
         if (!res.ok) {

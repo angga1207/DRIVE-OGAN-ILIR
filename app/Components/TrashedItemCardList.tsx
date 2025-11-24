@@ -219,6 +219,7 @@ const TrashedItemCardList = (
                         </div>
                     </div>
                     <div className="self-center xl:self-end flex items-center gap-x-1 xl:opacity-0 group-hover:opacity-100 transition-all duration-300 bg-[#fff]/70 p-1 rounded-full mt-4 xl:mt-0">
+
                         {item.type === 'file' && (
                             <Tippy
                                 content={`Buka ${item?.type === 'folder' ? 'Folder' : 'Berkas'}`}

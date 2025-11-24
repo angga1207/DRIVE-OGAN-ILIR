@@ -69,7 +69,7 @@ const ModalFolder = (
                                     <div className="">
                                         <label htmlFor='folder-name'>
                                             <span className="text-sm font-semibold text-gray-900">
-                                                Nama Folder
+                                                {data?.type === 'folder' ? 'Nama Folder' : 'Nama Berkas'}
                                             </span>
                                             <span className='text-red-500'>*</span>
                                             <span className="font-normal text-gray-500 text-xs">
@@ -78,7 +78,7 @@ const ModalFolder = (
                                         </label>
                                         <textarea
                                             // type="text"
-                                            placeholder='Masukkan Nama Folder'
+                                            placeholder={`Masukkan nama ${data?.type === 'folder' ? 'folder' : 'berkas'}...`}
                                             id="folder-name"
                                             defaultValue={data?.name}
                                             autoComplete='off'

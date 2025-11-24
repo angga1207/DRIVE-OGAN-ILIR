@@ -5,7 +5,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import ItemCardList from "../Components/ItemCardList";
 import Breadcrumbs from "../Components/breadcrumbs";
-import { getFavoriteItems, getItems, getPath, getTrashItems, moveItems, postDelete, postDownload, postForceDelete, postMakeFolder, postPublicity, postRename, postRestore, setFavorite } from "@/apis/apiResources";
+import { getPublicPath, getSharedFolders, getSharedItems, postDownload, postMakeFolder, postRename } from "@/apis/apiResources";
 import { getCookie } from "cookies-next";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import ModalDetail from "../Components/modalDetail";
@@ -22,6 +22,9 @@ import SideBar from '../Components/SideBar';
 import Link from 'next/link';
 import TrashedItemCardList from '../Components/TrashedItemCardList';
 import AddMenu from '../Components/addMenu';
+import { MdOutlineFolderShared } from 'react-icons/md';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+import { createAxiosConfig, createAxiosConfigMultipart, getBearerTokenForApi } from '@/utils/apiHelpers';
 
 const ServerDomain = serverDomain();
 
@@ -77,6 +80,7 @@ const Page = () => {
     const [viewMode, setViewMode] = useState('list'); // grid or list
     const [items, setItems] = useState<any>([]);
     const [arrBreadcrumbs, setArrBreadcrumbs] = useState<any>([]);
+    const [currentPath, setCurrentPath] = useState<any>(null);
     const [selectedItems, setSelectedItems] = useState<any>([]);
     const [inDetailItem, setInDetailItem] = useState<any>(null);
     const [isMounted, setIsMounted] = useState(false);
@@ -94,6 +98,10 @@ const Page = () => {
     const [openModalFolder, setOpenModalFolder] = useState(false);
     const [openModalShare, setOpenModalShare] = useState(false);
 
+    const [queueUploadFiles, setQueueUploadFiles] = useState<any>([]);
+    const [queueBatch, setQueueBatch] = useState<any>(0);
+    const [isFolderCreate, setIsFolderCreate] = useState(false);
+
     useEffect(() => {
         setIsMounted(true);
     }, []);
@@ -108,152 +116,118 @@ const Page = () => {
         }
     }, [isMounted]);
 
-    useEffect(() => {
-        if (isMounted) {
-            setItems([]);
-            setIsLoading(true);
-            getFavoriteItems().then((res: any) => {
+    const _getPath = () => {
+        setIsLoadingBreadcrumbs(true);
+        const _id = searchParams.get('_id') || null;
+
+        getPublicPath(_id).then((res: any) => {
+            if (res.status === 'success') {
+                setCurrentPath(res.data.current);
+                setArrBreadcrumbs(res.data);
+            } else {
+                setArrBreadcrumbs([]);
+            }
+            setIsLoadingBreadcrumbs(false);
+        }).catch((err) => {
+            setArrBreadcrumbs([]);
+            setIsLoadingBreadcrumbs(false);
+        });
+    }
+
+    const _getFolderItems = () => {
+        setIsLoading(true);
+        const _id = searchParams.get('_id') || null;
+
+        if (_id) {
+            getSharedItems(_id).then((res: any) => {
                 if (res.status === 'success') {
                     setItems(res.data);
-                } else if (res.message.status == 401 && CurrentToken) {
-                    window.location.href = '/logout';
+                    setIsError(false);
+                } else {
+                    setItems([]);
+                    setIsError(true);
                 }
                 setIsLoading(false);
+            }).catch((err) => {
+                setItems([]);
+                setIsLoading(false);
+                setIsError(true);
             });
-            setSort(sorts[0]);
-            setSelectedItems([]);
+        } else {
+            getSharedFolders().then((res: any) => {
+                if (res.status === 'success') {
+                    setItems(res.data);
+                    setIsError(false);
+                } else {
+                    setItems([]);
+                    setIsError(true);
+                }
+                setIsLoading(false);
+            }).catch((err) => {
+                setItems([]);
+                setIsLoading(false);
+                setIsError(true);
+            });
         }
-    }, [isMounted, searchParams, pathname]);
+    }
 
+    useEffect(() => {
+        if (isMounted) {
+            _getPath();
+            _getFolderItems();
+        }
+    }, [isMounted, searchParams]);
 
     const handleGoFolder = (slug: any) => {
         const params = new URLSearchParams(window.location.search);
         params.set('_p', slug);
-        window.history.pushState({}, '', `/?${params}`);
-        router.push(`/?_p=${slug}`);
+        window.history.pushState({}, '', `${pathname}?${params}`);
+        router.push(`${pathname}?_id=${slug}`);
     }
 
     const handleRenamFolder = (slug: any, name: any, id: any) => {
         setIsLoadingFolder(true);
-        postRename(slug, name).then((res: any) => {
-            if (res.status === 'success') {
-                setItems((prev: any) => {
-                    return prev.map((item: any) => {
-                        if (item.id === id) {
-                            return { ...item, name: name };
-                        }
-                        return item;
+        if (isFolderCreate === true) {
+            postMakeFolder(searchParams.get('_id'), name).then((res: any) => {
+                if (res.status === 'success') {
+                    _getFolderItems();
+                    setOpenModalFolder(false);
+                    setInDetailItem(null);
+                    setSelectedItems([]);
+                    setIsSelectedMode(false);
+                    setIsLoading(false);
+                    setIsError(false);
+                }
+                else {
+                    SweetAlertToast('error', 'Gagal', res.message);
+                }
+                setIsLoadingFolder(false);
+            });
+        } else if (isFolderCreate === false) {
+            postRename(slug, name).then((res: any) => {
+                if (res.status == 'success') {
+                    setItems((prev: any) => {
+                        return prev.map((item: any) => {
+                            if (item.id === id) {
+                                return { ...item, name: name };
+                            }
+                            return item;
+                        });
                     });
-                });
 
-                setOpenModalFolder(false);
-                setInDetailItem(null);
-                setSelectedItems([]);
-                setIsSelectedMode(false);
-                setIsLoading(false);
-                setIsError(false);
-            }
-            else {
-                SweetAlertToast('error', 'Gagal', res.message);
-            }
-            setIsLoadingFolder(false);
-        });
-    }
-
-    const handleDeleteFile = (data: any, callback: any = null) => {
-        // setIsLoading(true);
-        postDelete([data.slug]).then((res: any) => {
-            if (res.status === 'success') {
-                setItems((prev: any) => {
-                    return prev.filter((item: any) => item.id !== data.id);
-                });
-                setSelectedItems([]);
-                setIsSelectedMode(false);
-                setIsLoading(false);
-                setIsError(false);
-                SweetAlertToast('success', 'Berhasil', 'Berkas berhasil dihapus');
-
-                if (callback) {
-                    // redirect to callback uri
-                    // window.location.href = '/?p=' + callback;
-
-                    if (callback !== 'root') {
-                        router.push('/?_p=' + (callback ?? ''));
-                    } else {
-                        router.push('/');
-                    }
+                    setOpenModalFolder(false);
+                    setInDetailItem(null);
+                    setSelectedItems([]);
+                    setIsSelectedMode(false);
+                    setIsLoading(false);
+                    setIsError(false);
                 }
-            }
-        });
-    }
-
-    const handleSort = (data: any) => {
-        const sortedItems = [...items].sort((a: any, b: any) => {
-            if (data.value === 'name') {
-
-                // item type folder first 
-                if (a.type === 'folder' && b.type !== 'folder') {
-                    return -1;
+                else {
+                    SweetAlertToast('error', 'Gagal', res.message);
                 }
-                if (a.type !== 'folder' && b.type === 'folder') {
-                    return 1;
-                }
-                if (a.type === 'folder' && b.type === 'folder') {
-                    return data.direction === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-                }
-                if (a.type !== 'folder' && b.type !== 'folder') {
-                    return data.direction === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-                }
-
-            } else if (data.value === 'date') {
-                // item type folder first
-                if (a.type === 'folder' && b.type !== 'folder') {
-                    return -1;
-                }
-                if (a.type !== 'folder' && b.type === 'folder') {
-                    return 1;
-                }
-                if (a.type === 'folder' && b.type === 'folder') {
-                    return data.direction === 'desc' ? new Date(a.created_at).getTime() - new Date(b.created_at).getTime() : new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-                }
-                if (a.type !== 'folder' && b.type !== 'folder') {
-                    return data.direction === 'desc' ? new Date(a.created_at).getTime() - new Date(b.created_at).getTime() : new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-                }
-            } else if (data.value === 'size') {
-                // item type folder first
-                if (a.type === 'folder' && b.type !== 'folder') {
-                    return -1;
-                }
-                if (a.type !== 'folder' && b.type === 'folder') {
-                    return 1;
-                }
-                if (a.type === 'folder' && b.type === 'folder') {
-                    return 0;
-                }
-                if (a.type !== 'folder' && b.type !== 'folder') {
-                    return data.direction === 'desc' ? a.size_bytes - b.size_bytes : b.size_bytes - a.size_bytes;
-                }
-            }
-        });
-        setItems(sortedItems);
-        setSort(data);
-    }
-
-    const handlePostPublicity = (data: any) => {
-        postPublicity(data.slug, data).then((res: any) => {
-            if (res.status === 'success') {
-                setItems((prev: any) => {
-                    return prev.map((item: any) => {
-                        if (item.id === data.id) {
-                            return { ...item, publicity: data.publicity };
-                        }
-                        return item;
-                    });
-                });
-                setInDetailItem(null);
-                setOpenModalShare(false);
-            }
-        });
+                setIsLoadingFolder(false);
+            });
+        }
     }
 
     const handleDownload = (data: any) => {
@@ -278,31 +252,96 @@ const Page = () => {
         });
     }
 
-    const handleSetFavorite = (data: any, status: boolean) => {
-        setFavorite([data.slug], status).then((res: any) => {
-            if (res.status === 'success') {
-                if (searchParams.get('_p')) {
-                    getFavoriteItems(searchParams.get('_p')).then((res: any) => {
-                        if (res.status === 'success') {
-                            setItems(res.data);
+
+    const handleUploadFiles = (e: any) => {
+        setIsLoadingUploadFiles(true);
+        setShowQueueList(true);
+        const files = e.target.files;
+        if (files.length > 0) {
+            setQueueBatch(queueBatch + 1);
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const fileName = file.name;
+                const fileSize = file.size;
+                setQueueUploadFiles((prev: any) => {
+                    return [...prev, { id: (queueBatch + '-') + (i + 1), name: fileName, size: fileSize, progress: 0, status: 'uploading' }];
+                });
+            }
+            AxiosUploadFiles(files).then((res: any) => {
+                _getFolderItems();
+                // getItems(searchParams.get('_p')).then((res: any) => {
+                //     if (res.status === 'success') {
+                //         setItems(res.data);
+                //     }
+                // });
+                setIsLoadingUploadFiles(false);
+            });
+        }
+        // setUploadFiles([]);
+    }
+
+    const AxiosUploadFiles = async (files: any) => {
+        const globalSlug = searchParams.get('_id');
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const fileName = file.name;
+            const fileSize = file.size;
+            const formData = new FormData();
+            formData.append('files[]', file);
+            formData.append('folderId', globalSlug as string);
+            try {
+                // Get bearer token for authorization
+                const token = await getBearerTokenForApi();
+
+                // Use axios for upload progress tracking with Next.js API route
+                const res = await axios.post(`/api/upload/${globalSlug}`, formData, {
+                    headers: {
+                        ...(token && { Authorization: `Bearer ${token}` }),
+                        // Don't set Content-Type for FormData, let axios handle it
+                    },
+                    onUploadProgress: (progressEvent: any) => {
+                        const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                        setQueueUploadFiles((prev: any) => {
+                            return prev.map((item: any) => {
+                                if (item.id === (queueBatch + '-') + (i + 1)) {
+                                    return { ...item, progress: progress };
+                                }
+                                return item;
+                            });
+                        });
+                        if (progress >= 100) {
+                            setQueueUploadFiles((prev: any) => {
+                                return prev.map((item: any) => {
+                                    if (item.id === (queueBatch + '-') + (i + 1)) {
+                                        return { ...item, status: 'done' };
+                                    }
+                                    return item;
+                                });
+                            });
                         }
-                    });
-                } else {
-                    getFavoriteItems().then((res: any) => {
-                        if (res.status === 'success') {
-                            setItems(res.data);
+                        if (progress < 100) {
+                            setQueueUploadFiles((prev: any) => {
+                                return prev.map((item: any) => {
+                                    if (item.id === (queueBatch + '-') + (i + 1)) {
+                                        return { ...item, status: 'uploading' };
+                                    }
+                                    return item;
+                                });
+                            });
                         }
-                    });
+                    }
+                });
+                const response = await res.data;
+                if (response.status == 'error') {
+                    SweetAlertToast('error', 'Gagal', response.message);
                 }
-                setSelectedItems([]);
+            } catch (error) {
+                return {
+                    status: 'error',
+                    message: error
+                }
             }
-            if (res.status === 'error') {
-                SweetAlertToast('error', 'Error', res.message);
-            }
-            if (res.status === 'error validation') {
-                SweetAlertToast('error', 'Error', res.message);
-            }
-        });
+        }
     }
 
     if (user?.access === false) {
@@ -342,29 +381,29 @@ const Page = () => {
                     <div className="h-auto lg:h-[calc(100vh-64px)] flex flex-col bg-[#003a69] pt-5 pb-20 px-2">
 
                         <AddMenu
-                            isDisabled={true}
+                            isDisabled={searchParams.get('_id') ? false : true}
                             isLoading={isLoading}
                             isLoadingFolder={isLoadingFolder}
                             isLoadingBreadcrumbs={isLoadingBreadcrumbs}
 
                             onUploadFiles={(e: any) => {
                                 // setDragIsUpload(true);
-                                // handleUploadFiles(e);
+                                handleUploadFiles(e);
                             }}
 
                             onCreateFolder={() => {
-                                // setOpenModalFolder(true);
-                                // setIsFolderCreate(true);
-                                // setInDetailItem({
-                                //     name: '',
-                                //     slug: '',
-                                //     id: '',
-                                //     type: 'folder',
-                                // });
-                                // setSelectedItems([]);
-                                // setIsSelectedMode(false);
-                                // setIsLoading(false);
-                                // setIsError(false);
+                                setOpenModalFolder(true);
+                                setIsFolderCreate(true);
+                                setInDetailItem({
+                                    name: '',
+                                    slug: searchParams.get('_id') || null,
+                                    id: '',
+                                    type: 'folder',
+                                });
+                                setSelectedItems([]);
+                                setIsSelectedMode(false);
+                                setIsLoading(false);
+                                setIsError(false);
                             }}
                         />
 
@@ -377,12 +416,78 @@ const Page = () => {
 
                 <div className="col-span-12 lg:col-span-10 px-4 py-6 sm:px-6 lg:px-8">
 
-                    <div className="flex flex-wrap space-x-4 bc items-center">
-                        <Link href={`/favorite`} className="font-semibold flex gap-x-1 items-center transition-all duration-300">
-                            <StarIcon className="h-5 w-5 inline" />
-                            Data Favorit
+                    <div className="flex flex-wrap space-x-4 bc items-center mb-5">
+                        <Link href={`/shared`} className="font-semibold flex gap-x-1 items-center transition-all duration-300">
+                            <MdOutlineFolderShared className="h-5 w-5 inline" />
+                            Data Berbagi
                         </Link>
                     </div>
+
+
+                    {isLoadingBreadcrumbs ? (
+                        <div className="flex flex-wrap space-x-4 bc items-center mb-5">
+                            <div className="font-semibold flex gap-x-1 items-center animate-pulse">
+                                <div className="h-8 w-80 bg-slate-100 rounded-lg"></div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="flex flex-wrap space-x-4 bc items-center mb-5 select-none">
+                            <Breadcrumb>
+                                <BreadcrumbList>
+
+                                    <BreadcrumbItem>
+                                        <BreadcrumbLink asChild>
+                                            <Link href={`/shared`} className="font-semibold text-[#003a69] hover:text-[#ebbd18] flex gap-x-1 items-center transition-all duration-300">
+                                                <FolderIcon className="h-5 w-5 inline" />
+                                                Beranda
+                                            </Link>
+                                        </BreadcrumbLink>
+                                    </BreadcrumbItem>
+
+                                    {currentPath && (
+                                        <BreadcrumbSeparator />
+                                    )}
+
+                                    {(currentPath && currentPath?.type == 'folder' && arrBreadcrumbs?.paths?.length > 0) && (
+                                        arrBreadcrumbs?.paths?.map((item: any, index: number) => (
+                                            <>
+                                                <BreadcrumbItem key={`bc-${index}`}>
+                                                    <BreadcrumbLink asChild>
+                                                        <div
+                                                            onClick={(e: any) => {
+                                                                e.preventDefault();
+                                                                handleGoFolder(item.slug);
+                                                            }}
+                                                            className="font-semibold text-[#003a69] hover:text-[#ebbd18] flex gap-x-1 items-center transition-all duration-300 cursor-pointer">
+                                                            <FolderIcon className="h-5 w-5 inline" />
+                                                            <div className='truncate max-w-[180px]'>
+                                                                {item?.name}
+                                                            </div>
+                                                        </div>
+                                                    </BreadcrumbLink>
+                                                </BreadcrumbItem>
+                                                <BreadcrumbSeparator />
+                                            </>
+                                        ))
+
+                                    )}
+
+                                    {currentPath && (
+                                        <BreadcrumbItem>
+                                            <BreadcrumbPage className="font-semibold text-[#003a69] flex gap-x-1 items-center">
+                                                <FolderIcon className="h-5 w-5 inline" />
+                                                <div className='truncate max-w-[180px]'>
+                                                    {currentPath?.name}
+                                                </div>
+                                            </BreadcrumbPage>
+                                        </BreadcrumbItem>
+                                    )}
+
+                                </BreadcrumbList>
+                            </Breadcrumb>
+
+                        </div>
+                    )}
 
                     {isLoading == false && (
                         <div className="mt-5">
@@ -487,13 +592,13 @@ const Page = () => {
                                 {!isLoading && items.length === 0 && (
                                     <div className="flex flex-col items-center justify-center w-full h-[calc(100vh-300px)] border border-dashed border-slate-300 rounded-lg">
                                         <div className="">
-                                            <StarIcon className="h-20 w-20 text-slate-300" />
+                                            <MdOutlineFolderShared className="h-20 w-20 text-slate-300" />
                                         </div>
                                         <div className="text-slate-300 text-xl font-bold">
-                                            Berkas Favorit Kosong
+                                            Data Berbagi Kosong
                                         </div>
                                         <div className="text-slate-300">
-                                            Berkas yang dihapus akan muncul di sini
+                                            Berkas yang dibagikan akan muncul di sini
                                         </div>
                                     </div>
                                 )}
@@ -564,6 +669,16 @@ const Page = () => {
                                             onSetFavorite={(e: any, is_favorite: boolean) => {
                                                 handleSetFavorite(e, is_favorite);
                                             }}
+                                            options={{
+                                                view: true,
+                                                favorite: false,
+                                                edit_name: true,
+                                                share: false,
+                                                download: true,
+                                                delete: true,
+                                                copy_link: false,
+                                            }}
+                                            isOwner={user?.id == item?.author?.id ? true : false}
                                             selectedItems={selectedItems}
                                             isLoading={false}
                                             isError={false}
@@ -609,7 +724,7 @@ const Page = () => {
             />
 
             <ModalFolder
-                isCreate={false}
+                isCreate={isFolderCreate}
                 isLoading={isLoadingFolder}
                 data={inDetailItem}
                 isOpen={openModalFolder}
@@ -626,24 +741,29 @@ const Page = () => {
                 }}
             />
 
-            <ModalShare
-                data={inDetailItem}
-                isOpen={openModalShare}
-                isLoading={false}
+
+            <QueueList
+                datas={queueUploadFiles}
+                isShow={showQueueList}
                 onClose={() => {
-                    setInDetailItem(null);
-                    setOpenModalShare(false);
+                    setShowQueueList(false);
                 }}
-                onSubmit={(e: any) => {
-                    handlePostPublicity(e);
+                onOpen={() => {
+                    setShowQueueList(true);
+                }}
+                onReset={() => {
+                    const remainingQueue = queueUploadFiles.filter((item: any) => item.status !== 'done' && item.status !== 'failed');
+                    setQueueUploadFiles([]);
+                    setQueueBatch(0);
+                    setShowQueueList(false);
                 }}
             />
+
         </div>
     )
 }
 
-
-export default function TrashPage() {
+export default function SharedPage() {
 
     return (
         <Suspense fallback={<div className="h-full w-full flex items-center justify-center">Loading...</div>}>

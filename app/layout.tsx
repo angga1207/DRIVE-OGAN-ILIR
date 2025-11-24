@@ -5,6 +5,7 @@ import Header from "./Components/Header";
 import AuthProvider from "./providers/SessionProvider";
 import AppVersion from "./Components/AppVersion";
 import FirebaseSetup from "@/components/firebase/FirebaseSetup";
+import AuthChecker from "./Components/AuthChecker";
 const redHat = Red_Hat_Display({
   variable: "--font-red-hat",
   subsets: ["latin"],
@@ -68,7 +69,6 @@ export default function RootLayout({
         className={`${redHat.variable} antialiased`}>
         <div
           className="min-h-full">
-
           <AuthProvider>
             <Header />
 

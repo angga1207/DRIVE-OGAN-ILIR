@@ -123,15 +123,25 @@ export const handleGoogleLogin = async (userSession: any, setIsAuthLoading: (loa
 
         if (res.status === 'success') {
             // Konfigurasi cookie yang konsisten
-            const cookieOptions = { 
+            // const cookieOptions = {
+            //     maxAge: 60 * 60 * 24 * 30, // 30 hari
+            //     httpOnly: false,
+            //     secure: process.env.NODE_ENV === 'production',
+            //     sameSite: 'lax' as const,
+            //     path: '/'
+            // };
+
+            // Konfigurasi cookie untuk development
+            const cookieOptions = {
                 maxAge: 60 * 60 * 24 * 30, // 30 hari
-                httpOnly: false,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax' as const,
-                path: '/'
+                // httpOnly: false,
+                // secure: false,
+                // sameSite: 'lax' as const,
+                // path: '/'
             };
 
             // Simpan token dan user data
+            // setCookie('test', 'testing cookie', cookieOptions); // Test cookie
             setCookie('token', encryptClient(res.data.token), cookieOptions);
             setCookie('user', JSON.stringify(res.data.user), cookieOptions);
             localStorage.setItem('user', JSON.stringify(res.data.user));
@@ -139,8 +149,21 @@ export const handleGoogleLogin = async (userSession: any, setIsAuthLoading: (loa
 
             console.log('Google login token tersimpan:', getCookie('token')); // Debug log
 
+            // check if token and user cookie is set
+            if (getCookie('token') && getCookie('user')) {
+                // check cookie token exist
+                const result = getCookie('token');
+                if (result) {
+                    // Redirect ke halaman utama setelah login berhasil
+                    window.location.href = '/';
+                } else {
+                    showToast('error', 'Error', 'Gagal melakukan login');
+                }
+
+            }
+
             // Redirect ke halaman utama
-            window.location.href = '/';
+            // window.location.href = '/';
         } else {
             showToast('error', 'Error', res.message);
             localStorage.removeItem('logginByGoogle');
@@ -165,7 +188,7 @@ export const handleCredentialsLogin = async (
 
         if (res.status === 'success') {
             // Simpan token dan user data dengan konfigurasi cookie yang lebih baik
-            const cookieOptions = { 
+            const cookieOptions = {
                 maxAge: 60 * 60 * 24 * 30, // 30 hari
                 httpOnly: false, // Agar bisa diakses dari client-side
                 secure: process.env.NODE_ENV === 'production', // HTTPS di production
@@ -216,7 +239,7 @@ export const handleSemestaLogin = async (
 
         if (res.status === 'success') {
             // Konfigurasi cookie yang konsisten
-            const cookieOptions = { 
+            const cookieOptions = {
                 maxAge: 60 * 60 * 24 * 30, // 30 hari
                 httpOnly: false,
                 secure: process.env.NODE_ENV === 'production',
@@ -271,9 +294,9 @@ export const handleAutoLoginSubmit = async (
 
         if (res.status === 'success') {
             console.log('Auto login success:', res);
-            
+
             // Konfigurasi cookie yang konsisten
-            const cookieOptions = { 
+            const cookieOptions = {
                 maxAge: 60 * 60 * 24 * 30, // 30 hari
                 httpOnly: false,
                 secure: process.env.NODE_ENV === 'production',
