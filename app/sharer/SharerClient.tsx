@@ -9,6 +9,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import Link from "next/link";
 import { getCookie } from "cookies-next";
 import Swal from 'sweetalert2'
+import { FaGooglePlay } from "react-icons/fa6";
 
 const SweetAlertConfirm = (title: any, text: any, confirmButtonText: any, cancelButtonText: any, showCancelButton: boolean = true) => {
     return Swal.fire({
@@ -346,6 +347,19 @@ export default function SharerClient() {
                     setIsError(false);
                 }}
             />
+
+            <div className="fixed bottom-5 left-0 w-full flex items-center justify-center xl:hidden">
+                <div className="bg-[#003a69] text-white text-center px-6 py-4 text-sm rounded-xl shadow-xl mx-5 flex flex-col items-center justify-center">
+                    <div className="text-xs mb-3">
+                        <span>Aplikasi Drive Ogan Ilir tersedia di Play Store.</span>
+                    </div>
+
+                    <a href="https://play.google.com/store/apps/details?id=id.go.oganilirkab.drive" target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-4 py-2 bg-[#ebbd18] text-[#003a69] text-sm font-semibold rounded-lg shadow hover:bg-[#d4b816] transition-all duration-300">
+                        <FaGooglePlay className="h-5 w-5 mr-1" />
+                        <span>Unduh di Play Store</span>
+                    </a>
+                </div>
+            </div>
         </div>
     );
 }

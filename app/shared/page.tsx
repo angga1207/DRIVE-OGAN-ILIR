@@ -418,6 +418,12 @@ const Page = () => {
                                 handleUploadFiles(e);
                             }}
 
+                            onUploadFolder={(data: any, folderName: string) => {
+                                // handleUploadFolder(data, folderName);
+                                SweetAlertToast('info', 'Fitur Unggah Folder', 'Fitur ini sedang dalam pengembangan.')
+                                return;
+                            }}
+
                             onCreateFolder={() => {
                                 setOpenModalFolder(true);
                                 setIsFolderCreate(true);

@@ -348,23 +348,12 @@ const Page = () => {
                             isLoadingBreadcrumbs={isLoadingBreadcrumbs}
 
                             onUploadFiles={(e: any) => {
-                                // setDragIsUpload(true);
-                                // handleUploadFiles(e);
+                            }}
+
+                            onUploadFolder={(data: any, folderName: string) => {
                             }}
 
                             onCreateFolder={() => {
-                                // setOpenModalFolder(true);
-                                // setIsFolderCreate(true);
-                                // setInDetailItem({
-                                //     name: '',
-                                //     slug: '',
-                                //     id: '',
-                                //     type: 'folder',
-                                // });
-                                // setSelectedItems([]);
-                                // setIsSelectedMode(false);
-                                // setIsLoading(false);
-                                // setIsError(false);
                             }}
                         />
 
