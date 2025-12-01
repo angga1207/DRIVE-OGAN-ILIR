@@ -330,7 +330,7 @@ const Profile = () => {
                                     )}
                                     {user?.semestaIntegrated === true && (
                                         <div className="text-slate-500 flex items-center mt-0.5">
-                                            <img src="https://aptika.oganilirkab.go.id/storage/images/thumbnail/original/semesta-ogan-ilir.png" alt="Semesta" className="w-3 h-3 mr-0.5" />
+                                            <img src="/logo-semesta.png" alt="Semesta" className="w-3 h-3 mr-0.5" />
                                             <span className="whitespace-nowrap text-xs font-semibold text-[#0a1f44]">
                                                 Semesta Integrated
                                             </span>
@@ -367,7 +367,7 @@ const Profile = () => {
                                                     setIsOpen(true);
                                                 }}
                                             >
-                                                <img src="https://semesta.oganilirkab.go.id/assets_login/images/bw_icon_only@4x.png" alt="Semesta" className="w-5 h-5" />
+                                                <img src="/logo-semesta.png" alt="Semesta" className="w-5 h-5" />
                                                 Integrasi Semesta
                                             </button>
                                         </div>
@@ -629,7 +629,7 @@ const Profile = () => {
                                                         )}
 
                                                         {['sync-semesta'].includes(activity.event) && (
-                                                            <img src="https://aptika.oganilirkab.go.id/storage/images/thumbnail/original/semesta-ogan-ilir.png" alt="Semesta" className="w-4 h-4" />
+                                                            <img src="/logo-semesta.png" alt="Semesta" className="w-4 h-4" />
                                                         )}
 
                                                         {['share-file/folder', 'share-file/file', 'publicity-file', 'publicity-folder'].includes(activity.event) && (

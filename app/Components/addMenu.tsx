@@ -42,6 +42,7 @@ const AddMenu = ({
 
     onCreateFolder,
     onUploadFiles,
+    onUploadFolder,
 }: {
     isDisabled?: boolean;
     isLoading: boolean;
@@ -50,6 +51,7 @@ const AddMenu = ({
 
     onCreateFolder: () => void;
     onUploadFiles: (value: FileList) => void;
+    onUploadFolder: (value: FileList, folderName: string) => void;
 }) => {
     return (
         <>
@@ -77,8 +79,9 @@ const AddMenu = ({
                 multiple
                 onChange={(e: any) => {
                     const files = e.target.files;
-                    if (files.length > 0) {
-                        onUploadFiles(e);
+                    const folderName = e.target.files[0]?.webkitRelativePath.split('/')[0] || 'Folder';
+                    if (files.length > 0 && folderName) {
+                        onUploadFolder(files, folderName);
                     }
                 }}
                 onClick={(e: any) => {

@@ -124,7 +124,7 @@ const ModalShare = (
                                 {newData?.publicity?.status === 'public' && (
                                     <>
 
-                                        <div className="flex justify-between items-center">
+                                        {/* <div className="flex justify-between items-center">
                                             <label htmlFor="editable" className="text-sm text-slate-400 font-semibold cursor-pointer">
                                                 Dapat diedit
                                             </label>
@@ -158,7 +158,7 @@ const ModalShare = (
                                                     />
                                                 </label>
                                             </div>
-                                        </div>
+                                        </div> */}
 
                                         <div className="flex justify-between items-center">
                                             <label htmlFor="forever" className="text-sm text-slate-400 font-semibold cursor-pointer">

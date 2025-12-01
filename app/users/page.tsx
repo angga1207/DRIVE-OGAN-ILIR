@@ -431,7 +431,7 @@ const Page = () => {
                                                 {item.semestaIntegrated && (
                                                     <Tippy content="Integrated with Semesta">
                                                         <div className="flex items-center gap-x-1">
-                                                            <img src="https://aptika.oganilirkab.go.id/storage/images/thumbnail/original/semesta-ogan-ilir.png" className="w-3 h-3 inline-block cursor-pointer" />
+                                                            <img src="/logo-semesta.png" className="w-3 h-3 inline-block cursor-pointer" />
                                                             <span className="text-xs font-semibold text-indigo-500">
                                                                 Semesta
                                                             </span>

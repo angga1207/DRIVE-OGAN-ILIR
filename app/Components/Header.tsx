@@ -11,6 +11,7 @@ import { getCookie } from 'cookies-next';
 const Header = () => {
     const [navigation, setNavigation] = useState([
         { name: 'Beranda', href: '/', current: false },
+        // { name: 'Support', href: '/support', current: false },
         // { name: 'Profil', href: '/profile', current: false },
     ]);
 
@@ -48,11 +49,12 @@ const Header = () => {
                 if ([1, 4].includes(user?.id)) {
                     setNavigation([
                         { name: 'Beranda', href: '/', current: false },
+                        // { name: 'Support', href: '/support', current: false },
                         // { name: 'Profil', href: '/profile', current: false },
                         { name: 'Pengguna', href: '/users', current: false },
                     ]);
                 }
-                if (Pathname === '/sharer') {
+                if (Pathname === '/sharer' || Pathname === '/support') {
                     setNavigation([
                         { name: 'Beranda', href: '/', current: false },
                     ]);
@@ -68,7 +70,7 @@ const Header = () => {
             <>
             </>
         );
-    } else if (Pathname === '/sharer') {
+    } else if (Pathname === '/sharer' || Pathname === '/support') {
         return (
             <Disclosure as="nav" className="bg-gradient-to-l from-[#003a69] from-35% to-[#ebbd18] select-none">
                 <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -140,7 +142,7 @@ const Header = () => {
     } else {
         return (
             <>
-                {Pathname !== '/login' && Pathname !== '/register' && Pathname !== '/logout' && Pathname !== '/privacy-policy' && (
+                {Pathname !== '/login' && Pathname !== '/register' && Pathname !== '/logout' && Pathname !== '/privacy-policy' && Pathname !== '/support' && (
                     <AuthChecker />
                 )}
                 <Disclosure as="nav" className="bg-gradient-to-l from-[#003a69] from-35% to-[#ebbd18] select-none">

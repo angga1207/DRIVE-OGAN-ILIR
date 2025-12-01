@@ -302,6 +302,108 @@ function Page() {
     }
   }
 
+  const handleUploadFolder = (files: any, folderName: string) => {
+    setIsLoadingUploadFiles(true);
+    setShowQueueList(true);
+
+    // make new folder first
+    if (folderName) {
+      postMakeFolder(searchParams.get('_p'), folderName).then((res: any) => {
+        if (res.status === 'success') {
+          // After folder created, upload files to that folder
+          if (files.length > 0) {
+            setQueueBatch(queueBatch + 1);
+            for (let i = 0; i < files.length; i++) {
+              const file = files[i];
+              const fileName = file.name;
+              const fileSize = file.size;
+              setQueueUploadFiles((prev: any) => {
+                return [...prev, { id: (queueBatch + '-') + (i + 1), name: fileName, size: fileSize, progress: 0, status: 'uploading' }];
+              });
+            }
+
+            AxiosUploadFilesInFolder(files, res.data.slug).then((res: any) => {
+              getItems(searchParams.get('_p')).then((res: any) => {
+                if (res.status === 'success') {
+                  setItems(res.data);
+                }
+              });
+              setIsLoadingUploadFiles(false);
+            });
+          }
+        } else {
+          SweetAlertToast('error', 'Gagal', res.message);
+        }
+      });
+    }
+
+    setUploadFiles([]);
+  }
+
+  const AxiosUploadFilesInFolder = async (files: any, folderSlug: string) => {
+    const globalSlug = searchParams.get('_p');
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const fileName = file.name;
+      const fileSize = file.size;
+      const formData = new FormData();
+      formData.append('files[]', file);
+      // formData.append('folderId', folderSlug);
+      try {
+        // Get bearer token for authorization
+        const token = await getBearerTokenForApi();
+
+        // Use axios for upload progress tracking with Next.js API route
+        const res = await axios.post(`/api/upload/${folderSlug}`, formData, {
+          headers: {
+            ...(token && { Authorization: `Bearer ${token}` }),
+            // Don't set Content-Type for FormData, let axios handle it
+          },
+          onUploadProgress: (progressEvent: any) => {
+            const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+            setQueueUploadFiles((prev: any) => {
+              return prev.map((item: any) => {
+                if (item.id === (queueBatch + '-') + (i + 1)) {
+                  return { ...item, progress: progress };
+                }
+                return item;
+              });
+            });
+            if (progress >= 100) {
+              setQueueUploadFiles((prev: any) => {
+                return prev.map((item: any) => {
+                  if (item.id === (queueBatch + '-') + (i + 1)) {
+                    return { ...item, status: 'done' };
+                  }
+                  return item;
+                });
+              });
+            }
+            if (progress < 100) {
+              setQueueUploadFiles((prev: any) => {
+                return prev.map((item: any) => {
+                  if (item.id === (queueBatch + '-') + (i + 1)) {
+                    return { ...item, status: 'uploading' };
+                  }
+                  return item;
+                });
+              });
+            }
+          }
+        });
+        const response = await res.data;
+        if (response.status == 'error') {
+          SweetAlertToast('error', 'Gagal', response.message);
+        }
+      } catch (error) {
+        return {
+          status: 'error',
+          message: error
+        }
+      }
+    }
+  }
+
   const handleGoFolder = (slug: any) => {
     const params = new URLSearchParams(window.location.search);
     params.set('_p', slug);
@@ -584,6 +686,10 @@ function Page() {
 
               onUploadFiles={(e: any) => {
                 handleUploadFiles(e);
+              }}
+
+              onUploadFolder={(data: any, folderName: string) => {
+                handleUploadFolder(data, folderName);
               }}
 
               onCreateFolder={() => {
