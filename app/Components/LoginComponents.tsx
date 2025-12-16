@@ -224,13 +224,12 @@ export const LoginLeftPanel = () => (
                     <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-green-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
                 </a>
 
-                <a
+                {/* <a
                     href="https://apps.apple.com/id/app/drive-ogan-ilir/id6444251234"
                     className="relative flex items-center gap-2 text-white group overflow-hidden bg-gradient-to-r from-gray-800 to-gray-700 px-4 py-2 rounded-lg border border-gray-600 shadow-lg hover:shadow-xl transition-all duration-500"
                     target='_blank'
                     rel='noopener noreferrer'
                 >
-                    {/* Scan Animation Overlay */}
                     <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
 
                     <FaApple className="h-5 w-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative z-10" />
@@ -238,9 +237,9 @@ export const LoginLeftPanel = () => (
                         <span className="sr-only">Download di</span> App Store
                     </div>
 
-                    {/* Glow effect */}
                     <div className="absolute inset-0 bg-gradient-to-r from-gray-600/20 to-gray-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
-                </a>
+                </a> */}
+
             </div>
 
         </div>
@@ -263,10 +262,13 @@ export const LoginHeader = () => (
 );
 
 export const LoginFooter = () => (
-    <div className="mt-10">
-        <div className="text-center text-white text-sm font-semibold">
+    <div className="mt-10 text-center text-white text-sm font-semibold hover:underline hover:text-[#003a69] transition-all duration-300 select-none">
+        <Link
+            href={`https://hakcipta.dgip.go.id/legal/c/OTc1NGQxNGQ4MGFlNjExZDY0ZGI5MGU0YmZjOTI0Yzg=`}
+            target='_blank'
+            className="">
             Copyright © {new Date().getFullYear() === 2023 ? 2023 : `2023 - ${new Date().getFullYear()}`} <br />
             Diskominfo Kabupaten Ogan Ilir
-        </div>
+        </Link>
     </div>
 );

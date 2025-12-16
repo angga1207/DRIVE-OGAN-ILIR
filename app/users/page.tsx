@@ -419,7 +419,7 @@ const Page = () => {
                                             <div className="flex items-center gap-x-1 mt-1">
                                                 {item.googleIntegated && (
                                                     <Tippy content="Integrated with Google">
-                                                        <div className="flex items-center gap-x-1">
+                                                        <div className="flex items-center gap-x-1 cursor-pointer">
                                                             <img src="/assets/images/google.png" className="w-3 h-3 inline-block cursor-pointer" />
                                                             <span className="text-xs font-semibold text-green-500">
                                                                 Google
@@ -430,10 +430,21 @@ const Page = () => {
 
                                                 {item.semestaIntegrated && (
                                                     <Tippy content="Integrated with Semesta">
-                                                        <div className="flex items-center gap-x-1">
+                                                        <div className="flex items-center gap-x-1 cursor-pointer">
                                                             <img src="/logo-semesta.png" className="w-3 h-3 inline-block cursor-pointer" />
-                                                            <span className="text-xs font-semibold text-indigo-500">
+                                                            <span className="text-xs font-semibold text-indigo-900">
                                                                 Semesta
+                                                            </span>
+                                                        </div>
+                                                    </Tippy>
+                                                )}
+
+                                                {item.appleIntegrated && (
+                                                    <Tippy content="Integrated with Apple">
+                                                        <div className="flex items-center gap-x-1 cursor-pointer">
+                                                            <img src="/apple-logo.png" className="w-3 h-3 inline-block cursor-pointer" />
+                                                            <span className="text-xs font-semibold text-slate-700">
+                                                                Apple
                                                             </span>
                                                         </div>
                                                     </Tippy>

@@ -336,6 +336,14 @@ const Profile = () => {
                                             </span>
                                         </div>
                                     )}
+                                    {user?.appleIntegrated === true && (
+                                        <div className="text-slate-500 flex items-center mt-0.5">
+                                            <img src="/apple-logo.png" alt="Apple" className="w-3 h-3 mr-0.5" />
+                                            <span className="whitespace-nowrap text-xs font-semibold text-[#0a1f44]">
+                                                Apple Integrated
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="flex items-center flex-wrap gap-4 mt-2">
