@@ -64,3 +64,23 @@ export async function getActivities(page: any = 1) {
         }
     }
 }
+
+export async function postDeleteAccount(password: string) {
+    try {
+        const res = await axios.post(`${ServerDomain}/deleteMySelf`, {
+            password: password
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${decryptClient(CurrentToken as string)}`,
+            }
+        });
+        const data = await res.data;
+        return data;
+    } catch (error) {
+        return {
+            status: 'error',
+            message: error
+        }
+    }
+}

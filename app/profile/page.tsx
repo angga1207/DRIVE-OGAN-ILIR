@@ -1,10 +1,11 @@
 "use client";
 import { syncWithGoogle, syncWithSemesta } from "@/apis/apiAuth";
-import { getActivities, updateProfile } from "@/apis/apiProfile";
-import { ArrowLeftOnRectangleIcon } from "@heroicons/react/20/solid";
+import { getActivities, postDeleteAccount, updateProfile } from "@/apis/apiProfile";
+import { TfiTrash } from "react-icons/tfi";
 import { ArrowDownTrayIcon, ArrowLeftEndOnRectangleIcon, ArrowPathRoundedSquareIcon, ArrowsPointingOutIcon, ArrowUpTrayIcon, CalendarDaysIcon, CheckBadgeIcon, ExclamationCircleIcon, EyeIcon, EyeSlashIcon, FolderPlusIcon, PencilSquareIcon, PresentationChartLineIcon, ShareIcon, TrashIcon, UserIcon } from "@heroicons/react/24/outline";
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { getCookie, setCookie } from "cookies-next";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import LoginSemesta from "../Components/LoginSemesta";
@@ -250,6 +251,58 @@ const Profile = () => {
 
             } else {
                 SweetAlertToast('error', 'Error', res.message);
+            }
+        });
+    }
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [passwordDelete, setPasswordDelete] = useState('');
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setPasswordDelete('');
+    }
+
+    const handleDeleteAccount = () => {
+        if (passwordDelete === '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Password tidak boleh kosong',
+                showConfirmButton: false,
+                timer: 3000,
+                position: 'top-end',
+                toast: true,
+            });
+            return;
+        }
+
+        postDeleteAccount(passwordDelete).then((res) => {
+            if (res.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: res.message,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    position: 'center',
+                });
+                handleCloseModal();
+
+                // logout user
+                setTimeout(() => {
+                    signOut({ redirect: true, callbackUrl: '/login' });
+                }, 1000);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res.message,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    position: 'top-end',
+                    toast: true,
+                });
             }
         });
     }
@@ -559,7 +612,21 @@ const Profile = () => {
 
                         </form>
 
-                        <div className="text-center">
+                        <div className="flex items-center justify-center my-3">
+                            {/* delete button */}
+                            <button
+                                onClick={() => {
+                                    setModalOpen(true);
+                                }}
+                                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 flex items-center transition-all duration-500 cursor-pointer">
+                                <TfiTrash className="w-4 h-4 mr-1" />
+                                Hapus Akun
+                            </button>
+                        </div>
+
+                        <hr />
+
+                        <div className="text-center mt-5">
                             <div className="text-xs text-slate-500">
                                 © 2023 - {new Date().getFullYear()} Diskominfo Ogan Ilir. All rights reserved.
                             </div>
@@ -715,6 +782,63 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
+
+
+            <Dialog open={modalOpen}
+                onClose={() => {
+                    handleCloseModal();
+                }}
+                className="relative z-10">
+                <DialogBackdrop
+                    transition
+                    className="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
+                />
+
+                <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+                    <div className="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0">
+                        <DialogPanel
+                            transition
+                            className="relative transform overflow-hidden rounded-xl border-2 border-white bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-xl data-closed:sm:translate-y-0 data-closed:sm:scale-95"
+                        >
+                            <div className="">
+                                <DialogTitle className="text-lg font-semibold text-center p-4 border-b border-slate-200">
+                                    Konfirmasi Hapus Akun
+                                </DialogTitle>
+
+                                {/* form input password */}
+                                <div className="p-4">
+                                    <p className="mb-4 text-slate-700">
+                                        Apakah Anda yakin ingin menghapus akun Anda? Tindakan ini tidak dapat dibatalkan dan semua data Anda akan hilang secara permanen.
+                                    </p>
+
+                                    <div className="">
+                                        <label className="text-xs font-semibold text-slate-600">
+                                            Masukkan Password Anda untuk konfirmasi <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            type="password"
+                                            placeholder="Masukkan password Anda untuk konfirmasi menghapus akun"
+                                            autoComplete="new-password"
+                                            onChange={(e: any) => {
+                                                setPasswordDelete(e.target.value);
+                                            }}
+                                            className="mt-2 w-full p-2 border border-slate-300 rounded ring-0 focus:ring-0 outline-0"
+                                        />
+                                    </div>
+
+                                    <div className="flex items-center justify-center gap-4 mt-5">
+                                        <button
+                                            onClick={() => handleDeleteAccount()}
+                                            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 flex items-center transition-all duration-500 cursor-pointer">
+                                            Hapus Akun
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </DialogPanel>
+                    </div>
+                </div>
+            </Dialog>
 
             {/* modal */}
             <LoginSemesta
