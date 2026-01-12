@@ -224,8 +224,8 @@ export const LoginLeftPanel = () => (
                     <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-green-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
                 </a>
 
-                {/* <a
-                    href="https://apps.apple.com/id/app/drive-ogan-ilir/id6444251234"
+                <a
+                    href="https://apps.apple.com/id/app/drive-ogan-ilir/id6753156742"
                     className="relative flex items-center gap-2 text-white group overflow-hidden bg-gradient-to-r from-gray-800 to-gray-700 px-4 py-2 rounded-lg border border-gray-600 shadow-lg hover:shadow-xl transition-all duration-500"
                     target='_blank'
                     rel='noopener noreferrer'
@@ -238,7 +238,7 @@ export const LoginLeftPanel = () => (
                     </div>
 
                     <div className="absolute inset-0 bg-gradient-to-r from-gray-600/20 to-gray-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
-                </a> */}
+                </a>
 
             </div>
 

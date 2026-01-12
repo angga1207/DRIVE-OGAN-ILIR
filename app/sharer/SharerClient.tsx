@@ -176,32 +176,32 @@ export default function SharerClient() {
     }
 
     useEffect(() => {
-        // if (isMounted && user && currentPath && currentPath?.type == 'folder' && user.id !== currentPath?.author.id) {
-        //     getAccessToFolder(globalSlug).then((res: any) => {
-        //         if (res.status === 'success') {
-        //             SweetAlertToast(
-        //                 'success',
-        //                 'Akses Berhasil Didapatkan',
-        //                 'Anda sekarang memiliki akses tambahan ke folder ini.'
-        //             );
-        //             router.push('/shared?_id=' + globalSlug);
-        //         } else {
-        //             SweetAlertToast(
-        //                 'success',
-        //                 'Berhasil',
-        //                 'Mengalihkan ke halaman akses...',
-        //             );
-        //             router.push('/shared?_id=' + globalSlug);
-        //             return;
-        //         }
-        //     }).catch((err) => {
-        //         SweetAlertToast(
-        //             'error',
-        //             'Gagal Mendapatkan Akses',
-        //             'Terjadi kesalahan saat mencoba mendapatkan akses.'
-        //         );
-        //     });
-        // }
+        if (isMounted && user && currentPath && currentPath?.type == 'folder' && user.id !== currentPath?.author.id) {
+            getAccessToFolder(globalSlug).then((res: any) => {
+                if (res.status === 'success') {
+                    SweetAlertToast(
+                        'success',
+                        'Akses Berhasil Didapatkan',
+                        'Anda sekarang memiliki akses tambahan ke folder ini.'
+                    );
+                    router.push('/shared?_id=' + globalSlug);
+                } else {
+                    SweetAlertToast(
+                        'success',
+                        'Berhasil',
+                        'Mengalihkan ke halaman akses...',
+                    );
+                    router.push('/shared?_id=' + globalSlug);
+                    return;
+                }
+            }).catch((err) => {
+                SweetAlertToast(
+                    'error',
+                    'Gagal Mendapatkan Akses',
+                    'Terjadi kesalahan saat mencoba mendapatkan akses.'
+                );
+            });
+        }
     }, [isMounted, user, currentPath]);
 
     return (
