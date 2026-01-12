@@ -11,12 +11,12 @@ const ServerDomain = serverDomain();
 
 export async function POST(
   request: NextRequest,
-  context: { params: Promise<{ folderSlug: string }> }
+  context: { params: Promise<{ parentSlug: string }> }
 ) {
   try {
     // Get folder slug from URL params
     const params = await context.params;
-    const { folderSlug } = params;
+    const { parentSlug } = params;
     
     // Get formData from request
     const formData = await request.formData();
@@ -70,13 +70,13 @@ export async function POST(
       }
     };
 
-    // Make request to actual server with folderSlug in URL
-    const res = await axios.post(`${ServerDomain}/upload-in-folder/${folderSlug}`, formData, axiosConfig);
+    // Make request to actual server with parentSlug in URL
+    const res = await axios.post(`${ServerDomain}/upload-in-folder/${parentSlug}`, formData, axiosConfig);
     
     return NextResponse.json(res.data);
     
   } catch (error: any) {
-    console.error('Error in /api/upload-in-folder/[folderSlug]:', error);
+    console.error('Error in /api/upload-in-folder/[parentSlug]:', error);
     
     return NextResponse.json(
       { 
