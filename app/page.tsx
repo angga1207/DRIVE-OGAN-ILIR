@@ -127,9 +127,24 @@ function Page() {
             setArrBreadcrumbs(res.data);
           }
           else if (res.message.status == 401) {
+            localStorage.clear();
+            const cookies = document.cookie.split("; ");
+            for (let c of cookies) {
+              const d = window.location.hostname.split(".");
+              while (d.length > 0) {
+                const cookieBase = encodeURIComponent(c.split(";")[0].split("=")[0]) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=" + d.join('.') + " ;path=";
+                const paths = location.pathname.split('/');
+                document.cookie = cookieBase + '/';
+                for (let i = 0; i < paths.length; i++) {
+                  document.cookie = cookieBase + paths.slice(0, i + 1).join('/');
+                }
+                d.shift();
+              }
+            }
             signOut({
               callbackUrl: '/logout'
             });
+            // remove local storage
             window.location.href = '/logout';
           }
           setIsLoadingBreadcrumbs(false);
@@ -139,15 +154,45 @@ function Page() {
           if (res.status === 'success') {
             setItems(res.data);
           } else if (res.message.status == 401) {
+            localStorage.clear();
+            const cookies = document.cookie.split("; ");
+            for (let c of cookies) {
+              const d = window.location.hostname.split(".");
+              while (d.length > 0) {
+                const cookieBase = encodeURIComponent(c.split(";")[0].split("=")[0]) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=" + d.join('.') + " ;path=";
+                const paths = location.pathname.split('/');
+                document.cookie = cookieBase + '/';
+                for (let i = 0; i < paths.length; i++) {
+                  document.cookie = cookieBase + paths.slice(0, i + 1).join('/');
+                }
+                d.shift();
+              }
+            }
             signOut({
               callbackUrl: '/logout'
             })
+            // remove local storage
             // window.location.href = '/logout';
           } else if (res.status == 'error') {
             if (res.code == 401 || res.message == 'Unauthenticated') {
+              localStorage.clear();
+              const cookies = document.cookie.split("; ");
+              for (let c of cookies) {
+                const d = window.location.hostname.split(".");
+                while (d.length > 0) {
+                  const cookieBase = encodeURIComponent(c.split(";")[0].split("=")[0]) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=" + d.join('.') + " ;path=";
+                  const paths = location.pathname.split('/');
+                  document.cookie = cookieBase + '/';
+                  for (let i = 0; i < paths.length; i++) {
+                    document.cookie = cookieBase + paths.slice(0, i + 1).join('/');
+                  }
+                  d.shift();
+                }
+              }
               signOut({
                 callbackUrl: '/logout'
               })
+              // remove local storage
               // window.location.href = '/logout';
             }
           }
@@ -159,9 +204,24 @@ function Page() {
             setArrBreadcrumbs(res.data);
           }
           else if (res.message.status) {
+            localStorage.clear();
+            const cookies = document.cookie.split("; ");
+            for (let c of cookies) {
+              const d = window.location.hostname.split(".");
+              while (d.length > 0) {
+                const cookieBase = encodeURIComponent(c.split(";")[0].split("=")[0]) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=" + d.join('.') + " ;path=";
+                const paths = location.pathname.split('/');
+                document.cookie = cookieBase + '/';
+                for (let i = 0; i < paths.length; i++) {
+                  document.cookie = cookieBase + paths.slice(0, i + 1).join('/');
+                }
+                d.shift();
+              }
+            }
             signOut({
               callbackUrl: '/logout'
             })
+            // remove local storage
             // window.location.href = '/logout';
           }
           setIsLoadingBreadcrumbs(false);
@@ -171,15 +231,45 @@ function Page() {
           if (res.status === 'success') {
             setItems(res.data);
           } else if (res.message.status == 401) {
+            localStorage.clear();
+            const cookies = document.cookie.split("; ");
+            for (let c of cookies) {
+              const d = window.location.hostname.split(".");
+              while (d.length > 0) {
+                const cookieBase = encodeURIComponent(c.split(";")[0].split("=")[0]) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=" + d.join('.') + " ;path=";
+                const paths = location.pathname.split('/');
+                document.cookie = cookieBase + '/';
+                for (let i = 0; i < paths.length; i++) {
+                  document.cookie = cookieBase + paths.slice(0, i + 1).join('/');
+                }
+                d.shift();
+              }
+            }
             signOut({
               callbackUrl: '/logout'
             })
+            // remove local storage
             // window.location.href = '/logout';
           } else if (res.status == 'error') {
             if (res.code == 401 || res.message == 'Unauthenticated') {
+              localStorage.clear();
+              const cookies = document.cookie.split("; ");
+              for (let c of cookies) {
+                const d = window.location.hostname.split(".");
+                while (d.length > 0) {
+                  const cookieBase = encodeURIComponent(c.split(";")[0].split("=")[0]) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=" + d.join('.') + " ;path=";
+                  const paths = location.pathname.split('/');
+                  document.cookie = cookieBase + '/';
+                  for (let i = 0; i < paths.length; i++) {
+                    document.cookie = cookieBase + paths.slice(0, i + 1).join('/');
+                  }
+                  d.shift();
+                }
+              }
               signOut({
                 callbackUrl: '/logout'
               })
+              // remove local storage
               // window.location.href = '/logout';
             }
           }
